@@ -12,7 +12,7 @@ def generate_verdict(total_score):
 
 def print_top_matches(top_concepts, G, label_map, confidence_scores, direct_label_hits, synonym_hits):
     """Print top matched ontology terms."""
-    top_n = min(len(top_concepts), 10)
+    top_n = min(len(top_concepts), 25)
     print("\n**Top Matched Terms:**")
     print("| Paper Term | Ontology IRI | Ontology Label | Match Type | Confidence | Ontology Path |")
     print("|---|---|---|---|---|---|")

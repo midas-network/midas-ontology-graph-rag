@@ -1,5 +1,5 @@
 import os
-
+import textwrap
 from dotenv import load_dotenv
 from langchain_core.vectorstores import InMemoryVectorStore
 
@@ -21,11 +21,20 @@ def setup_environment():
 def main():
     # Setup environment
     api_key = setup_environment()
-    paper_id = 1000  # Default paper ID, find paperIDs in data/paper_ids.tsv
+    paper_id = 180 # has an paper abstract object with several strings in an array, instead of just one string
     ontology_path = "midas-data.owl"
 
     # Get paper data
     paper_data = get_paper_data(paper_id, api_key)
+
+    print(f"# Paper Analysis Report\n")
+    print(f"**Paper ID:** {paper_id}")
+    print(f"**Title:** {paper_data['paper_title']}\n")
+    print(textwrap.fill(paper_data["paper_abstract"], width=80))
+    print(f"\n**Keywords:** {', '.join(paper_data['paper_keywords'])}")
+    print(f"**MeSH Terms:** {', '.join(paper_data['paper_meshterms'])}\n")
+
+    query = " ".join(paper_data['paper_keywords'] + paper_data['paper_meshterms']) + paper_data['paper_title']
 
     # Load and process ontology
     g, classes, properties = load_ontology(ontology_path)
@@ -52,7 +61,7 @@ def main():
     retriever = setup_graph_retriever(vector_store)
 
     # Execute retrieval
-    query_text = " ".join(paper_data['paper_keywords'] + paper_data['paper_meshterms'])
+    query_text = query
     results = retriever.invoke(query_text)
 
     # Identify matched concepts

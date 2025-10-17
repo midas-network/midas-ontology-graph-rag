@@ -230,7 +230,7 @@ def get_paper_data(paper_id, api_key):
     client = MidasClient(api_key=api_key)
     paper_data = client.get_paper(paper_id)
     result['paper_title'] = paper_data.get("title", "")
-    result['paper_abstract'] = paper_data['paperAbstract']['paperAbstractText'][0]['value']
+    result['paper_abstract'] = "\n".join([item['value'] for item in paper_data['paperAbstract']['paperAbstractText']])
     result['paper_keywords'] = [d[0]['name'] for d in [list(x.values()) for x in paper_data["paperPubMedKeywords"]]]
     result['paper_meshterms'] = [d[0]['name'] for d in [list(x.values()) for x in paper_data["paperPubMedMeshTerms"]]]
     return result
