@@ -1,500 +1,1008 @@
-406	Anticipating epidemic transitions with imperfect data.
-407	Anticipating the emergence of infectious diseases.
-431	Approximate Bayesian estimation of coevolutionary arms races.
-611	Characterising antibody kinetics from multiple influenza infection and vaccination events in ferrets.
-839	Critical immune and vaccination thresholds for determining multiple influenza epidemic waves.
-884	Dengue genetic divergence generates within-serotype antigenic variation, but serotypes dominate evolutionary dynamics.
-1012	Dose-response relationships for environmentally mediated infectious disease transmission models.
-1325	Evaluating strategies to improve rotavirus vaccine impact during the second year of life in Malawi.
-1457	Forecasting national and regional influenza-like illness for the USA.
-1502	General methodology for inferring failure-spreading dynamics in networks.
-2130	MicroPro: using metagenomic unmapped reads to provide insights into human microbiota and disease associations.
-2272	Multiple exposures, reinfection and risk of progression to active tuberculosis.
-3681	Infectious Disease Dynamics Inferred from Genetic Data via Sequential Monte Carlo.
-3682	Pertussis immunity and epidemiology: mode and duration of vaccine-induced immunity.
-3683	Monte Carlo profile confidence intervals for dynamic systems.
-3686	Lattice effects observed in chaotic dynamics of experimental populations.
-3687	Genomic epidemiology supports multiple introductions and cryptic transmission of Zika virus in Colombia.
-3689	Extreme fluctuations in small-world networks with relaxational dynamics.
-3693	Identification of HIV infection-related DNA methylation sites and advanced epigenetic aging in HIV-positive, treatment-naive U.S. veterans.
-3694	Spatial Patterns of Extensively Drug-Resistant Tuberculosis Transmission in KwaZulu-Natal, South Africa.
-3699	A human judgment approach to epidemiological forecasting.
-3700	Computational Characterization of Transient Strain-Transcending Immunity against Influenza A.
-3702	Compartmental Model Diagrams as Causal Representations in Relation to DAGs.
-3705	Successes and failures of the live-attenuated influenza vaccine: can we do better?
-3707	The majority of CD4+ T-cell depletion during acute simian-human immunodeficiency virus SHIV89.6P infection occurs in uninfected cells.
-3964	On the role of different age groups during pertussis epidemics in California, 2010 and 2014.
-3970	Surveillance to maintain the sensitivity of genotype-based antibiotic resistance diagnostics.
-3971	Conditional Direction Dependence Analysis: Evaluating the Causal Direction of Effects in Linear Models with Interaction Terms.
-3973	Tracking the polyclonal neutralizing antibody response to a dengue virus serotype 1 type-specific epitope across two populations in Asia and the Americas.
-3974	The Many Faces of Emerging and Re-emerging Infectious Disease.
-3979	Global prevalence of norovirus in cases of gastroenteritis: a systematic review and meta-analysis.
-3980	Two epidemiologic patterns of norovirus outbreaks: surveillance in England and wales, 1992-2000.
-3981	Human caliciviruses in Europe.
-3982	Severe outcomes are associated with genogroup 2 genotype 4 norovirus outbreaks: a systematic literature review.
-3983	The Vast and Varied Global Burden of Norovirus: Prospects for Prevention and Control.
-3990	Temperature-dependent transmission of rotavirus in Great Britain and The Netherlands.
-3992	Role of widows in the heterosexual transmission of HIV in Manicaland, Zimbabwe, 1998-2003.
-3994	Burden of norovirus in healthcare facilities and strategies for outbreak control.
-3995	Clinical characteristics of norovirus-associated deaths: a systematic literature review.
-3997	Verbal autopsy can consistently measure AIDS mortality: a validation study in Tanzania and Zimbabwe.
-3999	Norovirus in healthcare settings.
-4000	Laboratory capability in Europe for foodborne viruses.
-4002	Emergency department visit data for rapid detection and monitoring of norovirus activity, United States.
-4003	Changing patterns of adult mortality as the HIV epidemic matures in Manicaland, eastern Zimbabwe.
-4004	Norovirus in Latin America: Systematic Review and Meta-analysis.
-4006	The relation between CSF pressure and ventricular dilatation in hydrocephalic HTx rats
-4009	Can use of viral load improve norovirus clinical diagnosis and disease attribution?
-4011	Decline in gastroenteritis-related triage calls after rotavirus vaccine licensure.
-4012	Temporal Relationship Between Healthcare-Associated and Nonhealthcare-Associated Norovirus Outbreaks and Google Trends Data in the United States.
-4017	Longer-term Direct and Indirect Effects of Infant Rotavirus Vaccination Across All Ages in the United States in 2000-2013: Analysis of a Large Hospital Discharge Data Set.
-4018	Incidence of norovirus-associated diarrhea and vomiting disease among children and adults in a community cohort in the Peruvian Amazon Basin.
-4019	Norovirus in 2016-Emesis Aplenty but Clear Signs of Progress.
-4020	Spatiotemporal dynamics of rotavirus disease in Europe: can climate or demographic variability explain the patterns observed.
-4021	Timing of Birth as an Emergent Risk Factor for Rotavirus Hospitalization and Vaccine Performance in the Postvaccination Era in the United States.
-4023	Parenteral protein-based rotavirus vaccine.
-4024	Developments in understanding acquired immunity and innate susceptibility to norovirus and rotavirus gastroenteritis in children.
-4028	Virus and host-specific differences in oral human herpesvirus shedding kinetics among Ugandan women and children.
-4031	Text-Based Illness Monitoring for Detection of Novel Influenza A Virus Infections During an Influenza A (H3N2)v Virus Outbreak in Michigan, 2016: Surveillance and Survey.
-4034	Diagnosing Glaucoma Progression With Visual Field Data Using a Spatiotemporal Boundary Detection Method.
-4036	Establishment and cryptic transmission of Zika virus in Brazil and the Americas.
-4042	Dynamical analysis and optimal control simulation for an age-structured cholera model.
-4043	An avian influenza model with latency and vaccination.
-4051	Global distribution and environmental suitability for chikungunya virus, 1952 to 2015.
-4059	Repast Simphony Statecharts
-4061	Simulating Water, Individuals, and Management using a coupled and distributed approach.
-4062	The ReLogo agent-based modeling language.
-4069	Social mixing and clinical features linked with transmission in a network of extensively drug-resistant (XDR) tuberculosis cases in KwaZulu-Natal, South Africa.
-4071	Dynamics of colonization and recolonization of Streptococcus pneumoniae strains in healthy Peruvian children.
-4073	Assessing strategies for increasing urban routine immunization coverage of childhood vaccines in low and middle-income countries: A systematic review of peer-reviewed literature.
-4079	Cloned human FMR1 trinucleotide repeats exhibit a length- and orientation-dependent instability suggestive of in vivo lagging strand secondary structure.
-4080	Within-host infectious disease models accommodating cellular coinfection, with an application to influenza
-4085	A critical analysis of recreational water guidelines developed from temperate climate data and applied to the tropics.
-4086	Household coping strategies associated with unreliable water supplies and diarrhea in Ecuador, an upper-middle-income country.
-4087	Moving towards transformational WASH.
-4088	Phenotypic variations in persistence and infectivity between and within environmentally transmitted pathogen populations impact population-level epidemic dynamics.
-4089	Countering the Curse of Dimensionality: Exploring Data-generating Mechanisms Through Participant Observation and Mechanistic Modeling.
-4090	The sero-epidemiology of Coxiella burnetii (Q fever) across livestock species and herding contexts in Laikipia County, Kenya.
-4091	The Critical Role of Compliance in Delivering Health Gains from Environmental Health Interventions.
-4092	Determinants of Latrine Use Behavior: The Psychosocial Proxies of Individual-Level Defecation Practices in Rural Coastal Ecuador.
-4095	The Role of Mobile Genetic Elements in the Spread of Antimicrobial-Resistant Escherichia coli From Chickens to Humans in Small-Scale Production Poultry Operations in Rural Ecuador.
-4096	Modeling environmentally mediated rotavirus transmission: The role of temperature and hydrologic factors.
-4097	Trends of child undernutrition in rural Ecuadorian communities with differential access to roads, 2004-2013.
-4098	Asymmetric transfer efficiencies between fomites and fingers: Impact on model parameterization.
-4099	Determinants of Short-term Movement in a Developing Region and Implications for Disease Transmission.
-4100	Health risks from exposure to untreated wastewater used for irrigation in the Mezquital Valley, Mexico: A 25-year update.
-4102	Livestock Ownership Among Rural Households and Child Morbidity and Mortality: An Analysis of Demographic Health Survey Data from 30 Sub-Saharan African Countries (2005-2015).
-4103	Tracking progress towards global drinking water and sanitation targets: A within and among country analysis.
-4104	Author's responses to the comment by Daniele Lantagne on "Household effectiveness vs. laboratory efficacy of point-of-use chlorination".
-4105	Molecular identification of Giardia duodenalis in Ecuador by polymerase chain reaction-restriction fragment length polymorphism.
-4106	Plesiomonas shigelloides infection, Ecuador, 2004-2008.
-4107	High prevalence of human liver infection by Amphimerus spp. flukes, Ecuador.
-4111	Improved Real-Time Influenza Surveillance: Using Internet Search Data in Eight Latin American Countries.
-4113	Differences in Regional Patterns of Influenza Activity Across Surveillance Systems in the United States: Comparative Evaluation.
-4115	Accurate Influenza Monitoring and Forecasting Using Novel Internet Data Streams: A Case Study in the Boston Metropolis.
-4117	Advances in using Internet searches to track dengue.
-4121	Antibiotic Resistance Increases with Local Temperature.
-4122	Accurate estimation of influenza epidemics using Google search data via ARGO.
-4124	Seasonal influenza circulation patterns and projections for September 2019 to September 2020.
-4126	Impact of preexisting dengue immunity on Zika virus emergence in a dengue endemic region.
-4130	On modelling environmentally transmitted pathogens.
-4136	Performance and Priorities: A Cross-sectional Study of Local Health Department Approaches to Essential Public Health Services.
-4137	Cost-effectiveness of teduglutide in adult patients with short bowel syndrome: Markov modeling using traditional cost-effectiveness criteria.
-4140	Two clinical prediction tools to improve tuberculosis contact investigation.
-4142	The contribution of host cell-directed vs. parasite-directed immunity to the disease and dynamics of malaria infections.
-4143	A Framework for Discovering Health Disparities among Cohorts in an Influenza Epidemic.
-4145	Modelling microbial infection to address global health challenges.
-4154	Comparative Immunogenicity of Several Enhanced Influenza Vaccine Options for Older Adults: A Randomized, Controlled Trial.
-4156	How coping can hide larger systems problems: the routine immunisation supply chain in Bihar, India.
-4157	Global mortality associated with seasonal influenza epidemics: New burden estimates and predictors from the GLaMOR Project.
-4158	Inferring HIV-1 transmission networks and sources of epidemic spread in Africa with deep-sequence phylogenetic analysis.
-4159	PANGEA-HIV 2: Phylogenetics And Networks for Generalised Epidemics in Africa.
-4160	On the evolutionary ecology of multidrug resistance in bacteria.
-4164	Variation of growth characteristics of pneumococcus with environmental conditions.
-4165	Impacts of Zika emergence in Latin America on endemic dengue transmission.
-4171	Afann: bias adjustment for alignment-free sequence comparison based on sequencing data using neural network regression.
-4179	Comparative global epidemiology of influenza, respiratory syncytial and parainfluenza viruses, 2010-2015.
-4180	Impact of a poorly performing point-of-care test during the 2017-2018 influenza season.
-4181	Transmitted and acquired oseltamivir resistance during the 2018-2019 influenza season.
-4187	phylotree.js - a JavaScript library for application development and interactive data visualization in phylogenetics.
-4197	Prevalence of chlamydial and gonococcal infections among young adults in the United States.
-4198	Sexual role and transmission of HIV Type 1 among men who have sex with men, in Peru.
-4200	Characterization of human immunodeficiency virus type 1 (HIV-1) envelope variation and neutralizing antibody responses during transmission of HIV-1 subtype B.
-4203	Site-to-site variation of synonymous substitution rates.
-4204	The prevalence of trichomoniasis in young adults in the United States.
-4207	Assessing the effects of human mixing patterns on human immunodeficiency virus-1 interhost phylogenetics through social network simulation.
-4211	Genetic attributes of cerebrospinal fluid-derived HIV-1 env.
-4214	Comparative study of methods for detecting sequence compartmentalization in human immunodeficiency virus type 1.
-4217	Emergent heterogeneity in declining tuberculosis epidemics.
-4220	Biological and demographic causes of high HIV and sexually transmitted disease prevalence in men who have sex with men.
-4221	Prevention of nosocomial transmission of extensively drug-resistant tuberculosis in rural South African district hospitals: an epidemiological modelling study.
-4225	Persistence of transmitted drug resistance among subjects with primary human immunodeficiency virus infection.
-4227	Seasonality of antibiotic-resistant streptococcus pneumoniae that causes acute otitis media: a clue for an antibiotic-restriction policy?
-4229	Advances in Exponential Random Graph (p*) Models Applied to a Large Social Network.
-4232	The evolutionary consequences of vaccination.
-4234	Effects of smoking and solid-fuel use on COPD, lung cancer, and tuberculosis in China: a time-based, multiple risk factor, modelling study.
-4238	Coupled contagion dynamics of fear and disease: mathematical and computational explorations.
-4239	Latent coinfection and the maintenance of strain diversity.
-4240	Personal digital assistants to collect tuberculosis bacteriology data in Peru reduce delays, errors, and workload, and are acceptable to users: cluster randomized controlled trial.
-4244	Difficulties in maintaining improved handwashing behavior, Karachi, Pakistan.
-4246	Understanding Australia's influenza pandemic policy on the strategic use of the antiviral drug stockpile.
-4249	Initial human transmission dynamics of the pandemic (H1N1) 2009 virus in North America.
-4251	Parsing social network survey data from hidden populations using stochastic context-free grammars.
-4252	Recurrent zoonotic transmission of Nipah virus into humans, Bangladesh, 2001-2007.
-4257	Increasing incidence of post-kala-azar dermal leishmaniasis in a population-based study in Bangladesh.
-4261	Causes of early childhood deaths in urban Dhaka, Bangladesh.
-4262	Protease polymorphisms in HIV-1 subtype CRF01_AE represent selection by antiretroviral therapy and host immune pressure.
-4263	Quantifying the transmissibility of human influenza and its seasonal variation in temperate regions.
-4264	An Interaction Based Composable Architecture for Building Scalable Models of Large Social, Biological, Information and Technical Systems.
-4266	The impact of realistic age structure in simple models of tuberculosis transmission.
-4270	Seroprevalence Following the Second Wave of Pandemic 2009 H1N1 Influenza.
-4272	Viral shedding and clinical illness in naturally acquired influenza virus infections.
-4273	How do people value life?
-4274	The transmission dynamics of tuberculosis in a recently developed Chinese city.
-4275	Viral phylodynamics and the search for an 'effective number of infections'.
-4277	Same influenza vaccination strategies but different outcomes across US cities?
-4281	Ambulatory antibiotic use and prescription drug coverage in older adults.
-4282	Economic value of norovirus outbreak control measures in healthcare settings.
-4286	The influence of social-cognitive factors on personal hygiene practices to protect against influenzas: using modelling to compare avian A/H5N1 and 2009 pandemic A/H1N1 influenzas in Hong Kong.
-4288	Systematic review and cost analysis comparing use of chlorhexidine with use of iodine for preoperative skin antisepsis to prevent surgical site infection.
-4289	The relatedness of HIV epidemics in the United States-Mexico border region.
-4292	Modeling the spatial distribution and fruiting pattern of a key tree species in a neotropical forest: methodology and potential applications.
-4299	Impact of imitation processes on the effectiveness of ring vaccination.
-4300	Factors affecting intention to receive and self-reported receipt of 2009 pandemic (H1N1) vaccine in Hong Kong: a longitudinal study.
-4302	Marine bacterial, archaeal and protistan association networks reveal ecological linkages.
-4303	Using phylogeography to characterize the origins of the HIV-1 subtype F epidemic in Romania.
-4305	Spontaneous emergence of multiple drug resistance in tuberculosis before and during therapy.
-4308	Use of whole genome sequencing to estimate the mutation rate of Mycobacterium tuberculosis during latent infection.
-4310	Response to Comment on "The Origins of Sexually Transmitted HIV Among Men Who Have Sex with Men"
-4312	The economic value of screening haemodialysis patients for methicillin-resistant Staphylococcus aureus in the USA.
-4314	Population biology of Gram-positive pathogens: high-risk clones for dissemination of antibiotic resistance.
-4315	Vaccine production, distribution, access, and uptake.
-4320	Is methicillin-resistant Staphylococcus aureus replacing methicillin-susceptible S. aureus?
-4322	Clinical and nonclinical health care workers faced a similar risk of acquiring 2009 pandemic H1N1 infection.
-4324	The role of subway travel in an influenza epidemic: a New York City simulation.
-4332	Infectious disease modeling and military readiness.
-4333	Edge-based compartmental modelling for infectious disease spread.
-4334	Digital dashboard design using multiple data streams for disease surveillance with influenza surveillance as an example.
-4336	Complex population dynamics and the coalescent under neutrality.
-4337	Clinical, virologic, and immunologic correlates of HIV-1 intraclade B dual infection among men who have sex with men.
-4339	Detection of recombination events in bacterial genomes from large population samples.
-4341	The feasibility of age-specific travel restrictions during influenza pandemics.
-4344	A qualitative study of barriers to consistent condom use among HIV-1 serodiscordant couples in Kenya.
-4345	Secular trends in Helicobacter pylori seroprevalence in adults in the United States: evidence for sustained race/ethnic disparities.
-4349	Vaccination against 2009 pandemic H1N1 in a population dynamical model of Vancouver, Canada: timing is everything.
-4354	The dynamics of sexual contact networks: effects on disease spread and control.
-4356	Economic analysis of the use of facemasks during pandemic (H1N1) 2009.
-4358	Impact of cross-protective vaccines on epidemiological and evolutionary dynamics of influenza.
-4360	Information Integration to Support Model-Based Policy Informatics.
-4361	Transmission of infectious diseases en route to habitat hotspots.
-4362	Coevolution in multidimensional trait space favours escape from parasites and pathogens.
-4368	Multiannual patterns of influenza A transmission in Chinese live bird market systems.
-4369	Local spatial and temporal processes of influenza in Pennsylvania, USA: 2003-2009.
-4372	How to make epidemiological training infectious.
-4374	High-performance biocomputing for simulating the spread of contagion over large contact networks.
-4380	A spatial model of mosquito host-seeking behavior.
-4382	The time required to estimate the case fatality ratio of influenza using only the tip of an iceberg: joint estimation of the virulence and the transmission potential.
-4384	Close encounters of the infectious kind: methods to measure social mixing behaviour.
-4386	Ecological and anthropogenic drivers of rabies exposure in vampire bats: implications for transmission and control.
-4389	Trends in mortality from septicaemia and pneumonia with economic development: an age-period-cohort analysis.
-4391	Systematic review and cost-benefit analysis of radial artery access for coronary angiography and intervention.
-4393	Simple epidemiological dynamics explain phylogenetic clustering of HIV from patients with recent infection.
-4395	Characterizing HIV transmission networks across the United States.
-4396	Restricted gene flow among hospital subpopulations of Enterococcus faecium.
-4398	Successes and challenges of HIV prevention in men who have sex with men.
-4399	Global epidemiology of HIV infection in men who have sex with men.
-4403	The epidemiological and public health research response to 2009 pandemic influenza A(H1N1): experiences from Hong Kong.
-4405	Total economic cost and burden of dengue in Nicaragua: 1996-2010.
-4406	Model hierarchies in edge-based compartmental modeling for infectious disease spread.
-4413	Inference on population histories by approximating infinite alleles diffusion.
-4416	Rethinking health systems strengthening: key systems thinking tools and strategies for transformational change.
-4417	The Effect of Random Edge Removal on Network Degree Sequence.
-4418	Inferring population-level contact heterogeneity from common epidemic data.
-4422	Modelling vertical transmission in vector-borne diseases with applications to Rift Valley fever.
-4425	Human initiated cascading failures in societal infrastructures.
-4428	Reproductive number and serial interval of the first wave of influenza A(H1N1)pdm09 virus in South Africa.
-4431	Modeling of wildlife-associated zoonoses: applications and caveats.
-4433	What drives the US and Peruvian HIV epidemics in men who have sex with men (MSM)?
-4434	How is vaccine effectiveness scaled by the transmission dynamics of interacting pathogen strains with cross-protective immunity?
-4436	Controlling antimicrobial resistance through targeted, vaccine-induced replacement of strains.
-4438	The impact of bed-net use on malaria prevalence.
-4439	Is 2 a "high number of partners"? Modeling, data, and the power of concurrency.
-4451	in silico surveillance: evaluating outbreak detection with simulation models.
-4452	Isoniazid-resistant tuberculosis in children: a systematic review.
-4453	Predictors of indoor absolute humidity and estimated effects on influenza virus survival in grade schools.
-4456	Estimating air temperature and its influence on malaria transmission across Africa.
-4462	Expansion of host cellular niche can drive adaptation of a zoonotic malaria parasite to humans.
-4465	Bayesian estimation of mixture models with prespecified elements to compare drug resistance in treatment-naïve and experienced tuberculosis cases.
-4469	Community-wide isoniazid preventive therapy drives drug-resistant tuberculosis: a model-based analysis.
-4470	Effects of experimental exclusion of scavengers from carcasses of anthrax-infected herbivores on Bacillus anthracis sporulation, survival, and distribution.
-4475	The serial intervals of seasonal and pandemic influenza viruses in households in Bangkok, Thailand.
-4478	Optimal targeting of seasonal influenza vaccination toward younger ages is robust to parameter uncertainty.
-4482	Mycobacterium tuberculosis mutation rate estimates from different lineages predict substantial differences in the emergence of drug-resistant tuberculosis.
-4484	Hospital outbreak of Middle East respiratory syndrome coronavirus.
-4486	Detection of mild to moderate influenza A/H7N9 infection by China's national sentinel surveillance system for influenza-like illness: case series.
-4487	Human infection with avian influenza A H7N9 virus: an assessment of clinical severity.
-4489	Clinical and immunological aspects of post-kala-azar dermal leishmaniasis in Bangladesh.
-4490	How the dynamics and structure of sexual contact networks shape pathogen phylogenies.
-4491	Evolutionary dynamics of Vibrio cholerae O1 following a single-source introduction to Haiti.
-4493	A practical guide to measuring local adaptation.
-4496	An explosive epidemic of DENV-3 in Cairns, Australia.
-4497	Assessment of transmission in trachoma programs over time suggests no short-term loss of immunity.
-4502	A simulation environment for the dynamic evaluation of disaster preparedness policies and interventions.
-4505	Network effects of risk behavior change following prophylactic interventions.
-4509	Immune boosting explains regime-shifts in prevaccine-era pertussis dynamics.
-4514	Commentary: Back to the future with Sir Bradford Hill: statistical analysis with hospital-acquired infections.
-4518	Social network analysis: a novel approach to legal research on emergency public health systems.
-4520	Dynamic simulation of crime perpetration and reporting to examine community intervention strategies.
-4526	Economic epidemiology of avian influenza on smallholder poultry farms.
-4527	Modeling the impact of post-diagnosis behavior change on HIV prevalence in Southern California men who have sex with men (MSM).
-4529	Effect of closure of live poultry markets on poultry-to-person transmission of avian influenza A H7N9 virus: an ecological study.
-4533	Estimating the per-exposure effect of infectious disease interventions.
-4534	The basic reproduction number R0 and effectiveness of reactive interventions during dengue epidemics: the 2002 dengue outbreak in Easter Island, Chile.
-4536	Heavy rainfall events and diarrhea incidence: the role of social and environmental factors.
-4540	Heterogeneity in multiple transmission pathways: modelling the spread of cholera and other waterborne disease in networks with a common water source.
-4541	ergm.userterms: A Template Package for Extending statnet.
-4546	HIV sexual transmission is predominantly driven by single individuals rather than discordant couples: a model-based approach.
-4555	Hand, foot, and mouth disease in China, 2008-12: an epidemiological study.
-4559	Antibiotic use as a tragedy of the commons: a cross-sectional survey.
-4560	The efficacy of oral azithromycin in clearing ocular chlamydia: mathematical modeling from a community-randomized trachoma trial.
-4561	Probabilistic uncertainty analysis of epidemiological modeling to guide public health intervention policy.
-4563	The role of viral introductions in sustaining community-based HIV epidemics in rural Uganda: evidence from spatial clustering, phylogenetics, and egocentric transmission models.
-4565	A missing dimension in measures of vaccination impacts.
-4566	Anxiety, worry and cognitive risk estimate in relation to protective behaviors during the 2009 influenza A/H1N1 pandemic in Hong Kong: ten cross-sectional surveys.
-4570	Influenza forecasting in human populations: a scoping review.
-4573	Inhibition causes ceaseless dynamics in networks of excitable nodes.
-4575	Disease invasion on community networks with environmental pathogen movement.
-4576	Comparing dengue and chikungunya emergence and endemic transmission in A. aegypti and A. albopictus.
-4581	Accuracy of epidemiological inferences based on publicly available information: retrospective comparative analysis of line lists of human cases infected with influenza A(H7N9) in China.
-4583	A space-time point process model for analyzing and predicting case patterns of diarrheal disease in northwestern Ecuador.
-4586	The contagious nature of imprisonment: an agent-based model to explain racial disparities in incarceration rates.
-4587	Feasible introgression of an anti-pathogen transgene into an urban mosquito population without using gene-drive.
-4588	A likelihood-based approach to identifying contaminated food products using sales data: performance and challenges.
-4591	Long-term and seasonal dynamics of dengue in Iquitos, Peru.
-4596	Human exposure to live poultry and psychological and behavioral responses to influenza A(H7N9), China.
-4597	Can male circumcision have an impact on the HIV epidemic in men who have sex with men?
-4599	Health benefits, costs, and cost-effectiveness of earlier eligibility for adult antiretroviral therapy and expanded treatment coverage: a combined analysis of 12 mathematical models.
-4600	A multi-reservoir model of influenza evolution.
-4601	A Plasmodium falciparum histone deacetylase regulates antigenic variation and gametocyte conversion.
-4602	Efficiently inferring community structure in bipartite networks.
-4604	Quantifying the impact of decay in bed-net efficacy on malaria transmission.
-4606	In Vitro selection of Neisseria gonorrhoeae mutants with elevated MIC values and increased resistance to cephalosporins.
-4607	The spatial dynamics of dengue virus in Kamphaeng Phet, Thailand.
-4610	Ebola virus disease in West Africa--the first 9 months of the epidemic and forward projections.
-4612	IDEPI: rapid prediction of HIV-1 antibody epitopes and other phenotypic features from sequence data using a flexible machine learning platform.
-4615	A large-scale immuno-epidemiological simulation of influenza A epidemics.
-4618	Improving pandemic influenza risk assessment.
-4620	Poultry market closures and human infection with influenza A(H7N9) virus, China, 2013-14.
-4622	What can mathematical models tell us about the relationship between circular migrations and HIV transmission dynamics?
-4623	Assessing the impact of travel restrictions on international spread of the 2014 West African Ebola epidemic.
-4626	Immune characterization of Plasmodium falciparum parasites with a shared genetic signature in a region of decreasing transmission.
-4627	Global disease monitoring and forecasting with Wikipedia.
-4628	HIV/AIDS in Puerto Rican People Who Inject Drugs: Policy Considerations.
-4629	Sampling through time and phylodynamic inference with coalescent and birth-death models.
-4631	Individualized diagnosis interventions can add significant effectiveness in reducing human immunodeficiency virus incidence among men who have sex with men: insights from Southern California.
-4633	HIV-1 neutralizing antibody response and viral genetic diversity characterized with next generation sequencing.
-4635	Comparative effectiveness of different strategies of oral cholera vaccination in bangladesh: a modeling study.
-4636	School-located influenza vaccination reduces community risk for influenza and influenza-like illness emergency care visits.
-4637	Epidemiological and viral genomic sequence analysis of the 2014 ebola outbreak reveals clustered transmission.
-4638	West African Ebola epidemic after one year--slowing but not yet under control.
-4641	Magnitude and sources of bias in the detection of mixed strain M. tuberculosis infection.
-4642	Antipathogen genes and the replacement of disease-vectoring mosquito populations: a model-based evaluation.
-4643	PLANNING AND RESPONSE IN THE AFTERMATH OF A LARGE CRISIS: AN AGENT-BASED INFORMATICS FRAMEWORK(*).
-4646	Optimizing human activity patterns using global sensitivity analysis.
-4647	Sequence tag-based analysis of microbial population dynamics.
-4649	Public and health professionals' misconceptions about the dynamics of body weight gain/loss.
-4652	Measuring the association between artemisinin-based case management and malaria incidence in southern Vietnam, 1991-2010.
-4654	The Western Africa ebola virus disease epidemic exhibits both global exponential and local polynomial growth rates.
-4655	The spatiotemporal expansion of human rabies and its probable explanation in mainland China, 2004-2013.
-4656	Less is more: an adaptive branch-site random effects model for efficient detection of episodic diversifying selection.
-4657	Gene-wide identification of episodic selection.
-4659	Inhibiting diffusion of complex contagions in social networks: theoretical and experimental results.
-4660	Transmissibility of tuberculosis among school contacts: an outbreak investigation in a boarding middle school, China.
-4662	Ebola virus disease among children in West Africa.
-4663	The distribution of ocular Chlamydia prevalence across Tanzanian communities where trachoma is declining.
-4666	Seven challenges for model-driven data collection in experimental and observational studies.
-4670	Whole-genome sequencing for national surveillance of Shiga toxin-producing Escherichia coli O157.
-4671	Ecological Overlap and Horizontal Gene Transfer in Staphylococcus aureus and Staphylococcus epidermidis.
-4672	Coupling Vector-host Dynamics with Weather Geography and Mitigation Measures to Model Rift Valley Fever in Africa.
-4673	Type of question could inform the taxonomy of bias.
-4674	Phylodynamic analysis of ebola virus in the 2014 sierra leone epidemic.
-4675	Per capita incidence of sexually transmitted infections increases systematically with urban population size: a cross-sectional study.
-4676	Malaria morbidity and mortality in Ebola-affected countries caused by decreased health-care capacity, and the potential effect of mitigation strategies: a modelling analysis.
-4677	Integrating Community-Based Interventions to Reverse the Convergent TB/HIV Epidemics in Rural South Africa.
-4678	Differences in the Epidemiology of Human Cases of Avian Influenza A(H7N9) and A(H5N1) Viruses Infection.
-4679	Modeling malaria genomics reveals transmission decline and rebound in Senegal.
-4680	Targeting pre-exposure prophylaxis among men who have sex with men in the United States and Peru: partnership types, contact rates, and sexual role.
-4681	Correction: The Distribution of Ocular Chlamydia Prevalence across Tanzanian Communities Where Trachoma Is Declining.
-4682	Analyzing network reliability using structural motifs.
-4685	 in Rivers of Northern Coastal Ecuador.
-4687	The potential impact of coinfection on antimicrobial chemotherapy and drug resistance.
-4688	A review of epidemiological parameters from Ebola outbreaks to inform early public health decision-making.
-4690	Assessing the epidemiological effect of wolbachia for dengue control.
-4691	Synonymous and nonsynonymous distances help untangle convergent evolution and recombination.
-4695	Targeting Human Transmission Biology for Malaria Elimination.
-4696	Understanding Classrooms through Social Network Analysis: A Primer for Social Network Analysis in Education Research.
-4697	Pools versus Queues: The Variable Dynamics of Stochastic "Steady States".
-4698	Forecasting Social Unrest Using Activity Cascades.
-4699	Ebola Virus Epidemiology, Transmission, and Evolution during Seven Months in Sierra Leone.
-4700	An efficient Bayesian inference framework for coalescent-based nonparametric phylodynamics.
-4705	Likelihood-based inference for discretely observed birth-death-shift processes, with applications to evolution of mobile genetic elements.
-4706	Vaccination Drives Changes in Metabolic and Virulence Profiles of Streptococcus pneumoniae.
-4710	Estimating PMTCT's Impact on Heterosexual HIV Transmission: A Mathematical Modeling Analysis.
-4711	GDSCalc: A Web-Based Application for Evaluating Discrete Graph Dynamical Systems.
-4712	Cost Resulting from Anti-Tuberculosis Drug Shortages in the United States: A Hypothetical Cohort Study.
-4713	Impact of School Cycles and Environmental Forcing on the Timing of Pandemic Influenza Activity in Mexican States, May-December 2009.
-4715	Social, spatial, and temporal organization in a complex insect society.
-4716	Short-term Forecasting of the Prevalence of Trachoma: Expert Opinion, Statistical Regression, versus Transmission Models.
-4717	Positive Selection in CD8+ T-Cell Epitopes of Influenza Virus Nucleoprotein Revealed by a Comparative Analysis of Human and Swine Viral Lineages.
-4718	The ethics of biosafety considerations in gain-of-function research resulting in the creation of potential pandemic pathogens.
-4719	An approximation method for improving dynamic network model fitting.
-4724	Forecasting Bifurcations from Large Perturbation Recoveries in Feedback Ecosystems.
-4727	Case-ascertained study of household transmission of seasonal influenza - South Africa, 2013.
-4728	Live Poultry Exposure and Public Response to Influenza A(H7N9) in Urban and Rural China during Two Epidemic Waves in 2013-2014.
-4729	Early real-time estimation of the basic reproduction number of emerging or reemerging infectious diseases in a community with heterogeneous contact pattern: Using data from Hong Kong 2009 H1N1 Pandemic Influenza as an illustrative example.
-4730	Is population structure sufficient to generate area-level inequalities in influenza rates? An examination using agent-based models.
-4731	Effect of Live Poultry Market Closure on Avian Influenza A(H7N9) Virus Activity in Guangzhou, China, 2014.
-4732	Reconstruction of 60 Years of Chikungunya Epidemiology in the Philippines Demonstrates Episodic and Focal Transmission.
-4734	Cofeeding intra- and interspecific transmission of an emerging insect-borne rickettsial pathogen.
-4735	Correction: Short-term Forecasting of the Prevalence of Trachoma: Expert Opinion, Statistical Regression, versus Transmission Models.
-4737	The economic burden of influenza-associated outpatient visits and hospitalizations in China: a retrospective survey.
-4738	Emerging tick-borne infections in mainland China: an increasing public health threat.
-4739	Measuring patient-perceived quality of care in US hospitals using Twitter.
-4741	Disease elimination and re-emergence in differential-equation models.
-4742	Short-term forecasting of the prevalence of clinical trachoma: utility of including delayed recovery and tests for infection.
-4743	Data for action: collection and use of local data to end tuberculosis.
-4748	High Prevalence of Intermediate Leptospira spp. DNA in Febrile Humans from Urban and Rural Ecuador.
-4750	Prevention of Hepatitis C by Screening and Treatment in U.S. Prisons.
-4752	Use of Viremia to Evaluate the Baseline Case Fatality Ratio of Ebola Virus Disease and Inform Treatment Studies: A Retrospective Cohort Study.
-4753	Interventions to reduce zoonotic and pandemic risks from avian influenza in Asia.
-4754	Epidemiology of Infant Dengue Cases Illuminates Serotype-Specificity in the Interaction between Immunity and Disease, and Changes in Transmission Dynamics.
-4755	Risk Distribution of Human Infections with Avian Influenza H7N9 and H5N1 virus in China.
-4756	Hemagglutinin Gene Clade 3C.2a Influenza A(H3N2) Viruses, Alachua County, Florida, USA, 2014-15.
-4759	Quantifying influenza virus diversity and transmission in humans.
-4760	The Ecological Dynamics of Fecal Contamination and Salmonella Typhi and Salmonella Paratyphi A in Municipal Kathmandu Drinking Water.
-4761	Ebola Virus Disease among Male and Female Persons in West Africa.
-4764	Assessing the utility of Xpert(®) MTB/RIF as a screening tool for patients admitted to medical wards in South Africa.
-4767	Persistent HIV-1 replication maintains the tissue reservoir during therapy.
-4769	Persistent Chaos of Measles Epidemics in the Prevaccination United States Caused by a Small Change in Seasonal Transmission Patterns.
-4770	Incomplete Protection against Dengue Virus Type 2 Re-infection in Peru.
-4772	Estimating malaria transmission intensity from Plasmodium falciparum serological data using antibody density models.
-4773	The transmission of Mycobacterium tuberculosis in high burden settings.
-4774	Altered drug susceptibility during host adaptation of a Plasmodium falciparum strain in a non-human primate model.
-4776	Hand, Foot, and Mouth Disease in China: Modeling Epidemic Dynamics of Enterovirus Serotypes and Implications for Vaccination.
-4777	Influenza vaccine effectiveness by test-negative design - Comparison of inpatient and outpatient settings.
-4779	Quantifying and Mitigating the Effect of Preferential Sampling on Phylodynamic Inference.
-4780	Efficient Transition Probability Computation for Continuous-Time Branching Processes via Compressed Sensing.
-4781	Prediction, dynamics, and visualization of antigenic phenotypes of seasonal influenza viruses.
-4782	Patterns and Trends in Accidental Poisoning Deaths: Pennsylvania's Experience 1979-2014.
-4783	Clinical, epidemiological and virological characteristics of the first detected human case of avian influenza A(H5N6) virus.
-4785	The impact of spatial arrangements on epidemic disease dynamics and intervention strategies.
-4786	Epidemiological and Economic Effects of Priming With the Whole-Cell Bordetella pertussis Vaccine.
-4787	Forty Years of Dengue Surveillance at a Tertiary Pediatric Hospital in Bangkok, Thailand, 1973-2012.
-4789	Transmission dynamics of Ebola virus disease and intervention effectiveness in Sierra Leone.
-4791	Equations of the End: Teaching Mathematical Modeling Using the Zombie Apocalypse.
-4792	Identification of Low- and High-Impact Hemagglutinin Amino Acid Substitutions That Drive Antigenic Drift of Influenza A(H1N1) Viruses.
-4793	Key traveller groups of relevance to spatial malaria transmission: a survey of movement patterns in four sub-Saharan African countries.
-4795	Mapping the Distribution of Anthrax in Mainland China, 2005-2013.
-4798	A mathematical model for the spread of west nile virus in migratory and resident birds.
-4799	Seasonal Distribution and Climatic Correlates of Dengue Disease in Dhaka, Bangladesh.
-4800	Estimating the Risk of Domestic Water Source Contamination Following Precipitation Events.
-4801	Real-Time Predictions of Reservoir Size and Rebound Time during Antiretroviral Therapy Interruption Trials for HIV.
-4804	Use of Lot Quality Assurance Sampling to Ascertain Levels of Drug Resistant Tuberculosis in Western Kenya.
-4807	Global epidemiology of avian influenza A H5N1 virus infection in humans, 1997-2015: a systematic review of individual case data.
-4808	Rapid Drug Susceptibility Testing of Drug-Resistant Mycobacterium tuberculosis Isolates Directly from Clinical Samples by Use of Amplicon Sequencing: a Proof-of-Concept Study.
-4809	Mathematical Model Reveals the Role of Memory CD8 T Cell Populations in Recall Responses to Influenza.
-4810	Wolbachia infections in natural Anopheles populations affect egg laying and negatively correlate with Plasmodium development.
-4812	Antibiotic Resistance in Animal and Environmental Samples Associated with Small-Scale Poultry Farming in Northwestern Ecuador.
-4813	Prevention and Control of Zika as a Mosquito-Borne and Sexually Transmitted Disease: A Mathematical Modeling Analysis.
-4815	Spatial measurement errors in the field of spatial epidemiology.
-4820	Evidence of Local HIV Transmission in the African Community of King County, Washington.
-4821	The First Reported Outbreak of Chikungunya in the U.S. Virgin Islands, 2014-2015.
-4822	Viral Evolution and Cytotoxic T Cell Restricted Selection in Acute Infant HIV-1 Infection.
-4823	Updates to the zoonotic niche map of Ebola virus disease in Africa.
-4824	CONSISE statement on the reporting of Seroepidemiologic Studies for influenza (ROSES-I statement): an extension of the STROBE statement.
-4825	Seasonal Influenza Infections and Cardiovascular Disease Mortality.
-4826	SimNest: Social Media Nested Epidemic Simulation via Online Semi-supervised Deep Learning.
-4827	Heterogeneity of the HIV epidemic in agrarian, trading, and fishing communities in Rakai, Uganda: an observational epidemiological study.
-4828	Preexisting Antibody-Dependent Cellular Cytotoxicity-Activating Antibody Responses Are Stable Longitudinally and Cross-reactive Responses Are Not Boosted by Recent Influenza Exposure.
-4835	Coinfection Dynamics of Two Diseases in a Single Host Population.
-4836	An Agent-Based Model of School Closing in Under-Vacccinated Communities During Measles Outbreaks.
-4837	An Evaluation of Food as a Potential Source for Clostridium difficile Acquisition in Hospitalized Patients.
-4839	Cost-effectiveness and resource implications of aggressive action on tuberculosis in China, India, and South Africa: a combined analysis of nine models.
-4840	PREDICTIVE MODELING OF CHOLERA OUTBREAKS IN BANGLADESH.
-4843	Dynamic denominators: the impact of seasonally varying population numbers on disease incidence estimates.
-4844	Genomic diversity in autopsy samples reveals within-host dissemination of HIV-associated Mycobacterium tuberculosis.
-4845	phylodyn: an R package for phylodynamic simulation and inference.
-4848	From network reliability to the Ising model: A parallel scheme for estimating the joint density of states.
-4849	Exposure Patterns Driving Ebola Transmission in West Africa: A Retrospective Observational Study.
-4850	Cholera in Cameroon, 2000-2012: Spatial and Temporal Analysis at the Operational (Health District) and Sub Climate Levels.
-4853	Rotavirus vaccine effectiveness in low-income settings: An evaluation of the test-negative design.
-4854	A comparison of multiple behavior models in a simulation of the aftermath of an improvised nuclear detonation.
-4856	A Meta-Analysis of Serological Response Associated with Yellow Fever Vaccination.
-4857	Placental antibody transfer efficiency and maternal levels: specific for measles, coxsackievirus A16, enterovirus 71, poliomyelitis I-III and HIV-1 antibodies.
-4860	Efficacy and effectiveness of an rVSV-vectored vaccine in preventing Ebola virus disease: final results from the Guinea ring vaccination, open-label, cluster-randomised trial (Ebola Ça Suffit!).
-4862	Synchrony of Dengue Incidence in Ho Chi Minh City and Bangkok.
-4863	Summarizing Simulation Results using Causally-relevant States.
-4867	Defining the Risk of Zika and Chikungunya Virus Transmission in Human Population Centers of the Eastern United States.
-4868	Evaluating Hospital-Based Surveillance for Outbreak Detection in Bangladesh: Analysis of Healthcare Utilization Data.
-4869	Changing Epidemiology of Hepatitis A and Hepatitis E Viruses in China, 1990-2014.
-4871	Temporal Topic Modeling to Assess Associations between News Trends and Infectious Disease Outbreaks.
-4873	Differential access to syringe exchange and other prevention activities among people who inject drugs in rural and urban areas of Puerto Rico.
-4875	The effective rate of influenza reassortment is limited during human infection.
-4876	Spatial and temporal dynamics of superspreading events in the 2014-2015 West Africa Ebola epidemic.
-4878	Impact of interventions and the incidence of ebola virus disease in Liberia-implications for future epidemics.
-4879	Quantifying the Value of Perfect Information in Emergency Vaccination Campaigns.
-4886	Probabilistic forecasts of trachoma transmission at the district level: A statistical model comparison.
-4887	Forecasting the new case detection rate of leprosy in four states of Brazil: A comparison of modelling approaches.
-4890	Persistent Arthralgia Associated with Chikungunya Virus Outbreak, US Virgin Islands, December 2014-February 2016.
-4892	Efficient collective influence maximization in cascading processes with first-order transitions.
-4894	Heterogeneities in the case fatality ratio in the West African Ebola outbreak 2013-2016.
-4895	Key data for outbreak evaluation: building on the Ebola experience.
-4896	Does Choice of Influenza Vaccine Type Change Disease Burden and Cost-Effectiveness in the United States? An Agent-Based Modeling Study.
-4897	Virus genomes reveal factors that spread and sustained the Ebola epidemic.
-4899	Molecular Features of the V1-V4 Coding Region of Sexually Transmitted Human Immunodeficiency Virus Type 1.
-4900	Sources of racial disparities in HIV prevalence in men who have sex with men in Atlanta, GA, USA: a modelling study.
-4901	Nearly 400 million people are at higher risk of schistosomiasis because dams block the migration of snail-eating river prawns.
-4902	Complete Genome Sequences of Identical Zika virus Isolates in a Nursing Mother and Her Infant.
-4903	Mapping the distribution of tick-borne encephalitis in mainland China.
-4905	Optimal control of vaccination rate in an epidemiological model of Clostridium difficile transmission.
-4906	Essential information: Uncertainty and optimal control of Ebola outbreaks.
-4907	Genomic epidemiology reveals multiple introductions of Zika virus into the United States.
-4908	Zika virus evolution and spread in the Americas.
-4909	Multiplex PCR method for MinION and Illumina sequencing of Zika and other virus genomes directly from clinical samples.
-4910	Simulating within-vector generation of the malaria parasite diversity.
-4911	Semantic network analysis of vaccine sentiment in online social media.
-4913	Epidemiology of avian influenza A H7N9 virus in human beings across five epidemics in mainland China, 2013-17: an epidemiological study of laboratory-confirmed case series.
-4915	Application of an Individual-Based Transmission Hazard Model for Estimation of Influenza Vaccine Effectiveness in a Household Cohort.
-4916	Does cost-effectiveness of influenza vaccine choice vary across the U.S.? An agent-based modeling study.
-4918	Estimating Influenza Vaccine Effectiveness With the Test-Negative Design Using Alternative Control Groups: A Systematic Review and Meta-Analysis.
-4919	Making a Difference in Malawi and Zambia Through Health Education and Public Health Best Practices.
-4921	Rural and urban injection drug use in Puerto Rico: Network implications for human immunodeficiency virus and hepatitis C virus infection.
-4926	Eliciting Disease Data from Wikipedia Articles.
-4927	Temperature modulates dengue virus epidemic growth rates through its effects on reproduction numbers and generation intervals.
-4928	Birth/birth-death processes and their computable transition probabilities with biological applications.
-4930	A Bayesian system to detect and characterize overlapping outbreaks.
-4931	Do Biology Students Really Hate Math? Empirical Insights into Undergraduate Life Science Majors' Emotions about Mathematics.
-4935	Exploring online communication about cigarette smoking among Twitter users who self-identify as having schizophrenia.
-4937	Epidemiology of Conjunctivitis in US Emergency Departments.
-4938	Evolution of gag and gp41 in Patients Receiving Ritonavir-Boosted Protease Inhibitors.
-4939	Epidemiology of Reemerging Scarlet Fever, Hong Kong, 2005-2015.
-4940	Economic costs and health-related quality of life for hand, foot and mouth disease (HFMD) patients in China.
-4943	Resource-driven encounters among consumers and implications for the spread of infectious disease.
-4946	The impact of influenza on the health related quality of life in China: an EQ-5D survey.
-4947	Influenza Antiviral Prescribing for Outpatients With an Acute Respiratory Illness and at High Risk for Influenza-Associated Complications During 5 Influenza Seasons-United States, 2011-2016.
-4948	Evolution-informed forecasting of seasonal influenza A (H3N2).
-4949	Climate-driven endemic cholera is modulated by human mobility in a megacity.
-4951	Predictive Modeling of Influenza Shows the Promise of Applied Evolutionary Biology.
-4952	Contemporary H3N2 influenza viruses have a glycosylation site that alters binding of antibodies elicited by egg-adapted vaccine strains.
-4956	Cholera Epidemics of the Past Offer New Insights Into an Old Enemy.
-4957	HIV Envelope Glycoform Heterogeneity and Localized Diversity Govern the Initiation and Maturation of a V2 Apex Broadly Neutralizing Antibody Lineage.
-4958	HIV Prevention Efforts and Incidence of HIV in Uganda.
-4959	Estimating the incubation period of hand, foot and mouth disease for children in different age groups.
-4960	Longitudinal Trends in the Prevalence of Detectable HIV Viremia: Population-Based Evidence From Rural KwaZulu-Natal, South Africa.
-4962	HCV kinetic and modeling analyses project shorter durations to cure under combined therapy with daclatasvir and asunaprevir in chronic HCV-infected patients.
-4963	Embracing uncertainty in applied ecology.
-4965	Estimates of global seasonal influenza-associated respiratory mortality: a modelling study.
-4966	Targeting Human Immunodeficiency Virus Pre-Exposure Prophylaxis to Adolescent Sexual Minority Males in Higher Prevalence Areas of the United States: A Modeling Study.
-4967	Burden of medically attended influenza infection and cases averted by vaccination - United States, 2013/14 through 2015/16 influenza seasons.
-4970	Genome-wide evolutionary dynamics of influenza B viruses on a global scale.
-4971	An infectious way to teach students about outbreaks.
+23151	Case-crossover assessment of the modifying effects of home medication use on acute kidney-related morbidity due to elevated ambient heat exposure in Atlanta, GA, from 2013 to 2019.
+23152	Unraveling the Molecular Links between Fine Particulate Matter Exposure and Early Birth Risks in African American Mothers: A Metabolomics Study in the Atlanta African American Maternal-Child Cohort.
+23153	Prediction of subnational-level vaccination coverage estimates using routine surveillance data and survey data.
+23154	Evaluating the Role of the Renin-angiotensin System in COVID-19: Implications for ACE Inhibitor and ARB Use During SARS-CoV-2 Infection.
+23155	Waning immunity drives respiratory virus evolution and reinfection.
+23158	Evaluating the Test-Negative Design for COVID-19 Vaccine Effectiveness Using Randomized Trial Data: A Secondary Cross-Protocol Analysis of 5 Randomized Clinical Trials.
+23159	Challenges in coverage of future hepatitis C vaccines: Review and potential solutions.
+23160	Glycoprotein L-deleted single-cycle rhesus cytomegalovirus vectors elicit MHC-E-restricted CD8+ T cells that protect against SIV.
+23162	Surrogate modeling of Cellular-Potts Agent-Based Models as a segmentation task using the U-Net neural network architecture.
+23163	Integrating Complex Selection Rules Into the Latent Overlapping Group Lasso for the Construction of Coherent Prediction Models.
+23164	Comparative performance of sponge versus flocked swabs for culture-based and metagenomic detection of microbial contamination in the healthcare environment.
+23166	Surveillance of avian influenza through bird guano in remote regions of the global south to uncover transmission dynamics.
+23169	The rate of failure of trabeculectomy and tube shunt surgery in eyes with uveitic glaucoma and ocular hypertension: The purpose of this study is to look at the outcomes of trabeculectomy and tube shunt surgery in a large cohort of patients with uveitis.
+23170	Proactive Tethering to Prevent Guinea Worm Infections among Dogs in Chad: An Analysis of the Impacts of Timing and Dog Selection.
+23171	Emergency Medical Services Clinicians and COVID-19 Booster Behavior-A Cross-Sectional National Evaluation.
+23172	The Authors Respond.
+23173	A Comparison of LLMs for Use in Generating Synthetic Test Data for Automated Testing of a Patient-Focused, Survey-Based System.
+23174	Adaptive human behavior and delays in information availability autonomously modulate epidemic waves.
+23175	Climate change: a priority agenda for health services.
+23176	Integrating Human Mobility Models with Epidemic Modeling: A Framework for Generating Synthetic Temporal Contact Networks.
+23177	Trends in population HIV viral suppression: a longitudinal analysis.
+23178	A One Health approach to understanding and managing Nipah virus outbreaks.
+23179	Heterogeneous malaria transmission patterns in southeastern Tanzania driven by socio-economic and environmental factors.
+23181	Attenuation of virulence in Yersinia pestis across three plague pandemics.
+23182	Accounting for chimerism in demographic inference: reconstructing the history of common marmosets (Callithrix jacchus) from high-quality, whole-genome, population-level data.
+23189	System dynamics modeling to inform implementation of evidence-based prevention of opioid overdose and fatality: A state-level model from the New York HEALing Communities Study.
+23190	Prevalence of SARS-CoV-2 infection and immunity in a New York county in 2022 reveals frequent asymptomatic or undiagnosed infections.
+23191	Environmental exposure assessment in the international prospective study of Chronic Kidney Disease of UnceRtain Etiology (CKDu) in Agricultural Communities (CURE) research consortium: Design and protocol development.
+23192	OCTOPUS: Disk-based, Multiplatform, Mobile-friendly Metagenomics Classifier.
+23193	Emulation of a Target Trial to Estimate the Effect of Selective Serotonin Reuptake Inhibitors on the Development of Antimicrobial-Resistant Infections using Electronic Health Record Data and Causal Machine Learning.
+23195	Subnational tailoring of malaria interventions for strategic planning and prioritization: Experience and perspectives of five malaria programs.
+23196	The Future Diabetes Mortality: Challenges in Meeting the 2030 Sustainable Development Goal of Reducing Premature Mortality from Diabetes.
+23199	Eco-evolutionary dynamics of temperate phages in periodic environments.
+23201	Development, Validity, and Acceptability of the Peer Recovery Coach (PRC) Service Checklist for Medication for Opioid Use Disorder (MOUD) Support.
+23202	Vaccination Schedules Recommended by the Centers for Disease Control and Prevention: From Human-Readable to Machine-Processable.
+23204	Critical Thinking and Clinical Decision Making Among Registered Nurses in Clinical Practice: A Systematic Review and Meta-Analysis.
+23205	Population-level impact of mass drug administration against schistosomiasis with anthelmintic drugs targeting juvenile schistosomes: a modelling study.
+23206	Pilot Trial of Nutri, a Digital Intervention for Personalized Dietary Management of Diabetes in Safety-Net Primary Care.
+23207	A budget impact analysis of 15- or 20- valent pneumococcal conjugate vaccine use in all US adults aged 50-64 years old compared to those with high-risk conditions from US payer perspective.
+23208	Impact of digital communication message on HPV vaccine decision-making among Japanese mothers: A randomized controlled trial.
+23209	SIV/SARS-CoV-2 coinfection in rhesus macaques impacts viral shedding, host immunity, the microbiome, and viral evolution.
+23211	Early detection of dengue outbreaks: transmission model analysis of a dengue outbreak in a remote setting in Ecuador.
+23212	Viral and Immune Risk Factors of HIV Rebound After Interruption of Antiretroviral Therapy.
+23213	Long-term effects of azithromycin mass administration to reduce childhood mortality on Streptococcus pneumoniae antimicrobial resistance: a population-based, cross-sectional, follow-up carriage survey.
+23216	Estimating COVID-19 vaccine effectiveness among children and adolescents using data from a school-based weekly COVID-19 testing program.
+23220	The impact of potentially inappropriate medicines on adverse clinical outcomes in the aged: A retrospective cohort study.
+23221	A Bayesian Approach to the G-Formula via Iterative Conditional Regression.
+23224	Forecasting COVID-19, influenza, and RSV hospitalizations over winter 2023-4 in England.
+23226	DeepDeconUQ estimates malignant cell fraction prediction intervals in bulk RNA-seq tissue.
+23227	Breathing synchrony shapes respiratory disease risk in bottlenose dolphins.
+23229	Global participatory wastewater surveillance to understand Mpox clade diversity in war and conflict-affected countries.
+23232	Effects of indoor cooking with liquefied petroleum gas versus solid biomass on mosquito and fly density in households.
+23233	Association of prenatal and early life polycyclic aromatic hydrocarbons exposure with dental caries in childhood.
+23234	Contact Observations from an Intensive Care Unit.
+23235	Social Desirability Bias in a Randomized Controlled Trial That Included Breastfeeding Promotion in Western Kenya.
+23237	Measles is resurging in the Americas and the world is watching.
+23238	Agent-based modeling for realistic reproduction of human mobility and contact behavior to evaluate test and isolation strategies in epidemic infectious disease spread.
+23239	Maternal HIV retesting during pregnancy and postpartum among high-risk populations in Kenya, South Africa, and Ukraine: Cost-effectiveness of preventing vertical transmission.
+23240	Understudied Populations in Radiation Exposure Research: Needs, Challenges, and Mitigation Strategies.
+23241	Immune Dysfunction from Radiation Exposure.
+23242	Immune Dysfunction from Radiation Exposure.
+23244	Identifying outbreak risk factors through case-controls comparisons.
+23245	The economic impacts of COVID-19 hospitalizations, intensive care unit admissions, and deaths related to overweight and obesity.
+23246	Understanding the impact of covariates for trachoma prevalence prediction using geostatistical methods.
+23248	An integrative review of the combined use of mathematical and statistical models for estimating malaria transmission parameters.
+23249	Evaluating the impact of COVID-19 vaccination strategies on infections and hospitalisations in Victoria with non-seasonal epidemic wave patterns: a modelling study.
+23250	Local tree cover predicts mosquito species richness and disease vector presence in a tropical countryside landscape.
+23252	Descriptive analysis of national bovine viral diarrhoea test data in England (2016-2023).
+23253	Trends in County-Level MMR Vaccination Coverage in Children in the United States.
+23254	Bistability between acute and chronic states in a Model of Hepatitis B Virus Dynamics.
+23255	The role of a non-native host plant in altering the seasonal dynamics of Danaus plexippus (Lepidoptera: Nymphalidae) development.
+23256	Prevalence and correlates of multiple injections per injection episode among people who inject drugs in rural U.S. communities.
+23257	The use of faecal indicator organisms to manage microbial health risks in recreational waterways not impacted by point sources of sewage: a systematic review of the epidemiological evidence.
+23258	Factors affecting integration of an early warning system for antimalarial drug resistance within a routine surveillance system in a pre-elimination setting in Sub-Saharan Africa.
+23259	The limitations of mobile phone data for measuring movement patterns of populations at risk of malaria.
+23260	How does policy modelling work in practice? A global analysis on the use of epidemiological modelling in health crises.
+23261	A tale of two labs: Comparing antimicrobial resistance data in pets across commercial and academic diagnostic laboratories.
+23262	NIH indirect cost cuts will affect the economy and employment.
+23264	Finding Reproduction Numbers for Epidemic Models and Predator-Prey Models of Arbitrary Finite Dimension Using the Generalized Linear Chain Trick.
+23265	Predicting mobile health clinic utilization for COVID-19 vaccination in South Carolina: A statistical framework for strategic resource allocation.
+23267	Spatial patterns of laboratory-confirmed leptospirosis in northeastern Peninsular Malaysia, 2016-2023.
+23268	Breadth of influenza A antibody cross-reactivity varies by virus isolation interval and subtype.
+23274	Optimizing HIV Partner Services for Gay, Bisexual and Other Men Who Have Sex with Men Previously Diagnosed with HIV: A Modeling Study.
+23278	ScITree: Scalable Bayesian inference of transmission tree from epidemiological and genomic data.
+23279	Quantifying the waning of humoral immunity.
+23286	Unraveling the role of rat and flea population dynamics on the seasonality of plague epidemics in Madagascar.
+23287	Global burden of chikungunya virus infections and the potential benefit of vaccination campaigns.
+23288	Environmental Exposures and the Human Gut Resistome in Northwest Ecuador.
+23289	Respiratory viral detection in children hospitalized with pneumonia during periods of major population disruptions in Nepal, 2014-2018.
+23290	Scenario Projections of Respiratory Syncytial Virus Hospitalizations Averted Due to New Immunizations.
+23291	Quantitative multi-pathway assessment of exposure to Escherichia coli for infants in Rural Ethiopia.
+23292	A robust Bayesian latent position approach for community detection in networks with continuous attributes.
+23293	Exposure-response relationship of household air pollution on body mass index among women in rural areas of Guatemala, India, Peru and Rwanda: household air pollution intervention network trial.
+23294	Integrating data at multiple spatial scales to estimate the local burden of the opioid syndemic.
+23295	Trends in the epidemiology of extended-spectrum beta-lactamase-producing Enterobacterales - Boulder County, Colorado, 2020-2022.
+23296	Serosurveillance identifies an endemic hotspot of Lassa fever in Faranah, Upper Guinea.
+23297	Comparative evaluation of behavioral epidemic models using COVID-19 data.
+23298	Estimating the Contribution of Age-Structure to the COVID-19 Epidemic in England.
+23304	Evaluation of country preparedness for Nipah and avian influenza zoonotic viral threats in Bangladesh.
+23305	Comparing diagnostic tests and biomarkers based on benefit-risk under tree orderings of disease classes.
+23306	Integrative modeling of the spread of serious infectious diseases and corresponding wastewater dynamics.
+23307	Annual (2024) taxonomic update of RNA-directed RNA polymerase-encoding negative-sense RNA viruses (realm Riboviria: kingdom Orthornavirae: phylum Negarnaviricota).
+23308	A systematic review of the distribution and prevalence of viruses detected in the Peromyscus maniculatus species complex (Rodentia: Cricetidae).
+23309	Advancing real-time infectious disease forecasting using large language models.
+23310	Associations Between Trust in Healthcare Professionals and Perceptions of Modifiability of Dementia and Stroke Risks Through Maintaining or Changing Lifestyle Habits.
+23312	Sequencing HIV Diagnostic Samples to Detect Genetic Clusters and Assess Sequence Coverage Gaps.
+23313	Context-specific emergence and growth of the SARS-CoV-2 Delta variant.
+23314	Human Schistosoma exposure risk in rice fields and an exploration of fish species for snail and schistosomiasis biocontrol.
+23315	Transfer Learning with Clinical Concept Embeddings from Large Language.
+23316	A near-real-time data-assimilative model of the solar corona.
+23317	Needle in a Haystack: A Droplet Digital Polymerase Chain Reaction Assay to Detect Rare Helminth Parasites Infecting Natural Host Populations.
+23320	Early Use of a Risk-Adjusted Mechanical Ventilation Digital Quality Measure Bundle in a Large Health System.
+23322	Newly Diagnosed Individuals in Molecular HIV-1 Clusters in Rhode Island over Three Decades.
+23323	Expanding National-Scale Wildlife Disease Surveillance Systems With Research Networks.
+23324	Muscle Ultrasound: A Novel Noninvasive Tool for Early Detection of Developing Insulin Resistance and Lower Muscle Mass in Obesity.
+23325	Reusable Generic Clinical Decision Support System Module for Immunization Recommendations in Resource-Constraint Settings.
+23327	The characterization of Klebsiella pneumoniae associated with neonatal sepsis in low- and middle-income countries to inform vaccine design.
+23328	Slowing the spread of treatment failure to artemisinin-based combination therapies in Uganda.
+23329	Assessing Spillover Effects of Medications for Opioid Use Disorder on HIV Risk Behaviors among a Network of People Who Inject Drugs.
+23330	Linkage-based ortholog refinement in bacterial pangenomes with CLARC.
+23331	Predicting antibody kinetics and duration of protection against SARS-CoV-2 following vaccination from sparse serological data.
+23332	Permutation tests for detecting treatment effect heterogeneity in cluster randomized trials.
+23333	A Cluster-Aggregate-Pool (CAP) ensemble algorithm for improved forecast performance of influenza-like illness.
+23334	Classification of unsequenced Mycobacterium tuberculosis strains in a high-burden setting using a pairwise logistic regression approach.
+23335	The global economic burden of antibiotic-resistant infections and the potential impact of bacterial vaccines: a modelling study.
+23336	Evaluation of the Performance and Utility of Global Gridded Precipitation Products for Health Applications and Impact Assessments in South America.
+23337	Prospective association of adverse childhood experiences and social support with all-cause mortality among young adults in the USA.
+23342	Quantifying the role of importation on sustained malaria transmission in a low-to-moderate burden region of Southwest Uganda.
+23346	Hepatitis B Infection in Outpatients and Pregnant Women Visiting a Mission Hospital in Ghana.
+23347	Comparing Canada's OncoSim-Breast model with the United States' Cancer Intervention and Surveillance Modeling Network (CISNET) breast cancer models.
+23348	Post-test medical diagnostic accuracy measures: an innovative approach based on the area under F-scores curves.
+23349	Incident COVID-19 infections before Omicron in the U.S.
+23350	Effectiveness of palliative care in the management of end-stage liver disease: a systematic review protocol.
+23351	Youth co-production for sustainable engagement and empowerment in health (YiPEE): protocol for a cluster-randomised controlled trial of an intervention for mental health promotion among adolescents in schools in Chennai, India.
+23352	Intrinsic health as a foundation for a science of health.
+23353	Dengue dynamics beyond biological factors: Revealing the nexus between urbanisation planning, and mobilities in Vientiane, Lao PDR.
+23355	Screening for gonorrhoea and chlamydia: identifying key target populations and intensity-a modelling study of MSM in Belgium.
+23357	Estimating dynamic transmission rates with a Black-Karasinski process in stochastic SIHR models using particle MCMC.
+23358	Initial and Subsequent Engagement of Recently Diagnosed Persons Living with HIV in Contact Tracing Interviews Conducted by Public Health Practitioners.
+23359	The role of learned song in the evolution and speciation of Eastern and Spotted towhees.
+23360	Workflow for Statistical Analysis of Environmental Mixtures.
+23361	Integrative transcriptome-based drug repurposing in tuberculosis.
+23364	Ecological Niche and Potential Geographic Distribution of Aedes aegypti and Aedes albopictus in Northeast Argentina.
+23365	Uncovering the impact of randomness in HIV hotspot formation: A mathematical modeling study.
+23366	Corrigendum: Progressive evolution of Streptococcus equi from Streptococcus equi subsp. zooepidemicus and adaption to equine hosts.
+23368	Corrigendum to "Protocol for a randomized clinical trial of strength at home parents: A trauma informed parenting intervention for veterans" [Contempor. Clin. Trials Commun. 41 (2024) 101363].
+23369	Long-Term Wildfire Smoke Exposure and Increased Risk of Heart Failure in Older Adults.
+23370	Synthetic method of analogues for emerging infectious disease forecasting.
+23371	Health and Economic Outcomes of Addressing Encampments of Individuals Using Opioids.
+23372	Racial and Ethnic Inequities to Cumulative Environmental and Occupational Impacts in Michigan.
+23373	Principal Investigator Responsibility for Flagging Research with Dual-Use or Pandemic Risk.
+23375	Topolow: A mapping algorithm for antigenic cross-reactivity and binding affinity assays.
+23376	A Responsible Framework for Assessing, Selecting, and Explaining Machine Learning Models in Cardiovascular Disease Outcomes Among People With Type 2 Diabetes: Methodology and Validation Study.
+23377	Length of hospital stay and associated treatment costs for patients with susceptible and antibiotic-resistant Salmonella infections: a systematic review and meta-analysis.
+23378	Modeling the impact of hospitalization-induced behavioral changes on the spread of COVID-19 in New York City.
+23379	Improving containment and prevention strategies using a patient transfer network representative of patients with multidrug-resistant organisms.
+23380	Impact of lifting school mask mandates on community SARS-CoV-2 cases, hospitalizations, and deaths: a retrospective observational study.
+23381	Efficacy, public health impact and optimal use of the Takeda dengue vaccine.
+23382	High-throughput targeted amplicon screening tool for characterizing intrahost diversity in Staphylococcus aureus directly from sample.
+23383	Modeling gonorrhea vaccination to find optimal targeting strategies that balance impact with cost-effectiveness.
+23384	Developing a spatio-temporal model for banana bunchy top disease: leveraging remote sensing and survey data.
+23385	Assessing the transmissibility and outbreak risk of measles in the United States, 2024 - 2030.
+23386	Modelling the effect of a nutritional shock on tuberculosis in India.
+23387	Innovative biomarker exploration in ASD: Combining Graph Neural Networks and permutation testing on fMRI data.
+23388	Unraveling regional variability in Dengue outbreaks in Brazil: leveraging the Moving Epidemics Method (MEM) and climate data to optimize vector control strategies.
+23389	The interplay between foraging choices and population growth dynamics.
+23390	TITAN-RNA: A hybrid-capture sequencing panel detects known and unknown Flaviviridae for diagnostics and vector surveillance.
+23391	TICKHUNTER: A Targeted Hybridization-Capture Sequencing Approach for the Detection and Characterization of Tick-borne Pathogens and Blood Meals.
+23392	Determinants of Child Growth in Palestine (Ages 5-17): A Structural Equation Modeling Approach to Food Insecurity, Nutrition, and Socioeconomic Factors.
+23393	Uncertainty quantification in cost-effectiveness analysis for stochastic-based infectious disease models: Insights from surveillance on lymphatic filariasis.
+23394	Trends in Sex of Sex Partners and Sexual Identity Among US Adolescents, 2015-2021.
+23395	Country-level impact of climate change on maternal and newborn health: Associations between temperature, precipitation, maternal mortality, stillbirth, and neonatal mortality in the Democratic Republic of the Congo.
+23398	Switching From Dual to Monotherapy for Gonorrhea is Associated With a Halving of Gonococcal Resistance to Azithromycin-A Modelling Study of MSM in Belgium.
+23399	Molecules to spillover: how climate warming impacts mosquito-borne viruses.
+23401	The role of nutrition in virus dynamics in vector-borne viral infections.
+23402	Temperature and Resources Interact to Affect Transmission via Host Foraging Rate and Susceptibility.
+23403	A Vaccine to Block Plasmodium falciparum Transmission.
+23404	The impact of antimicrobial use regulations on antimicrobial resistance among Salmonella isolates from bovine samples submitted to a veterinary diagnostic laboratory in Central New York.
+23406	Value-Based Pricing of Resmetirom for Metabolic Dysfunction-Associated Steatotic Liver Disease.
+23407	Behavioral and Demographic Profiles of HIV Transmission and Exposure Networks in Florida: Network Analysis of HIV Contact Tracing Data.
+23410	Demographics and Immunotherapy Efficacy for Advanced Hepatocellular Carcinoma: A Systematic Review and Meta-Analysis of Phase III Clinical Trials.
+23411	Cost-effectiveness and budget impact analyses of the 24-valent pneumococcal conjugate vaccine in adults aged 50 and older.
+23412	An exploratory cost-effectiveness analysis of methicillin-resistant Staphylococcus aureus nares PCR in pediatric pneumonia and tracheitis.
+23413	Study protocol for the Bio-HEAT study: Investigating the Biological pathways from HEAT exposure to preterm birth and other adverse maternal and child health outcomes in South Africa.
+23414	Mimicking cancer therapy in an agent-based model: The case of hepatoblastoma.
+23415	Social Vulnerability Modifies the Effects of Geographic Proximity on Engagement in Latent Tuberculosis Infection Care in a United States Safety Net Healthcare Network.
+23416	Benefits of colorectal cancer screening using FIT with varying positivity thresholds by age and sex.
+23417	Utilizing virus genomic surveillance to predict vaccine effectiveness.
+23420	Verifying infectious disease scenario planning for geographically diverse populations.
+23421	Implementation and assessment of SARS-CoV-2 prevention strategies in the 2022 Iditarod Trail Race - Alaska, United States.
+23425	Testing early life effects frameworks: developmental constraints and adaptive response hypotheses do not explain fertility outcomes in wild female baboons.
+23428	Evaluating the Breadth and Reliability of Influenza Vaccine Protection Indicators: a Secondary Analysis of an Animal Challenge Trial.
+23430	Implications of progressive lung damage and post-tuberculosis sequelae for the health benefits of prompt tuberculosis treatment in high HIV prevalence settings: a mathematical modelling analysis.
+23432	The delivery of new tuberculosis vaccines to people living with HIV - when to vaccinate?
+23433	Personalized azithromycin treatment rules for children with watery diarrhea using machine learning.
+23434	Characterizing trachoma elimination using serology.
+23435	Azithromycin as adjunctive treatment for uncomplicated severe acute malnutrition (AMOUR): study protocol for a double-masked randomised controlled trial.
+23437	Effectiveness of a digital weight management program on diet quality: A randomized controlled trial.
+23438	Evolving fitness and immune escape: a retrospective analysis of SARS-CoV-2 spike protein (2020-2024) using protein language model.
+23439	Translational Success and Pharmacoeconomic Lessons of Pandemic-Driven Drug Repurposing.
+23440	Migrants Living in the United Kingdom and Their Perceptions of Participation in Health Research: A Mixed-Methods Study.
+23441	Timeliness of Yellow Fever Specimen Collection and Transport in Ghana, 2018-2022.
+23442	West Nile morbidity and mortality in a Mid-Atlantic healthcare system, 2013-2024.
+23444	Economic value of pre-travel health interventions for communicable diseases in international travellers.
+23445	One health surveillance: linking human and animal rabies surveillance data in Kenya.
+23446	Assessing the impact of the Wolbachia-based control of malaria.
+23448	Modelling the effects of precipitation and temperature on malaria incidence in coastal and western Kenya.
+23450	Introducing a framework for within-host dynamics and mutations modelling of H5N1 influenza infection in humans.
+23451	Genetic diversity and structure of red handed howler monkeys assessed by mitochondrial and genotyping by sequencing analyses.
+23453	Protection from killed whole-cell cholera vaccines: a systematic review and meta-analysis.
+23454	Estimating the Distribution of Fitness Effects in Aye-Ayes (Daubentonia madagascariensis), Accounting for Population History as Well as Mutation and Recombination Rate Heterogeneity.
+23460	A New Simulation Model to Estimate the Long-term Health and Cost Outcomes of Interventions for People With Type 1 Diabetes.
+23461	A draft genome assembly for the dart-poison frog Phyllobates terribilis.
+23462	Retention outcomes during same-day antiretroviral therapy initiation in health facilities and outreach settings of Rakai, Uganda, 2016-2021.
+23463	Cost and effectiveness of differentiated ART service delivery strategies in Zambia: a modelling analysis using routine data.
+23464	Health and Economic Impact of Periodic Hepatitis C Virus Testing Among People Who Inject Drugs.
+23466	Characterizing Severe and Level 2 Hypoglycemia and Associated Risk Factors in Adults with Type 1 Diabetes Using Hybrid Closed-Loop Insulin Pumps.
+23467	Macrophage-induced reduction of bacteriophage density limits the efficacy of in vivo pulmonary phage therapy.
+23469	Protocol for the pragmatic evaluation of the Department of the Air Force's Personal Financial Readiness Program.
+23470	Do perceptions of harm and addictiveness influence adolescent's willingness to use various tobacco and nicotine products?
+23471	Allocating limited surveillance effort for outbreak detection of endemic foot and mouth disease.
+23472	Estimating the incidence of dengue in international air travelers from non-endemic countries between 2010-2019.
+23475	Performance Metrics for Measles Response Optimization in the United States: Considerations for Public Health Research, Policy, and Practice.
+23476	PEPFAR disruptions could cause HIV resurgence.
+23478	Twenty years of infectious disease dynamics research: gender and race imbalances in publication and citation practices.
+23480	Gestational and postnatal exposures to fine particulate matter (PM(2.5)) and their association with acute ear infections, diarrhea, respiratory symptoms, and mortality: A longitudinal study of infants in the multicountry Household Air Pollution Intervention Network (HAPIN) trial.
+23481	Self-Reported Behavior Change After a Positive COVID-19 Test Result.
+23482	Evaluating a Large Language Model in Translating Patient Instructions to Spanish Using a Standardized Framework.
+23483	The Current and Future Burden of Long COVID in the United States.
+23484	Evidence required to evaluate the use of bacteriologically confirmed asymptomatic tuberculosis disease as a primary endpoint in prevention of tuberculosis disease vaccine licensure trials.
+23485	Human contributions to global soundscapes are less predictable than the acoustic rhythms of wildlife.
+23486	Duration of COVID-19 symptoms in children: a longitudinal study in a Rio de Janeiro favela, Brazil.
+23487	Somatostatin analogue continuation upon progression in patients with gastroenteropancreatic neuroendocrine tumour (SAUNA trial): a randomised controlled trial protocol.
+23488	Toxicity of ivermectin to bed bugs (Cimex hemipterus) and risk factors associated with infestation in Kwale County, coastal Kenya.
+23489	Dynamic interactions of COVID-19 incidences, mobility, and social distancing policies in seoul: A VAR model approach.
+23490	Introduction, establishment, and distribution of Aedes aegypti and dengue in a temperate capital of Brazil: a retrospective surveillance-based study.
+23491	Acute malnutrition and food insecurity in Yemen, 2021: Evidence from a two-stage cluster randomised survey in a protracted crisis.
+23492	High abundance of antimicrobial resistance genes in chicken flocks receiving antimicrobial treatment in Vietnamese poultry production.
+23494	Estimating the historical impact of outbreak response immunisation programmes across 210 outbreaks in low and middle-income countries.
+23495	Integrating Wind Speed Into Climate-Based West Nile Virus Models: A Comparative Analysis in Two Distinct Regions.
+23496	A quantitative microbial risk assessment (QMRA) approach to determine water quality guidelines for Mycobacterium avium complex (MAC) in building plumbing.
+23497	Combined effects of hydrological conditions and socioeconomic factors on the seasonal dynamics of severe fever with thrombocytopenia syndrome in China, 2011-2022: a modelling study.
+23498	In defense of empathic informatics.
+23499	Raising awareness of potential biases in medical machine learning: Experience from a Datathon.
+23501	Integrating Partner Services and Molecular Epidemiology Data to Enhance HIV Transmission Disruption in Rhode Island.
+23502	Rocky Mountain West COVID-19 Modeling: A Descriptive Assessment of Public Health Needs During the COVID-19 Pandemic to Endemic Transition in Summer 2022.
+23504	"Shaking the ladder" reveals how analytic choices can influence associations in nutrition epidemiology: beef intake and coronary heart disease as a case study.
+23505	Early detection of emerging SARS-CoV-2 Variants from wastewater through genome sequencing and machine learning.
+23506	Modelling international spread of clade IIb mpox on the Asian continent.
+23507	A consensus mathematical model of vaccine-induced antibody dynamics for multiple vaccine platforms and pathogens.
+23508	A Bayesian spatial-temporal varying coefficients model for estimating excess deaths associated with respiratory infections.
+23509	A taxonomy of social support interventions for People experiencing a syndemic of substance use disorder, criminal legal involvement, and downstream Health sequelae.
+23510	Conspiratorial thinking in a 50-state survey of American adults.
+23511	How politics affect pandemic forecasting: spatio-temporal early warning capabilities of different geo-social media topics in the context of state-level political leaning.
+23512	An agent-based model for household COVID-19 transmission in Gauteng, South Africa.
+23513	Dextranase enhances nanoparticle penetration of S. mutans biofilms.
+23514	Multi-model ensembles in infectious disease and public health: Methods, interpretation, and implementation in R.
+23517	Salvaging information from paused or stopped clinical studies.
+23518	Epidemiology of Human Metapneumovirus Infection in a Community Setting, Seattle, Washington, USA.
+23519	Paternal and maternal exposures to per- and polyfluoroalkyl substances (PFAS) and birth outcomes: a multi-country cohort study.
+23520	Occupational exposure monitoring of airborne respiratory viruses in outpatient medical clinics.
+23521	Contributions of different host species to the natural transmission of severe fever with thrombocytopenia syndrome virus in China.
+23522	Job loss disrupts individuals' mobility and their exploratory patterns.
+23523	Evolving infectious disease dynamics shape school-based intervention effectiveness.
+23525	Estimated Burden of Influenza and Direct and Indirect Benefits of Influenza Vaccination.
+23526	AI-Y: An AI Checklist for Population Ethics Across the Global Context.
+23527	Identifying key aspects to enhance predictive modeling for early identification of schistosomiasis hotspots to guide mass drug administration.
+23529	Marked heterogeneity in malaria infection rate in a Malian longitudinal cohort.
+23531	Vaccination to mitigate climate-driven disruptions to malaria control in Madagascar.
+23533	The potential impact of reductions in international donor funding on tuberculosis in low-income and middle-income countries: a modelling study.
+23534	Resilience of a stochastic generalized Lotka-Volterra model for microbiome studies.
+23536	Age-targeted vaccination for reducing Clostridioides difficile infection in England: a coupled mathematical-economic modelling analysis.
+23538	Breaking Diagnostic Barriers: Vision Transformers Redefine Monkeypox Detection.
+23539	Adaptive mobility responses during Hurricanes Helene and Milton in 2024.
+23540	Evidence for circulation of high-virulence HIV-1 subtype B variants in the United Kingdom.
+23541	Rising temperatures contribute to West Nile virus diversification and increased transmission potential.
+23544	Host-consumed resources increase pathogen load of endoparasites more than integument-infecting parasites.
+23545	Host avoidance and resistance vary independently and are specific to parasite genotype.
+23546	Class and isotype of VlsE-specific antibody differentiates Lyme disease stage.
+23548	Design of egocentric network-based studies to estimate causal effects under interference.
+23550	Author Reply.
+23551	Modeling the effects of lethal and non-lethal predation on the dynamics of tick-borne disease.
+23553	Trends in mobile phone ownership, frequency of number changes, and implications for public health service delivery in Uganda, 2010-2020.
+23554	Drug involvement variations in overdose death spikes: county-level analysis in Massachusetts.
+23555	Review of human behavior integration in COVID-19 modeling studies.
+23556	Potential impact of frequent testing for hepatitis C virus among people who inject drugs toward hepatitis C elimination in the United States.
+23559	Leveraging large language models to predict antibiotic resistance in Mycobacterium tuberculosis.
+23562	Rapid tests as a practical alternative to slide agglutination for the confirmation of V. cholerae O1.
+23563	John Matthew McDowell: A Visionary Leader in Molecular Oomycete-Plant Interactions and a Wonderful Mentor and Friend to Many.
+23564	Clinical characteristics and longitudinal associations with obsessive-compulsive disorder in youth exposed to trauma.
+23565	Tick-borne coinfections modulate CD8(+) T cell response and progressive leishmaniosis.
+23566	Familial Differences in Personal PM(2.5) Exposure within a Rural African Community Explained with Spatiotemporal Exposure Apportionment.
+23567	Identifying county-level effect modifiers of the association between heat waves and preterm birth using a Bayesian spatial meta regression approach.
+23568	Different antigenic distance metrics generate similar predictions of influenza vaccine response breadth despite moderate correlation.
+23573	Protocol for the Redefining Maternal Anemia in Pregnancy and Postpartum (ReMAPP) study: A multisite, international, population-based cohort study to establish global hemoglobin thresholds for maternal anemia.
+23574	Quantitative Method for Monitoring Tumor Evolution During and After Therapy.
+23575	Projecting the population-level impact of norovirus vaccines.
+23579	Incarceration is a key driver of racial disparities in community-associated methicillin-resistant Staphylococcus aureus infections in Cook County, IL.
+23580	Wonder drugs and where to use them: a forecast of ivermectin's impact on malaria in Africa.
+23581	Neighborhood sociome factors and pediatric asthma exacerbations: Protective role of tree crown density and importance of pharmacy access in Chicago's south side.
+23582	Derivation of a 3-Item Patient Health Questionnaire as a Shortened Survey to Capture Depressive Symptoms.
+23583	Integrated Analysis of the 2022 SARS-CoV-2 Omicron Lineage Replacement Dynamics in Connecticut, US.
+23584	Interplay between the gut microbiome and typhoid fever: insights from endemic countries and a controlled human infection model.
+23587	Temporal changes in pneumococcal carriage among childcare-attending children during the COVID-19 pandemic in the Greater New Haven Area, USA.
+23588	The Social Disvalue Misconception in Clinical Research.
+23590	Estimation of Lassa fever incidence rates in West Africa: Development of a modeling framework to inform vaccine trial design.
+23591	Scaling of Extinction Time With Habitat Size in Experimental Populations.
+23592	Integrating anticipatory action in disease outbreak preparedness and response in the humanitarian sector.
+23593	A Novel Plasmodium falciparum Kelch13 A675T Mutation and High Levels of Chloroquine and Sulfadoxine-Pyrimethamine Resistance in Burundi.
+23594	National burden and optimal vaccine policy for Japanese encephalitis virus in Bangladesh.
+23595	Weather, Air Pollution, and Seasonality: Predictors of Pathogen-Associated Conjunctivitis Outbreaks in Kathmandu Valley, Nepal.
+23596	Longitudinal study highlights patterns of Salmonella serovar co-occurrence and exclusion in commercial poultry production.
+23597	Draft genomes of norovirus from stool samples of under-five children presenting with gastroenteritis in Malawi from 2012 to 2024.
+23600	Graph-Based Prediction of Spatio-Temporal Vaccine Hesitancy From Insurance Claims Data.
+23603	Establishing the Guidelines for Recommendation Reporting (G-RECO): a study protocol for developing reporting guidelines for disease prevention recommendations.
+23604	Reporting Guidelines for Community Outbreak Investigation Reporting (G-CORE): protocol for guideline development.
+23605	Developing Guidelines for Surveillance Reporting (G-SIRE): protocol for guideline development.
+23606	Reporting Guidelines for Survey Reporting (G-SURE): protocol for guideline development.
+23607	Excess mortality and hospitalisations associated with respiratory syncytial virus, influenza, and COVID-19 among adults in Denmark (2015-2024): a modelling study.
+23608	Bidirectional subsethood of shared marker profiles enables accurate virus classification.
+23609	Analysis of metagenomic data.
+23610	Fecal bile acid profiles before and after fecal microbial transplant in pediatric onset ulcerative colitis.
+23611	Preemptive Mpox Vaccine Deployment: Aligning Strategy with Reality.
+23613	Seasonal contact and migration structure mass epidemics and inform outbreak preparedness in a vulnerable marine mammal.
+23614	Pathways to an Intergovernmental Panel on Pandemics: lessons from the IPCC and IPBES.
+23616	Meeting Report on an Integrated Research Agenda for Mosquito-Borne Arboviruses.
+23617	Inferring the relative importance of navigation and landscape effects for migratory populations using agent-based models.
+23618	UTILIZING A CAPTURE-RECAPTURE STRATEGY TO ACCELERATE INFECTIOUS DISEASE SURVEILLANCE.
+23619	Mycobacterium leprae infection, Hansen's disease, and helminth infections: A cross-sectional study in southeastern Brazil.
+23620	Association Between Racial Equity Plans and Political and Sociodemographic Factors in US Cities.
+23621	Robust COVID-19 Mortality Risk Assessment: Validation of a Two-Step Algorithm from the National COVID Cohort Collaborative.
+23622	Analyzing greedy vaccine allocation algorithms for metapopulation disease models.
+23623	Exploring the Impact of Oral Health and Vaccination on Pneumonia-causing Bacteria: Insights from Predictive Modeling.
+23624	Implementation of a Statewide Fentanyl Possession Law and Opioid-Related Overdose Deaths.
+23625	Estimates of HIV-1 within-host recombination rates across the whole genome.
+23626	Large connected components in sexual networks and their role in HIV transmission in Sub-Saharan Africa: A model-based analysis of HPTN 071(PopART) data.
+23627	Building contextually-relevant training programs for scientific development: process and lessons learned in implementing two iterations of a faculty enrichment program in applied malaria modeling.
+23629	Characterisation of a persistent SARS-CoV-2 infection lasting more than 750 days in a person living with HIV: a genomic analysis.
+23632	Plasmodium falciparum Genomic Surveillance Reveals a Diversity of Kelch 13 Mutations in Zambia.
+23633	High Prevalence of Molecular Markers Associated with Artemisinin, Sulfadoxine, and Pyrimethamine Resistance in Northern Namibia.
+23635	The Mathematics of Serocatalytic Models With Applications to Public Health Data.
+23636	The influence of geographic ranges, climatic niches and temperature fluctuations on population variability.
+23637	Exploring Heterogeneity in Treatment Effects: The Impact and Interaction of Asset-Based Wealth and Mass Azithromycin Distribution on Child Mortality.
+23639	Improving social determinants of health significantly reduces AIDS incidence: a modelling study of 1.17 million individuals in Brazil.
+23641	Effectiveness and cost-effectiveness of community-based TB screening algorithms using computer-aided detection (CAD) technology alone compared with CAD combined with point-of-care C reactive protein testing in Lesotho and South Africa: protocol for a paired screen-positive trial.
+23642	Movement-related activity in the internal globus pallidus of the parkinsonian macaque.
+23643	The One Health Clinic: Care for Young Adults and Companion Animals Experiencing Homelessness.
+23645	Analysis of a mathematical model for malaria using data-driven approach.
+23646	Interpreting the Presence of EBV DNA in CSF Samples.
+23647	Sociodemographic factors associated with health-related quality of life in UK healthcare workers: a cross-sectional study.
+23648	Gummatous mitral valve endocarditis from tertiary syphilis.
+23649	Determining the cause of death through mortality surveillance using verbal autopsy in Karachi, Pakistan.
+23650	Protocol for the economic evaluation alongside the PARTICIPATE (PArticipatory Research model for medicaTIon adherenCe In People with diAbetes and hyperTEnsion) multicenter cluster randomized trial.
+23651	IgG and Fc receptor genetic variation associates with functional antibody responses in a DNA and protein candidate HIV vaccine trial.
+23652	Comparison Between Cox Proportional Hazards and Machine Learning Models for the Prognostication of Recurrence and Survival Following Liver Resection for Hepatocellular Carcinoma.
+23653	A network analysis of carbapenem-resistant Klebsiella pneumoniae among healthcare facilities.
+23654	Machine Learning and Probabilistic Approaches for Forecasting COVID-19 Transmission and Cases.
+23656	Reinfection with a Bacterial Pathogen Augments Heterogeneity in Host Disease Responses.
+23658	Editorial.
+23659	Flexible Distributed Lag Models for Count Data Using mgcv.
+23661	Using Model-Based Geostatistics to Refine Population-Based Estimates of Trachoma Prevalence: Update from a Technical Consultation.
+23663	Severe acute respiratory syndrome (SARS) mathematical models and disease parameters: a systematic review.
+23664	Effect of a pay-it-forward strategy on reducing HPV vaccine delay and increasing uptake among 15- to 18-year-old girls in China: A randomized controlled trial.
+23665	Robust phylodynamic inference and model specification for HIV transmission dynamics.
+23666	Health, Equity, and Economic Impacts of a Nicotine Product Standard in the United States for People With and Without Major Depression.
+23667	Infections are not alike: the effects of covariation between individual susceptibility and transmissibility on epidemic dynamics.
+23668	Estimating allele frequencies, ancestry proportions and genotype likelihoods in the presence of mapping bias.
+23670	Household risk factors associated with canine leishmaniasis in Fortaleza, northeastern Brazil: Environmental, social, dog characteristics, and exposure to canine Ehrlichia spp.
+23671	Understanding influences of care-seeking behaviors for diarrheal illnesses: A qualitative meta-synthesis.
+23672	Implications of successive blood feeding on Wolbachia-mediated dengue virus inhibition in Aedes aegypti mosquitoes.
+23673	Connecting planetary boundaries and planetary health: a resilient and stable Earth system is crucial for human health.
+23675	How to incorporate social vulnerability into epidemic mathematical modelling: recommendations from an international Delphi.
+23676	Predicting high dengue incidence in municipalities of Brazil using path signatures.
+23678	Attributes Associated with HIV Risk Behaviors in a Network-Based Study of People Who Inject Drugs.
+23680	Mathematical analysis of emicizumab: affinity-driven complex formation and lipid surface reactions.
+23681	On the importance of communication, advocacy, and information accuracy in destigmatizing mpox disease.
+23682	Hi-reComb: constructing recombination maps from bulk gamete Hi-C sequencing.
+23684	Topologically-based parameter inference for agent-based model selection from spatiotemporal cellular data.
+23685	Potential Trade-Offs of Proposed Cuts to the US National Institutes of Health.
+23687	Prior antiretroviral therapy exposure among clients presenting for HIV treatment initiation in South Africa: an exploratory mixed-methods study using multiple indicators of exposure.
+23688	Sputum and tongue swab molecular testing for the in-home diagnosis of tuberculosis in unselected household contacts: a cost and cost-effectiveness analysis.
+23689	The real-world association between male circumcision and risk of HIV infection in sub-Saharan Africa: a household fixed-effects analysis of 279,351 men from 29 countries.
+23692	Race and Ethnicity, Recent Transmission, and Tuberculosis Infection in a Low-Incidence US State.
+23693	College Students' Feasibility and Acceptability of a Culinary Medicine and Wellness Class and Food Security and Eating Behaviors at a Minority-Serving Institution: A Pilot Study.
+23695	Roles of community and sexual contacts as drivers of clade I mpox outbreaks.
+23696	Vaginal biomechanical function in premenopausal and postmenopausal women with and without pelvic organ prolapse.
+23697	LeishTec vaccination disrupts vertical transmission of Leishmania infantum.
+23700	Reproductive healthcare professionals' comfort to treat postpartum patients with substance use disorders.
+23701	Granular Insights:A Wastewater-Based Machine Learning Approach for Localized COVID-19 Hospitalization Forecasting.
+23702	Mobility-informed metapopulation models predict the spatio-temporal spread of respiratory epidemics across scales.
+23703	Enhancing Pandemic Prediction: A Deep Learning Approach Using Transformer Neural Networks and Multi-Source Data Fusion for Infectious Disease Forecasting.
+23705	A Narrative Review on Mobile Health (mHealth) App for Stroke Care and Rehabilitation Intervention for Malaysia.
+23707	Adverse Birth Outcomes Associated with SARS-CoV-2 Infection Among Pregnant Women with and without HIV: A Longitudinal Cohort Study.
+23709	Estimation of free-roaming dog populations using Google Street View: A methodological study.
+23710	An implementation science framework to understand low coverage in mass dog rabies vaccination.
+23712	Impact of weather extremes on the spatiotemporal dynamics of visceral leishmaniasis in Brazil.
+23715	Resident Scholarly Activity and Productivity Outcomes Before and After Implementing a Structured Research Program: A Before-After Study.
+23716	Cost-effectiveness of chikungunya vaccination with the live attenuated vaccine in U.S. territories.
+23717	Neighborhood disadvantage and the back-to-school epidemic of viral-associated asthma exacerbations.
+23718	Subtypes of Type 2 Diabetes and Prediabetes: Mortality and Excess Life Lost in South Asians.
+23719	Modeling of hepatitis B virus infection spread in primary human hepatocytes.
+23720	Influence of the broadly neutralizing antibody VRC01 on HIV breakthrough virus populations in antibody-mediated prevention trials.
+23722	Exploring the Relation between Contextual Social Determinants of Health and COVID-19 Occurrence and Hospitalization.
+23723	The conceptualisation and measurement of social frailty in older people: an umbrella review.
+23724	Using COVID-19 pandemic perturbation to model RSV-hMPV interactions and potential implications under RSV interventions.
+23725	Geographical shifting of cholera burden in Africa and its implications for disease control.
+23727	Longitudinal associations and interactions of heat and metal(loid) exposure with kidney outcomes in Mexican agricultural workers.
+23728	Blood Pressure Measurements From Self-Service Health Kiosks in US Retail Stores, 2017-2024.
+23729	Effect of Comprehensive Medication Management on Mortality in Critically Ill Patients.
+23730	Physical activity level among male and female middle to high school students and impact of perceived school climate: a longitudinal analysis.
+23731	Spatial distribution and clustering of medically important tick species in Illinois: Implications for tick-borne disease risk.
+23732	Protocol to develop and pilot a primary mental healthcare intervention model to address the medium- to long-term Ebola associated psychological distress and psychosocial problems in Mubende District in Central Uganda (the Ebola+D project).
+23733	Antimicrobial use for influenza-like illnesses in Nha Trang, Vietnam: a cross-sectional study.
+23734	Measles immunity gaps and outbreak risk in a shifting landscape.
+23735	Tracing SARS-CoV-2 clusters across local scales using genomic data.
+23736	Modeling the effects of treatment adherence challenges on the transmission dynamics of hepatitis C virus.
+23737	Quantifying the potential relative roles of Aedes aegypti and Ae. albopictus in dengue transmission: a systematic literature review and meta-analysis of dengue virus prevalence in both vectors.
+23738	Evaluating the burden of respiratory tract infections among mortality cases in Karachi, Pakistan: a post-pandemic surveillance analysis.
+23739	Cost-Effectiveness of the 2023-2024 COVID-19 Booster Vaccine-Reducing Barriers to Access.
+23740	Variation in Severity of Symptoms Associated With Two Snow Mountain Virus Inocula.
+23741	Identifying the climate sensitivity of infectious diseases: a conceptual framework.
+23742	Nonparametric serial interval estimation with uniform mixtures.
+23743	Phylodynamics analysis of HIV epidemic history in Belarus in 1987-2022.
+23744	The Practical, Robust Implementation and Sustainability (PRISM)-capabilities model for use of Artificial Intelligence in community-engaged implementation science research.
+23745	SARITA: a large language model for generating the S1 subunit of the SARS-CoV-2 spike protein.
+23748	StatModPredict: A user-friendly R-Shiny interface for fitting and forecasting with statistical models.
+23749	Barriers to surveillance and control of re-emergence of the Chagas disease vector Triatoma infestans in Arequipa, Peru.
+23753	Modeling Antibody Kinetics Post-mRNA Booster Vaccination and Protection Durations Against SARS-CoV-2 Infection.
+23754	Household air pollution and blood pressure among adult women participants of the Household Air Pollution Intervention Network Trial: An exposure-response analysis.
+23755	The influence of ambient air pollution during folliculogenesis, endometrial development, and spermatogenesis on fertility: A study among patients using vitrified donor oocyte in vitro fertilization.
+23756	Meta-Modeling as a Variance-Reduction Technique for Stochastic Model-Based Cost-Effectiveness Analyses.
+23759	Risk factors for fluoroquinolone- and macrolide-resistance among swine Campylobacter coli using multi-layered chain graphs.
+23760	Ensemble approaches for short-term dengue fever forecasts: A global evaluation study.
+23761	A framework to assess the risk of Yellow Fever emergence.
+23762	Now is the time to integrate serology into routine infectious disease surveillance.
+23763	Refining uncertainty about the TAK-003 dengue vaccine with a multi-level model of clinical efficacy trial data.
+23764	Outbreak.info genomic reports: scalable and dynamic surveillance of SARS-CoV-2 variants and mutations.
+23766	HIV-phyloTSI: subtype-independent estimation of time since HIV-1 infection for cross-sectional measures of population incidence using deep sequence data.
+23767	Characterizing potential interaction between respiratory syncytial virus and seasonal influenza in the U.S.
+23768	Robust causal inference for point exposures with missing confounders.
+23769	High Propensity for Multidrug-Resistant Pneumococcal Shedding Among Adults Living With HIV on Stable Antiretroviral Therapy in Malawi.
+23772	Microbiome Therapeutics for Clostridioides difficile Infection.
+23774	Democracy, Trust, and Political Orientation: Disentangling Mechanisms Shaping Individuals' Vaccine Attitudes.
+23776	Development and External Validation of the FluScoreVax Risk Score for Influenza That Incorporates Vaccine Status.
+23777	Personalized risk score prediction and testing policy adaptations of a COVID-19 population-based contact tracing network.
+23778	Hyperendemicity of Rift Valley fever in Southwestern Uganda associated with the rapidly evolving lineage C viruses.
+23779	Corrigendum to "Reducing perceived barriers to scaling up overdose education and naloxone distribution and medications for opioid use disorder in the United States in the HEALing (Helping End Addiction Long-Term®) communities study" [Preventive Medicine Volume 185 (2024) 108034].
+23780	Age and gender profiles of HIV infection burden and viraemia: novel metrics for HIV epidemic control in African populations with high antiretroviral therapy coverage.
+23781	Bronze Age Yersinia pestis genome from sheep sheds light on hosts and evolution of a prehistoric plague lineage.
+23786	Risk of new onset of immune-mediated diseases after SARS-CoV-2 infection: A systematic review and meta-analysis.
+23787	Impact of Clostridium difficile Infection on Chemotherapy in Patients With Primary Ovarian Cancer.
+23788	A Scoping Review on Calibration Methods for Cancer Simulation Models.
+23789	Editorial processing of Epidemiologia e Serviços de Saúde: advances and perspectives in 2025.
+23790	Nomenclature, definitions, and methodological approaches to estimate the association between antimicrobial treatment and clinical outcomes of drug-resistant bloodstream infections.
+23791	Economic Burden of TB Deaths in India (2021): A Retrospective Cross-sectional Study.
+23792	Early-life serological profiles and the development of natural protective humoral immunity to Streptococcus pyogenes in a high-burden setting.
+23794	SPACE-TIME SMOOTHING MODELS FOR SUBNATIONAL MEASLES ROUTINE IMMUNIZATION COVERAGE ESTIMATION WITH COMPLEX SURVEY DATA.
+23795	Causality-aware graph neural networks for functional stratification and phenotype prediction at scale.
+23796	Temperature and precipitation mismatches increase infection risk in amphibians.
+23797	Field experiments on the effects of fire on parasite transmission to amphibian hosts.
+23798	Investigation of a two-patch within-host model of hepatitis B viral infection.
+23799	Dynamics of endemic virus re-emergence in children in the USA following the COVID-19 pandemic (2022-23): a prospective, multicentre, longitudinal, immunoepidemiological surveillance study.
+23800	Modeling the differential effect of prescribed fire on multi-vector tick-borne tularemia disease.
+23801	System dynamics modeling in support of community-based decision-making to reduce opioid overdose fatalities.
+23802	An Information Framework of Intelligence.
+23804	Who is perceived to be an expert on COVID-19 vaccines on social media?: Biomedical credentials confer expertise, even among vaccine-hesitant and Conservative observers.
+23805	What to consider when developing a new molecular HIV surveillance tool: Perspectives of key stakeholders working in HIV prevention and treatment.
+23806	Patterns of engagement in care during clients' first 12 months after HIV treatment initiation in Zambia: a retrospective cohort analysis using routinely collected data.
+23808	Cognitively-plausible reinforcement learning in epidemiological agent-based simulations.
+23809	Estimating the Opportunity for Early Detection of Ovarian Cancer Using Individual-Patient Data from a Large Randomized Controlled Trial.
+23811	Evaluating the effectiveness of international travel controls to identify MPXV-infected travelers: a simulation study.
+23812	Comparative stability analysis of mixed clustering algorithms for Malaysian dengue epidemiology using topological descriptors.
+23813	Hidden burden of surgical cystic echinococcosis in Arequipa, Peru: An unrecognized population at risk.
+23816	Resilience of long-lasting insecticidal net distribution system on the Thai-Myanmar border: pre, during, and post COVID-19 pandemic insights.
+23817	Predicting fusion ignition at the National Ignition Facility with physics-informed deep learning.
+23818	Smoking Cessation Adjuncts Are Cost Effective Prior to Elective Revascularization.
+23819	Bias in the estimated reporting fraction due to vaccination in the time-series SIR model.
+23820	Factors determining the overlap between recipients of the first and second dose of measles vaccine in nineteen surveys.
+23821	Support for Over-the-Counter HIV Preexposure Prophylaxis Among Transfeminine People.
+23822	Randomized controlled trial of a HIV prevention app to increase pre-exposure prophylaxis uptake among gay and bisexual men who have sex with men in the United States: The HealthMindr PrEP study.
+23824	Immune pressure is key to understanding observed patterns of respiratory virus evolution in prolonged infections.
+23828	Synchronized dynamics of dengue across the Americas.
+23829	Enhancing global health security responses through greater inclusion of the global south in infectious disease modelling.
+23830	Clade I mpox vaccination: strategies for deployment and evaluation.
+23832	Why are there so few pathogens? Ecology and evolution in pathogen emergence.
+23833	Longitudinal Assessment of Cone Structure, Choriocapillaris, and Retinal Sensitivity in Choroideremia.
+23834	Screening and Targeted Prophylaxis for Clostridioides difficile Infection: STOP-CDI.
+23836	Quantifying disruptions to tuberculosis case detection in Brazilian states during the COVID-19 pandemic.
+23837	Metrics of Urbanicity and Rurality in US-Based Epidemiologic Studies of Ambient Temperature and Health: A Scoping Review.
+23840	Modelling transmission of Middle East respiratory syndrome coronavirus in camel populations and the potential impact of animal vaccination.
+23841	Longitudinal prevalence and co-carriage of pathogens associated with nursing home acquired pneumonia in three long-term care facilities.
+23846	A statistical model for forecasting probabilistic epidemic bands for dengue cases in Brazil.
+23847	Clinical characteristics, complications and outcomes of critically ill patients with Dengue in Brazil, 2012-2024: a nationwide, multicentre cohort study.
+23848	Dengue nowcasting in Brazil by combining official surveillance data and Google Trends information.
+23851	Prevalence and Correlates of Depression and Bipolar Disorder Among Patients Maintained on Methadone and Buprenorphine in Ukraine.
+23852	Validation of Body Condition Scoring as a Screening Test for Low Body Condition and Obesity in Common Marmosets (Callithrix jacchus).
+23854	The 2025 United States Measles Crisis: When Vaccine Hesitancy Meets Reality.
+23855	Trends in the Distribution of P Values in Epidemiology Journals: A Statistical, P-Curve, and Simulation Study.
+23856	Social determinants of HIV status and viral load suppression among transgender women in South Africa: a cross-sectional analysis.
+23857	An extension of the Benefit Risk Assessment of VaccinEs toolkit to evaluate Comirnaty and Spikevax vaccination in the European Union.
+23858	Compound and cascading effects of climatic extremes on dengue outbreak risk in the Caribbean: an impact-based modelling framework with long-lag and short-lag interactions.
+23859	Urinary tobacco and nicotine exposure biomarkers as predictors of transitions between cigarette and e-cigarette use in the Exhale longitudinal cohort study.
+23860	Climate variability amplifies the need for vector-borne disease outbreak preparedness.
+23861	Autism Spectrum Disorder in the Cleft Population: Evaluating Occurrence in Non-Syndromic Patients.
+23862	Unexpected Transmission Dynamics in a University Town: Lessons from COVID-19.
+23863	Veterinary prescription and owner use of topical aural products and antimicrobials for Golden Retriever Lifetime Study participants with otitis externa in the US (2012-2023).
+23864	Evaluation of spill-over effects of antiretroviral treatment on sharing injecting equipment in a sociometric network of people who inject drugs.
+23866	Studying the Effects of Oral Contraceptives on Coagulation Using a Mathematical Modeling Approach.
+23867	The costs of the diagnosis and treatment of canine coccidioidomycosis in endemic regions, USA, 2022.
+23869	Using sputum and tongue swab specimens for in-home point-of-care targeted universal testing for tuberculosis of household contacts: an acceptability and feasibility analysis.
+23871	Characterizing the Relationship Between the Intelligibility in Context Scale and Transcription Intelligibility in Typically Developing English-Speaking Children Between Ages 2;6 and 9;11.
+23872	Development and classification accuracy of an automated cognitive screening tool combining working memory and connected speech tasks for early detection of cognitive impairment in primary care.
+23873	Basal cell carcinoma risk prediction in survivors of childhood cancer.
+23874	Blood cultures processing after death: best practice, cost-effective, or HAI reduction measure.
+23875	Wildland Fire-Related Smoke PM(2.5) and Cardiovascular Disease Emergency Department Visits in the Western United States.
+23876	Longitudinal insights into the natural history of Type 2 diabetes among Koreans: A 20-year community-based prospective cohort study.
+23877	High measles and rubella vaccine coverage and seroprevalence among Zambian children participating in a measles and rubella supplementary immunization activity.
+23878	Cost-effectiveness of spinal manipulation, exercise, and self-management for spinal pain.
+23879	How well do disease-specific studies and WHO-CHOICE cost estimates align? Example of estimating cost per episode of diarrhoea and respiratory syncytial virus in 128 low-income and middle-income countries.
+23882	What is the relationship between viral prospecting in animals and medical countermeasure development?
+23883	Geographic spillover of antimicrobial resistance from mass distribution of azithromycin.
+23885	V-Cornea: A computational model of corneal epithelium homeostasis, injury, and recovery.
+23886	Genomic epidemiology of dengue virus 2 and 3 reveals repeated introductions and exportations of several lineages in Colombia.
+23887	Community and Hospital-Based Laboratory Surveillance for Influenza, Respiratory Syncytial Virus, and SARS-CoV-2 During the 2023-2024 Season, Lyon, France.
+23888	Adenotonsillectomy and Blood Pressure in Children With Mild Obstructive Sleep-Disordered Breathing: An Exploratory Analysis of the PATS Randomized Clinical Trial.
+23889	High peak viraemia followed by spontaneous HIV-1 control in women living with HIV-1 subtype A1 in East Africa.
+23890	Discovery of Dual BCL-xL/BCL-w Degraders by Exploiting the Bis(sulfonyl)benzene Ring of ABT-263 as a Linkage Vector.
+23891	Characterizing the informativeness of pathogen genome sequence datasets about transmission between population groups.
+23892	Characterising non-household contact patterns relevant to respiratory transmission in the USA: analysis of a cross-sectional survey.
+23893	Assessing the Effectiveness of Climate-Smart Health Facilities in Small Island Caribbean Nations.
+23894	A Framework for Classifying Disease Trends Applied to Influenza-Associated Hospital Admissions in the United States.
+23896	A fundamental limit to the effectiveness of traveller screening with molecular tests.
+23899	Assessment of Influenza Testing Distribution in the United States for the 2021-2022, 2022-2023, and 2023-2024 Influenza Seasons: Online Cross-Sectional Study.
+23900	Genomic and Bioinformatic Insights Into Enterococcus faecalis From Retail Meats in Nigeria.
+23901	Effectiveness of the TAK-003 dengue vaccine in adolescents during the 2024 outbreak in São Paulo, Brazil: a test-negative, case-control study.
+23903	Promise and peril: doxycycline prophylaxis and the spread of resistance among diverse populations.
+23904	Current approaches in livestock geotagging: Assessing available technologies and applications to public health research in Kenya and Malawi.
+23906	Fear effect on the mobility of individuals in a spatially heterogeneous environment: a delayed diffusive SPIR epidemic model.
+23907	Marine and synthetic glutamatergic neurotoxins accumulate in and immobilize intertidal sea stars.
+23908	Human monoclonal antibodies targeting A35 protect from death caused by mpox.
+23910	Leveraging Smartphone Mobility Data to Understand HIV Risk Among Rural South African Young Adults: Feasibility Study.
+23911	Faecal exposure in cholera hotspots: Sanipath exposure assessment in informal settlements of Nairobi, Kenya.
+23912	Influence of a Pandemic on an Epidemic: A Population-Based Ecological Study of the Association Between COVID-19 Diagnoses and Drug Overdose Deaths in Rhode Island, 2023.
+23913	Study protocol for a pragmatic randomised controlled trial in Belgian primary care and hospital settings on the effectiveness of an eHealth self-management support programme consisting of pain education and coaching of activity needs in breast cancer survivors with persistent pain: the PECAN trial.
+23914	Use of Routine Health Data to Monitor Malaria Intervention Effectiveness: A Scoping Review.
+23916	Modeling Early-Onset Cancer Kinetics Reveals Changes in Underlying Risk and the Impact of Population Screening.
+23917	A graph homomorphism approach for unraveling histories of metastatic cancers and viral outbreaks under evolutionary constraints.
+23918	Time-varying reproductive number estimation for practical application in structured populations.
+23919	The landscape of structural variation in aye-ayes (Daubentonia madagascariensis).
+23925	Diagnosis and Clinical Description of Leptospirosis Cases Identified Through Hospital-Based Active Surveillance in Puerto Rico, 2019-2021.
+23926	Re-engineering a machine learning phenotype to adapt to the changing COVID-19 landscape: a machine learning modelling study from the N3C and RECOVER consortia.
+23927	Effects of recombination on multi-drug resistance evolution in Plasmodium falciparum malaria.
+23930	Automated and interoperable methods for generalizable development of clinical machine-learning models for predicting neuromorbidity in critically ill children.
+23933	Evaluating the impact of differentiated service delivery (DSD) on retention in care and HIV viral suppression in South Africa: A target trial emulation using routine healthcare data.
+23935	Birth seasonality in Sub-Saharan Africa.
+23936	Integrated vector management for malaria control: a review of approaches and effectiveness.
+23938	Validity of the PHQ-9A as a self-report screener for major depressive disorder in youth ages 10-12 years.
+23939	Modeling Joint Health Effects of Environmental Exposure Mixtures With Bayesian Additive Regression Trees.
+23940	Prenatal Nitrogen Oxide (NO(x)) and Its Potential Impact on Infant Metabolism during the First Month of Life: Evidence from Two Distinct Cohorts─The Atlanta African American Maternal-Child Cohort and the Southern California Mother's Milk Study.
+23941	Liquefied Petroleum Gas or Biomass for Cooking and Effects on Blood Pressure: Results from the Household Air Pollution Intervention Network (HAPIN) Trial.
+23942	HLA-B*15:01-positive severe COVID-19 patients lack CD8(+) T cell pools with highly expanded public clonotypes.
+23943	The bioinformatics of the finding that the hepatitis delta virus RNA editing mechanism by a conformational switch exists in genotype 7 in addition to genotype 3.
+23944	Unraveling the role of viral interference in disrupting biennial RSV epidemics in northern Stockholm.
+23947	Changes in pneumococcal deaths in the United States following the COVID-19 pandemic.
+23949	Equilibrium properties of a coupled contagion model of mosquito-borne disease and mosquito preventive behaviors.
+23950	Microbial source tracking of human and animal fecal contamination in Ecuadorian households.
+23952	Open-Angle Glaucoma Treatment Preferences of US Glaucoma Specialists.
+23953	Density-dependent network structuring within and across wild animal systems.
+23954	Hydrometeorology and geography affect hospitalizations for waterborne infectious diseases in the United States: A retrospective analysis.
+23955	Indiana Adults Who Participated In Treatment Court Programs Had Better Health Outcomes Than Those Who Did Not.
+23956	Household air pollution exposure in adult women is associated with increased carotid intima-media thickness: A cross-sectional study of the Household Air Pollution Intervention Network trial.
+23957	The paradoxical impact of drought on West Nile virus risk: insights from long-term ecological data.
+23958	Using risk prediction models to inform personalized, cost-effective treatment recommendations.
+23960	One pathogen does not an epidemic make: a review of interacting contagions, diseases, beliefs, and stories.
+23961	Driving innovation from discovery to access: Meeting report of the 7 (th) Global Forum on TB Vaccines (8-10 October 2024, Rio de Janeiro, Brazil).
+23962	Factors predicting incidence of nontuberculous mycobacteria in an era of climate change and altered ecosystems in the United States.
+23963	Indirect Benefits of Seasonal Malaria Chemoprevention for Non-Malarial Pediatric Infections and Routine Antibiotic Use in Real-World Programmatic Settings: A Pre-Post Study Using Positive and Negative Controls.
+23965	Private Equity Acquiring Large Shares Of The Opioid Treatment Market Without Changing Market-Level Methadone Supply.
+23966	Modeling the fallout: projecting the global impact of donor funding cuts on HIV prevention, treatment, and care.
+23967	Economic burden and economic impact of oral diseases in India: a protocol for a systematic review.
+23968	PARAMETRA: A transmission modelling database for livestock diseases.
+23969	Mars: simplifying bioinformatics workflows through a containerized approach to tool integration and management.
+23970	A pilot protocol for surveillance of infection and antibiotic prescribing in primary healthcare across the globe: Antibiotic Prescribing in Primary Healthcare Point Prevalence Survey (APC-PPS).
+23971	Time series analysis of malaria in pregnancy, using wavelet and SARIMAX models.
+23972	Time series modelling and forecasting of mpox incidence and mortality in Nigeria.
+23973	Co-infection of intestinal helminths in humans and animals in the Philippines.
+23974	Complete Genome Sequences of Mycobacterium smegmatis Phages Dove and Issimir.
+23975	Standardized and accessible multi-omics bioinformatics workflows through the NMDC EDGE resource.
+23976	A Practical Approach to Using the Genomic Standards Consortium MIxS Reporting Standard for Comparative Genomics and Metagenomics.
+23977	Recommendations for Uniform Variant Calling of SARS-CoV-2 Genome Sequence across Bioinformatic Workflows.
+23978	Gut microbiome dynamics and associations with mortality in critically ill patients.
+23979	Identification of mobile genetic elements with geNomad.
+23980	Comparing variability in diagnosis of upper respiratory tract infections in patients using syndromic, next generation sequencing, and PCR-based methods.
+23981	Towards increased accuracy and reproducibility in SARS-CoV-2 next generation sequence analysis for public health surveillance.
+23982	Challenges in Bioinformatics Workflows for Processing Microbiome Omics Data at Scale.
+23983	Healthy humans can be a source of antibodies countering COVID-19.
+23984	EDGE COVID-19: a web platform to generate submission-ready genomes from SARS-CoV-2 sequencing efforts.
+23985	Epigenetic regulation of gene expression in Shiga toxin-producing Escherichia coli: Transcriptomic data.
+23986	Correction for Vangay et al., "Microbiome Metadata Standards: Report of the National Microbiome Data Collaborative's Workshop and Follow-On Activities".
+23987	Microbiome Metadata Standards: Report of the National Microbiome Data Collaborative's Workshop and Follow-On Activities.
+23988	DNA adenine methylase, not the PstI restriction-modification system, regulates virulence gene expression in Shiga toxin-producing Escherichia coli.
+23989	A public website for the automated assessment and validation of SARS-CoV-2 diagnostic PCR assays.
+23990	Systems biology markup language (SBML) level 3 package: multistate, multicomponent and multicompartment species, version 1, release 2.
+23991	The National Microbiome Data Collaborative: enabling microbiome science.
+23992	Functional and Structural Analysis of a Highly-Expressed Yersinia pestis Small RNA following Infection of Cultured Macrophages.
+23993	Molecular Dissection of Induced Platinum Resistance through Functional and Gene Expression Analysis in a Cell Culture Model of Bladder Cancer.
+23994	Phosphorylation site dynamics of early T-cell receptor signaling.
+23995	Susceptibility formulation of density matrix perturbation theory.
+23996	Data Generation for Machine Learning Interatomic Potentials and Beyond.
+23997	Efficient Mixed-Precision Matrix Factorization of the Inverse Overlap Matrix in Electronic Structure Calculations with AI-Hardware and GPUs.
+23998	Machine Learning Models Capture Plasmon Dynamics in Ag Nanoparticles.
+23999	Giant Spin Lifetime Anisotropy and Spin-Valley Locking in Silicene and Germanene from First-Principles Density-Matrix Dynamics.
+24000	Mitogenomes of mosquito species of Harris County in Texas.
+24001	Computationally designed haemagglutinin with nanocage plug-and-display elicits pan-H5 influenza vaccine responses.
+24002	A computationally designed antigen eliciting broad humoral responses against SARS-CoV-2 and related sarbecoviruses.
+24003	Metagenomic surveillance uncovers diverse and novel viral taxa in febrile patients from Nigeria.
+24004	Phylogenomic analysis uncovers a 9-year variation of Uganda influenza type-A strains from the WHO-recommended vaccines and other Africa strains.
+24005	Bat pluripotent stem cells reveal unusual entanglement between host and viruses.
+24006	Lessons from the pandemic: Responding to emerging zoonotic viral diseases-a Keystone Symposia report.
+24007	Differences in epidemiology of enteropathogens in children pre- and post-rotavirus vaccine introduction in Kilifi, coastal Kenya.
+24008	Molecular Epidemiology and Evolutionary Dynamics of Human Influenza Type-A Viruses in Africa: A Systematic Review.
+24009	Whole-genome analysis to determine the rate and patterns of intra-subtype reassortment among influenza type-A viruses in Africa.
+24010	VGEA: an RNA viral assembly toolkit.
+24011	Molecular epidemiology of dengue in a setting of low reported endemicity: Kupang, East Nusa Tenggara province, Indonesia.
+24012	HIV-1 Transmission linkages among persons with incident infection to inform public health surveillance.
+24013	Phylogenetic Characterization of Crimean-Congo Hemorrhagic Fever Virus Detected in African Blue Ticks Feeding on Cattle in a Ugandan Abattoir.
+24014	The utility of infectious disease modelling in informing decisions for outbreak response: A scoping review.
+24015	Epidemiological characteristics and transmission dynamics of epidemic Japanese encephalitis in China: a modelling study.
+24016	Impact of physiological transitions during forward processing on Shiga-toxin producing Escherichia coli risks in lettuce.
+24017	Modeling the Effects of Temperature and Resource Quality on the Outcome of Competition Between Aedes aegypti and Aedes albopictus and the Resulting Risk of Vector-Borne Disease.
+24018	Retrospective analysis of antimicrobial susceptibility testing illustrates the problem of resistant Staphylococcus species in cats in the northeastern United States.
+24019	Detecting (the Absence of) Species Interactions in Microbial Ecological Systems.
+24020	Inferring Covariance Structure from Multiple Data Sources via Subspace Factor Analysis.
+24022	Simulation as Supervision: Mechanistic Pretraining for Scientific Discovery
+24023	Mantis: A Simulation-Grounded Foundation Model for Disease Forecasting
+24024	Use of heterogeneous operation-specific contact parameters changes predictions for foot-and-mouth disease outbreaks in complex simulation models.
+24025	A dynamic, optimal disease control model for foot-and-mouth disease: I. Model description.
+24026	A dynamic, optimal disease control model for foot-and-mouth-disease: II. Model results and policy implications.
+24027	Model Projections: Expected Timelines and Infection Impact for an Outbreak of COVID-19 on a USN Capital Ship
+24028	Processes and Best Practices from the US Navy Vaccination Center at Bloch Arena
+24029	Estimating Heterogeneous Exposure Effects in the Case-Crossover Design using BART.
+24030	Differential Effects of Wildfire Smoke Pm(2.5) Exposure on Respiratory Disease Emergency Department Visits in the Western United States.
+24031	An evaluation of a Bayesian method to track outbreaks of known and novel influenza-like illnesses.
+24033	Genetic drift acts strongly on within-host influenza virus populations during acute infection but does not act alone.
+24037	Dynamics and Persistence of a Generalized Multi-strain SIS Model.
+24038	Characterizing population-level changes in human behavior during the COVID-19 pandemic in the United States.
+24039	Bayesian estimation of HIV acquisition dates for prevention trials.
+24041	Nocturnal Oxygen Therapy for Central Sleep Apnea in Patients with Heart Failure: A Multi-site, Double-blind, Sham-controlled Randomized Clinical Trial (LOFT-HF).
+24042	Mass azithromycin distributions: balancing childhood mortality and antimicrobial resistance - Authors' reply.
+24045	Assessing the relative roles of systemic, non-systemic and transovarial transmission pathways for severe fever with thrombocytopaenia syndrome virus and its implications for future research and intervention strategies.
+24046	Mapping Long COVID: Spatial and Social Inequities Across the United States.
+24047	Impact of Commercial Food Environments on Local Type 2 Diabetes Burden: Cross-Sectional and Ecological Multimodeling Study.
+24048	Political determinants of US states' screening-amenable cancer stage at diagnosis and premature cancer mortality.
+24052	Toward Health Equity: A Workshop Report on the State of the Science of Obesity Interventions for Adults.
+24053	Classification of outcomes in antimalarial therapeutic efficacy studies with Aster.
+24054	Body mass index and tuberculosis risk: an updated systematic literature review and dose-response meta-analysis.
+24055	Stochastic diffusion using mean-field limits to approximate master equations.
+24056	Self-Reinforcing Cascades: A Spreading Model for Beliefs or Products of Varying Intensity or Quality.
+24057	Modeling the Impact of Antimicrobial Resistance on Medical Preparedness and Response for a Nuclear or Radiological Public Health Emergency.
+24058	Climate warming is expanding dengue burden in the Americas and Asia.
+24061	A structural equation modeling approach to examine determinants of nutritional status in Palestinian children 6-59 months.
+24062	Assessing health system preparedness from trends and time delays in the management of myocardial infarctions during the COVID-19 pandemic in India: a multicentre retrospective cohort study.
+24063	Quality of life and its contributors among patients with homozygous familial hypercholesterolemia in China.
+24064	An electronic health record-wide association study to identify populations at increased risk of E. coli bacteraemia.
+24065	Within-host mathematical models to study antibody kinetics after the prophylactic Ebola vaccine in the Democratic Republic of the Congo.
+24067	Crowding reduces per-capita parasite infection risk in a butterfly host.
+24068	Could humans and AI become a new evolutionary individual?
+24071	See Salt: Recommendations for engaging oyster growers in community-based coastal monitoring programs.
+24072	Identifying Transportation Needs in Ophthalmology Clinic Notes Using Natural Language Processing: Retrospective, Cross-Sectional Study.
+24073	Critical Assessment of Large Language Models' (ChatGPT) Performance in Data Extraction for Systematic Reviews: Exploratory Study.
+24074	Cost-effectiveness of Targeted Next Generation Sequencing for TB drug-resistance testing as an alternative to the standard of care in South Africa.
+24076	Corrigendum to 'Estimating the population need for preexposure prophylaxis for HIV in the United States' [Ann Epidemiol 106 (2025) 48-54].
+24079	Cord blood innate-like T cell responses in neonates born to healthy women and women living with HIV.
+24081	Disentangling temporal trends of clade Ib monkeypox virus transmission in Burundi.
+24082	Assembly theory and its relationship with computational complexity.
+24084	Reconstructing noisy gene regulation dynamics using extrinsic-noise-driven neural stochastic differential equations.
+24085	Alcohol-induced deaths in the United States across age, race, gender, geography, and the COVID-19 pandemic.
+24086	Associations Between Exposure to Extreme Ambient Heat During Periconception and Gastroschisis in Georgia, USA: A Population-Based, Matched Case-Control Study.
+24087	Lessons from a long cohort study of diabetes in South Asia.
+24088	Cross-reactive human antibody responses to H5N1 influenza virus neuraminidase are shaped by immune history.
+24089	Susceptible host dynamics explain pathogen resilience to perturbations.
+24094	Scenario Projections of COVID-19 Burden in the US, 2024-2025.
+24096	Theory of infectious disease spillover at an ecological boundary: impacts of seasonality and cross-boundary movement.
+24097	Does home COVID-19 testing bias COVID-19 vaccine effectiveness estimates?
+24100	Testing the Relationships Between Multiple Domains of Substance Use‑Related Stigma and Depression Among a Sample of Young (18-30‑Year‑Old) People Who Inject Drugs in the Greater Chicago Area.
+24101	Associations between adverse childhood experiences and obesity among young US adults.
+24102	Evaluating partner-involved financial incentive treatments for smoking cessation in dual-smoker couples: A randomized controlled trial protocol.
+24103	Predicting influenza vaccine-elicited antibody responses with practical point systems.
+24104	Gene-Diet Interaction Analysis in UK Biobank Identified Genetic Loci That Modify the Association Between Fish Oil Supplementation and the Incidence of Dementia.
+24106	Patterns of HIV-1 viral load suppression and drug resistance during the dolutegravir transition: a population-based longitudinal study.
+24108	Potential paediatric tuberculosis incidence and deaths resulting from interruption in programmes supported by international health aid, 2025-34: a mathematical modelling study.
+24109	Comparison of phylogenetic metrics of transmission in symptomatic and asymptomatic tuberculosis.
+24110	Design considerations for incorporating serological monitoring into trachoma prevalence surveys.
+24112	Shaping Robust Dynamic Inversion Control of Neural Cell Dynamics.
+24114	Use of and Attitudes Toward Technology Among Young People Living With HIV in San Francisco: Cross-Sectional Study.
+24115	Racial/Ethnic Inequities in Polysubstance Use Among Online Help-Seeking Sexual and Gender Minoritized People in San Francisco From 2022 to 2025: Cross-Sectional Study.
+24116	Modeling the Impact of MMR Vaccination Strategies on Measles Outbreaks in Texas.
+24117	Environmental and social driving factors in shaping the transmissibility and seasonality of hand, foot, and mouth disease (HFMD) in South Korea and Hong Kong.
+24119	Estimating the carcinogenesis timelines in early-onset versus late-onset cancers and changes across birth cohorts.
+24120	Environmental drivers of Ixodes ricinus tick population dynamics: Mechanistic modelling using longitudinal field surveys and climate data.
+24122	Tracking County-Level Measles Cases in the US.
+24123	Predicting Group-Based Trajectories of Oral Health-Related Quality of Life From Late Adolescence to Early Adulthood Using K-Means Clustering Algorithm.
+24125	Rapid genome-wide introgression reveals fitness advantage of immigrant genotypes.
+24129	Aminopeptidase N is a receptor for hedgehog merbecoviruses.
+24130	Repeated thermal stress exposure in Aedes aegypti co-infected with Wolbachia and dengue virus.
+24131	Reply to Rich and Kollas.
+24132	wavess: An R package for simulation of adaptive within-host virus sequence evolution.
+24134	A Portfolio Approach to Massively Parallel Bayesian Optimization.
+24136	Co-circulating pathogens of humans: a systematic review of mechanistic transmission models.
+24137	Understanding avian influenza mortality.
+24138	How to write a scientific paper in fifteen steps.
+24140	Associations between routine oral care and in-hospital mobility with non-ventilator hospital-acquired pneumonia.
+24141	Comparison of ARIMA and FB-Prophet time series models for the prediction of national and regional malaria incidence in Uganda.
+24142	Severity of Clinical Presentation and Outcomes in Hospitalized Adult Patients with Influenza by Type and Subtype, United States-2017-2020.
+24145	Balancing access, precision, and equity in adaptive test site allocation with an application to COVID-19 in Atlanta, Georgia.
+24146	The Effectiveness of Isoniazid Preventive Treatment among Contacts of Multidrug-Resistant Tuberculosis: A Systematic Review and Individual-Participant Meta-Analysis.
+24147	MASCOT-Skyline integrates population and migration dynamics to enhance phylogeographic reconstructions.
+24152	Dengue epidemic alert thresholds for surveillance and decision-making in Puerto Rico: development and prospective application of an early warning system using routine surveillance data.
+24155	Effects of reductions in US foreign assistance on HIV, tuberculosis, family planning, and maternal and child health: a modelling study.
+24156	Modeling the influences of climate conditions on measles transmission in China.
+24157	Organizations, teams and job mobility: a social microdynamics approach inspired by a large US organization.
+24158	Quantifying mpox transmission and control: A regional analysis of vaccination strategies in East Africa.
+24159	Uncovering historical small mammal biodiversity among the Madrean Sky Islands.
+24161	Polygenic Risk Scores and HLA Class II Variants are Biomarkers of Corticosteroid Response in Childhood Nephrotic Syndrome.
+24162	The cumulative incidence and infection hospitalisation risk of SARS-CoV-2 by variant; a longitudinal study in England.
+24163	Alcohol Consumption of Male Tuberculosis Index Cases and Tuberculosis Transmission Among Social Contacts in Puducherry, India: A Cross-Sectional Analytical Study.
+24164	Socioenvironmental and mental health determinants of alcohol use among Black sexually minoritized men and transgender women: Findings from the N2 cohort study.
+24165	Publisher Correction: Early-life serological profiles and the development of natural protective humoral immunity to Streptococcus pyogenes in a high-burden setting.
+24167	A scoping review and taxonomy of epidemiological-macroeconomic models for livestock diseases.
+24168	Clustering-based methodology for comparing multi-characteristic epidemiological dynamics with application to COVID-19 epidemiology in Europe.
+24169	The relationship between state vaccination exemption policies and MMR vaccination trends in the U.S.
+24170	Diverging fish biodiversity trends in cold and warm rivers and streams.
+24171	Measles Vaccination Coverage After a Postelimination Outbreak.
+24172	Dynamics of infection and immunity over 50 years as marine stickleback adapt to freshwater.
+24175	Landscape-scale analysis of raccoon rabies surveillance reveals different drivers of disease dynamics across latitude.
+24176	IBI-DT: a novel approach combining individualized Bayesian inference and decision tree for identifying cancer drivers and their interactions.
+24177	Evaluating the impact of trade-offs in diagnostic test accuracy, time-to-isolation, and accessibility on outbreak response for the Ebola virus: a mathematical modeling study.
+24178	Guiding the development of the tuberculosis screening target product profile using single-screen and multi-screen approaches: a modelling study.
+24180	Weighted quantile sum (WQS) mixed-effects model.
+24181	Telestroke and Timely Treatment and Outcomes in Patients With Acute Ischemic Stroke.
+24182	Rationale and Design of the International Prospective Study of CKD of Uncertain Etiology in Agricultural Communities.
+24183	Schmallenberg virus exposure in camels and donkeys: Potential reservoirs for trans-border spread in the Nigeria-Sahel region.
+24184	Hybrid ARIMA-LSTM for COVID-19 forecasting: a comparative AI modeling study.
+24185	Separable hierarchical priors applied to analysis of synergies in human locomotion.
+24186	Afucosylation of anti-dengue IgG is associated with enhanced susceptibility to dengue virus infection postvaccination.
+24187	Continuing to be cautious: Japanese contact patterns during the COVID-19 pandemic and their association with public health recommendations.
+24188	Bridging Hypertension Care Shortfalls Between Provider Capacity and Patient Needs: A Pooled Analysis of Data From 199 Countries and Territories.
+24189	Mechanistic within-host mathematical model of inhalational anthrax.
+24190	Why population heterogeneity matters for modelling infectious diseases.
+24191	Ethical considerations in infectious disease modelling for public health policy: the case of school closures.
+24192	Viral genome sequence datasets display pervasive evidence of strand-specific substitution biases that are best described using non-reversible nucleotide substitution models.
+24196	A district-level ensemble model to enhance dengue prediction and control for the mekong delta region of Vietnam.
+24199	Impacts of US Bilateral Aid Disruptions on HIV Resurgence in Zambia: A Mathematical Modeling Study.
+24200	Equity considerations in COVID-19 vaccine allocation modelling: a methodological study.
+24202	Reframing transboundary animal diseases: a systems approach.
+24203	Welfare optimization for resource allocation with peer effects.
+24204	Associations of water quality with cholera in case-control studies: a systematic review and meta-analysis.
+24205	Transmission of Bedaquiline-resistant Mycobacterium tuberculosis in KwaZulu-Natal, South Africa.
+24206	Forecasting regional COVID-19 hospitalisation in England using ordinal machine learning method.
+24208	Heterogeneity in inhibition of genetically diverse dengue virus strains by Wolbachia.
+24211	Do Communities Implementing the Communities That HEAL Intervention Have Significantly Lower Rates of High-Risk Opioid Prescribing and Dispensing?
+24212	The Potential Effect of Ending CDC Funding for HIV Tests: A Modeling Study in 18 States.
+24214	Global, regional and national burden of chikungunya: force of infection mapping and spatial modelling study.
+24215	The role of seasonal malaria chemoprevention in the effect of azithromycin on child mortality: A secondary analysis of the CHAT cluster randomized clinical trial.
+24217	CXCR6(+) CD127(-) Tr1 Cells Balance Immunity and Persistence in Plasmodium falciparum Infection.
+24220	School Entry Vaccination Checks Allow Mapping of Under-Vaccinated Children in Zambia.
+24221	Identifying impacts of contact tracing on HIV epidemiological inference from phylogenetic data.
+24224	Hotspot model shows how location-based superspreading accelerates and reshapes epidemics.
+24225	Improving policy design and epidemic response using integrated models of economic choice and disease dynamics with behavioral feedback.
+24226	Coupling plankton and cholera dynamics: Insights into outbreak prediction and practical disease management.
+24227	COVID-19 Transmission Potential and Non-Pharmaceutical Interventions in Maine During the COVID-19 Pandemic.
+24228	Machine learning for air quality prediction and data analysis: Review on recent advancements, challenges, and outlooks.
+24229	Low Risk Perception of Harm From Substance Use and Sexual Behaviors Among Online Help-Seeking Sexual and Gender Minoritized People in San Francisco, California: Cross-Sectional Survey.
+24230	Changing socioeconomic inequalities in the incidence and case fatality rates of COVID-19 in Germany, March 2020 through May 2022: an ecological study.
+24231	Strengthening evidence for text-based telehealth in post-operative care: A pragmatic study of the reach and effectiveness of two-way, text-based follow-up after voluntary medical male circumcision in South Africa.
+24232	Federated Mixed Effects Logistic Regression Based on One-Time Shared Summary Statistics.
+24233	Including frameworks of public health ethics in computational modelling of infectious disease interventions.
+24234	Asthma and severe acute respiratory infections: a stratified analysis of mortality patterns in Brazil.
+24235	Predictability of infectious disease outbreak severity: Chikungunya as a case study.
+24236	Bacterial community analysis of treponeme-associated hoof disease in free-ranging elk (Cervus canadensis): evidence for a polybacterial etiology with geographic consistency.
+24237	Food Insecurity and Chronic Disease Among Native Hawaiians and Pacific Islanders on the Continent During COVID-19.
+24238	Bifurcations and phase transitions in the origins of life.
+24239	Farmed oyster mortality follows consistent Vibrio community reorganization.
+24241	The quarantine hospital strategy as a way to reduce both community and nosocomial transmission in the context of a COVID-like epidemic.
+24242	Rethinking cholera diagnostic test performance, interpretation, and evaluation: a field-based latent-class analysis in Bangladesh.
+24243	Viral community diversity in the rhizosphere of the foundation salt marsh plant Spartina alterniflora.
+24246	Portable digital microscopy with point-of-care testing for low-cost and efficient prevalence surveys for schistosomiasis control.
+24247	Modeling the Health Impact of Discontinuing COVID-19 Vaccination During Pregnancy in the US.
+24248	Improving modelling for epidemic response: a progress update from a community of UK infectious disease modellers.
+24249	Tuberculosis Disease Prevalence Among People Who Smoke Illicit Drugs: A Respondent- Driven Sampling Study in the Western Cape, South Africa.
+24250	Randomized Trial of Targeted Indoor Spraying to Prevent Aedes-Borne Diseases.
+24251	Assessing spillover effects: Handling missing outcomes in network-based studies.
+24252	Leveraging paired serology to estimate the incidence of typhoidal Salmonella infection in the STRATAA study.
+24255	Assessing the effect of social contact structure on the impact of pneumococcal conjugate vaccines.
+24257	Understanding influenza vaccination attitudes and behaviors: An assessment of health decision-making preferences.
+24258	Comparative Analysis of ESBL Phenotypes and Antimicrobial Resistance in Escherichia coli Associated with Urinary Tract Infections and in Commensal Strains.
+24260	Natural immune boosting biases pertussis infection estimates in seroprevalence studies.
+24261	Within-host genetic diversity of pneumococcal serotype 3 during one-year prolonged carriage in a healthy adult.
+24263	Integrating testing volume into bandit algorithms for infectious disease surveillance.
+24264	Effect of caregiver training on knowledge and confidence of at-home clinical and anthropometric surveillance of children with uncomplicated severe acute malnutrition: analysis of a cross-over cluster randomised trial in Sokoto, Nigeria.
+24265	Temporal trends and source attribution of animal-contact related human nontyphoidal Salmonella enterica outbreaks across the United States, 2009-2022.
+24266	SafeTraffic Copilot: adapting large language models for trustworthy traffic safety assessments and decision interventions.
+24267	Duration of the serological response and effectiveness of the inactivated influenza vaccine in healthy adults aged 18-65 years: a systematic review and meta-analysis.
+24268	The prevalence and risk of mortality associated with antimicrobial resistance within nosocomial settings-a global systematic review and meta-analysis of over 20,000 patients.
+24269	Single-cell and spatial detection of senescent cells using DeepScence.
+24270	Immunogenicity of a trivalent haemorrhagic fever vaccine candidate against Sudan virus, Marburg virus and Lassa virus in an mpox vaccine.
+24271	Multimorbidity and the indirect cost of productivity loss from health-related work absenteeism in Belgium.
+24272	School-Level Gaps in MMR Coverage as the Fuel for Measles Outbreaks.
+24273	Investigating the effects of chimerism on the inference of selection: quantifying genomic targets of purifying, positive, and balancing selection in common marmosets (Callithrix jacchus).
+24280	Keeping a modeling-driven public health dashboard relevant-lessons learned from the California Communicable diseases Assessment Tool.
+24282	Spatiotemporal epidemiology and hierarchical analysis of suicide mortality and associated risk factors in Thailand using national surveillance data during 1997-2021.
+24283	Validation of VaxEstim, a Bayesian model for rapid estimation of measles-mumps-rubella vaccination coverage at outbreak onset: a cross-sectional study.
+24284	Early warning signals do not predict a warming-induced experimental epidemic.
+24286	Global risk of selection and spread of Plasmodium falciparum histidine-rich protein 2 and 3 gene deletions.
+24289	The influence of school environment and demographics on teacher wellbeing.
+24290	Short and long term suppression of host populations by novel pathogens.
+24293	Authors' Reply to the Letter "Reevaluating the Role of Demographic and Etiological Factors in Immune Checkpoint Inhibitor Therapy for Advanced Hepatocellular Carcinoma".
+24294	Transition of Staphylococcus aureus tetracycline resistance plasmid pT181 from independent multicopy replicon to predominantly integrated chromosomal element over 65 years.
+24295	Naegleria fowleri and the future of surveillance: A one-health call to action.
+24298	Factors associated with healthcare personnel uptake of updated COVID-19 vaccine doses in the United States.
+24299	Improving classification of myocardial infarction with machine learning in a diverse population.
+24300	High coverage COVID-19 mRNA vaccination rapidly controls SARS-CoV-2 transmission in Long-Term Care Facilities.
+24302	Predicting human cooperation: sensitizing drift-diffusion model to interaction and external stimuli.
+24303	Determining the Optimal Sequence of Multiple Tests.
+24304	Patterns of Non-fatal Overdose and Injection-Related Bacterial Infections During Pregnancy and the Postpartum Year Among New York State Residents.
+24305	Modeling heterogeneity in air pollution mixture effects on birth weight: A spatially varying coefficient approach.
+24306	A health and economic evaluation of the spatial spillover effect from measles resurgence.
+24309	Viral genome sequence datasets display pervasive evidence of strand-specific substitution biases that are best described using non-reversible nucleotide substitution models.
+24311	Respiratory syncytial virus (RSV) vaccine effectiveness and antibody correlates of protection among older adults in the Community Vaccine Effectiveness (CoVE) observational study.
+24314	Impact of Risk Heterogeneity on the Feasibility of Hepatitis C Elimination Among People Who Inject Drugs: A Modelling Study.
+24319	Reimagining the serocatalytic model for infectious diseases: A case study of common coronaviruses.
+24320	Influence of immune history when choosing a SARS-CoV-2 booster strategy.
+24322	Multiplex serology reveals age-specific immunodynamics of endemic respiratory pathogens in the wake of the COVID-19 pandemic.
+24323	Absolute and Relative Effectiveness of Cell- and Egg-based Quadrivalent Inactivated Influenza Vaccine Products from 2014-2015 to 2018-2019 seasons, U.S. Flu VE Network.
+24325	Genome-Wide Analysis of DNA Methylation Signatures Linking Prenatal Exposure to the Chinese Great Famine and Blood Lipids in Late Adulthood: The Genomic Research of the Chinese Famine (GRECF) Study.
+24326	Using machine learning models to predict vaccine hesitancy: a showcase of COVID-19 vaccine hesitancy in rural populations during the pandemic.
+24327	Modeling Influenza Antiviral Strategies: Reducing Burden and Preventing Resistance.
+24328	The role of jealousy and infidelity in intimate partner violence against women: a qualitative meta-synthesis of five studies.
+24329	Changes in the frequency of food orders and food choices on meal delivery apps during the COVID-19 pandemic in a Brazilian metropolitan region.
+24330	Multivariate resilience indicators to anticipate vector-borne disease outbreaks: A West Nile virus case-study.
+24332	A Systematic Review of Spatial Epidemiological Modeling Approaches Applied During the COVID-19 Pandemic.
+24333	Genomic diversity and surveillance of SARS-CoV-2 in Nigeria.
+24334	Quantitative summarization of high-touch surfaces and epidemiological parameters of Clostridioides difficile acquisition and transmission for mathematical modeling: a systematic review.
+24335	How many mammal species are there now? Updates and trends in taxonomic, nomenclatural, and geographic knowledge.
+24336	Extending mammal specimens with their essential phenotypic traits.
+24337	Anthropocene Imperilment of Ancient Diversity and Evolutionary Potential in Terrestrial Vertebrates.
+24339	Risk of gynaecologic cancers in women with metabolic syndrome: A systematic review & meta-analysis.
+24340	Once bitten, twice shy: A modeling framework for incorporating heterogeneous mosquito biting into transmission models.
+24342	Comparative virulence study of locally circulating peste des petits ruminants virus (PPRV) strains in indigenous Ethiopian goats.
+24343	Integration of mathematical modeling and economics approaches to evaluate strategies for control of Salmonella Dublin in a heifer-raising operation.
+24344	A Scoping Review of Mosquito Vector Range Shifts: Widespread Expansions and Evidence Gaps in Climate Attribution.
+24346	Between-country differences in the psychosocial profiles of British cattle farmers.
+24347	One Health Disparities and Blastocystis infection among smallholder farmers in northeastern Madagascar.
+24348	Can past variants of SARS-CoV-2 predict the impact of future variants? Machine learning for early warning of US counties at risk.
+24352	Analyzing multidrug resistance patterns across the food supply chain using association rule mining.
+24353	Modeling the Effect of the Biological Control of Pseudococcus viburni Signoret (Hemiptera: Pseudococcidae) on Grapevine Leafroll Virus Spread.
+24355	Relationship Between Phenotyping and Individualized Absolute Risk Differences in Sepsis: A Secondary Analysis of Two Approaches in Two Multicenter Trials.
+24356	Inferring Personalized Cell-Cell Communication Networks in Colorectal Cancer with Individualized Causal Discovery.
+24357	Estimating the undetected burden and the likelihood of strain persistence of drug-resistant Neisseria gonorrhoeae.
+24360	Lifestyle Change Interventions: Effectiveness of REWIND, a Virtual, Community-Based Weight Management Program.
+24361	Mapping genetic and phenotypic diversity of Pseudomonas aeruginosa across clinical and environmental isolation sites.
+24362	The Expanding Role of Health Services Research in Cancer Prevention and Control.
+24365	Insights into the Role of Rifampicin Exposure and Clinical Baseline Covariates on the Response to Pulmonary Tuberculosis Treatment.
+24366	Heterogeneous Impact of Mask Mandates on U.S. Masking Behavior: An Interrupted Time Series Study.
+24367	Modeling the Potential Impact of Mentor Mother Programs on Vertical Transmission of HIV in Kenya.
+24368	The capsule and genetic background, rather than specific individual loci, strongly influence in vitro pneumococcal growth kinetics.
+24370	Rapid multiplexed nanopore amplicon sequencing to distinguish Plasmodium falciparum recrudescence from new infection in antimalarial drug trials.
+24371	Modelling the impact of a quadrivalent ACWY meningococcal vaccination and vaccination targeting serogroup B in France.
+24372	Mass Azithromycin Distributions and Childhood Clinic Visits in Niger: A Community-Randomized Trial.
+24373	Global antibiotic consumption and regional antimicrobial resistance, 2010-21: an analysis of pharmaceutical sales and antimicrobial resistance surveillance data.
+24374	A community-based health risk assessment following the Gold King Mine Spill: Results from the Gold King Mine Spill Diné Exposure Project.
+24375	Improving outbreak forecasts through model augmentation.
+24376	Bird Community Composition, Migration, and Environmental Factors Jointly Influence the Global Distribution of Avian Haemosporidian Lineages.
+24377	National- and state-level SARS-CoV-2 immunity trends from January 2020 to December 2023: a mathematical modeling analysis.
+24378	Corrigendum to "Spatial distribution and clustering of medically important tick species in Illinois: Implications for tick-borne disease risk" [Ticks and Tick-borne Diseases 16 (2025) 102533].
+24379	Quantitative viral dynamics: Methods for parameter estimation.
+24380	Revisiting inference for ARMA models: Improved fits and superior confidence intervals.
+24381	Ancient origin of an urban underground mosquito.
+24382	Evolutionary history, longevity and terrestriality predict Toxoplasma gondii seroprevalence in free-ranging non-human primates.
+24384	Projection of age-standardised mortality rates for 23 cancer types in India: a nationwide projection until 2030 using autoregressive integrated moving average (ARIMA) models.
+24385	Community participatory approaches in infectious disease dynamic transmission modelling: a scoping review protocol.
+24386	A 1-year study on SARS-CoV-2 variant shifts in wastewater using dPCR: comparison with clinical and GISAID data.
+24387	Forecasting the spatial spread of an Ebola epidemic in real time: Comparing predictions of mathematical models and experts.
+24388	Belgium's SARS-CoV-2 contact tracing effectively curbed transmission, yet challenges persist in terms of delays, scalability and population adherence.
+24389	Capturing the spatiotemporal spread of COVID-19 in 30 European countries during 2020 - 2022.
+24390	Under-screened women's reactions to at-home self-collected human papillomavirus test result delivery.
+24391	GeneDrive.jl: A decision tool to optimize biological vector control strategies under climate change.
+24392	Impact of Anthelmintic Therapy for Invasive Helminth Infection on Microbial Translocation, Inflammation, and Immune Response among Ugandans Living with HIV: A Randomized Proof of Concept Study.
+24393	Multiple sclerosis patients exhibit oral dysbiosis with decreased early colonizers and lower hypotaurine level.
+24395	Simulating the impact of methadone prescribing and pharmacy dispensing on opioid treatment and overdose in New York State: A study protocol for an agent-based modeling study.
+24396	Formulation of a new sir Model with Non-local Mobility.
+24397	A fluorescent bead-based multiplex assay for the detection of Brucella sp. specific antibodies in canine serum.
+24399	Spatial and spatiotemporal machine learning models for COVID-19 dynamics: A review of methodology and reporting practices.
+24401	Differential Odds of COVID-19 Infection Associated with Household and Workplace Exposures in U.S. Health Care Personnel.
+24402	Reinforcement Learning-Based Control of Epidemics on Networks of Communities and Correctional Facilities.
+24403	Shared decision making using digital twins in knee osteoarthritis care: a randomized clinical trial of an AI-enabled decision aid versus education alone on decision quality, physical function, and user experience.
+24404	Public health effects of adult pneumococcal vaccination choice amid increased serotype 4 rates in US subpopulations.
+24405	Exposure to Household Air Pollution From Biomass Cooking and Severe Pneumonia in Infants.
+24406	Characterizing social behavior relevant for infectious disease transmission in four low- and middle-income countries, 2021-2023.
+24408	Mapping Incidence and Prevalence Peak Data for SIR Modeling Applications.
+24409	Genomic Dynamics of the Emergent Candida auris: Exploring Climate-dependent Trends.
+24411	Quantitative analysis of respiratory viral triple infections: Examining within host dynamics of Influenza, RSV, and SARS-CoV-2.
+24412	Generative diffusion model surrogates for mechanistic agent-based biological models.
+24413	Home Based Management of Diarrhea Contributes to Health Care Seeking Delays Among Caregivers of Under Five Children in Addis Ababa, Ethiopia.
+24415	Collateral effects of COVID-19 pandemic control on the US infectious disease landscape.
+24418	More than a miraclePlanning Miracles Jon Cohen Knopf, 2025. 448 pp.
+24420	Costs of parasite generalism revealed by abundance patterns across mammalian hosts.
+24421	Perturbed pediatric circulating metabolome in mild and severe dengue disease.
+24423	Tuberculosis and undernutrition: improving estimates to reinforce the policy imperative.
+24424	The bridge between two worlds: Global South researchers' journeys through Global North academic training and beyond.
+24425	Landscape analysis of pregnancy exposure registries in low- and middle-income countries: a scoping review.
+24426	Medicine for a Changing Planet: Online Clinical Cases in Planetary Health and Infectious Diseases.
+24428	Identifying correlates of viral rebound timing and viral control in SHIV-infected infant macaques after ART interruption.
+24429	Evaluating voluntary care seeking effects on COVID-19 outcomes and health system costs.
+24430	The impact of precipitation on ANC service utilisation and healthcare access in Malawi.
+24431	Genome-wide identification and expression analysis of the EgTCP transcription factor family in Eucalyptus grandis.
+24432	Consolidating Estimates of the Incubation Period for Omicron Subvariants From the Literature and Their Comparison to the Estimate From Taiwan: A Systematic Review and Meta-Analysis, September 2024.
+24433	Model-based clustering of time-dependent observations with common structural changes.
+24434	Spatiotemporal patterns of urban heat in indoor and outdoor microclimates.
+24435	Resilience to Stigma in Medical, Social, and Employment Contexts Among People Who Inject Drugs in Rural Ohio: Adapting the 10-Item Connor-Davidson Resilience Scale.
+24436	Long-acting injectable PrEP can substantially reduce HIV incidence in Los Angeles County: A simulation study.
+24437	Efficacy of Lipiodol Embolization for Chronic Tendinopathy of the Rotator Cuff (ELECTRC):A Randomized Controlled Trial.
+24438	Bridging data gaps and tackling human vulnerabilities in healthcare cybersecurity with generative AI.
+24439	Prospective Multicenter Longitudinal Measurement of Liver Stiffness in School-Age Children With Cholestatic Liver Disease.
+24440	Reproductive stage and other risk factors associated with intimate partner violence: a multi-site study of women living with HIV in the United States.
+24441	Evidence of diversification and geographic separation in a lineage of Campylobacter jejuni co-circulating in cattle and humans.
+24442	Toward Relationality in Infectious Disease Research.
+24443	Random Forest of epidemiological models for Influenza forecasting.
+24446	T-cell responses to SARS-CoV-2 vaccinations in adults with Down syndrome - a prospective cohort study.
+24448	How Should We Study the Indirect Effects of Antimicrobial Treatment Strategies?: A Causal Perspective.
+24450	Surrogate modeling of Cellular-Potts agent-based models as a segmentation task using the U-Net neural network architecture.
+24451	Modelling Like an Experimentalist.
+24452	Mycobacterium tuberculosis transmission in China during the COVID-19 pandemic period (2020-2021) compared with the pre-pandemic period (2017-2019).
+24456	Are participants with disability referred for social prescribing? Findings from the English Longitudinal Study of Ageing.
+24457	Mapping inequities in global vaccine sentiment research.
+24458	Quantifying microbial interactions based on compositional data using an iterative approach for solving generalized Lotka-Volterra equations.
+24459	Impact of School-Based Infection Prevention Strategies on Household COVID-19 and Respiratory Disease Outcomes: a Cross-Sectional Study.
+24460	A Simultaneous Mixed-Methods Examination of Factors Influencing Intent-to-Leave Among Nursing Home Care Providers in 25 Long-Term Care Facilities.
+24461	Food insecurity experience of pregnant and lactating women from rural households in Tamil Nadu, India during COVID lockdown - Empirical evidence from household air pollution intervention network study.
+24462	Prediction of pharmacist medication interventions using medication regimen complexity.
+24463	Characterizing the Impact of Dyadic Motivations to Quit on Cessation Outcomes in Dual-Smoking Couples.
+24464	Responding to rising heat in workplaces and homes of low income workers.
+24465	Calibration of transmission-dynamic infectious disease models: A scoping review and reporting framework.
+24467	Heterogeneity in seasonal influenza vaccination opportunity and disease risk during pregnancy and in infants <6 months.
+24469	Development of self-phenotyping tools to empower patients and improve diagnostics.
+24470	Climate change and tuberculosis: an analytical framework.
+24471	Variant patterns and influence of inter-regional travel during the SARS-CoV-2 expansion in South Africa.
+24472	N-glycosylation at the receptor binding site drives differences in receptor binding specificity between influenza B virus lineages.
+24473	Racial and Ethnic Disparities in COVID-19 Infection and Hospitalization in the Active Component US Military.
+24474	Epidemiology and clinical profile of diarrhea associated with enterotoxigenic Escherichia coli and Vibrio cholerae in Bangladesh: Findings from a hospital-based surveillance system, 2008-2023.
+24475	Comparable Outcomes in Suspected Septic Shock: A Retrospective Study of Emergency Department Patients With and Without Bacteremia.
+24476	Effectiveness of peer-group therapy using community based participatory research model on medication adherence among patients of diabetes and/or hypertension: study protocol for a multi-centre cluster randomised trial in rural settings across India (PARTICIPATE study).
+24477	Corrigendum to "Pandemic preparedness and new model developments for airborne diseases transmitting via aerosols" [BioSystems 255 (2025) 105532].
+24478	Pandemic preparedness and new model developments for airborne diseases transmitting via aerosols.
+24479	Recent advances in carrier mediated nose-to-brain delivery of pharmaceutics.
+24480	Optimization of a DPI Inhaler: A Computational Approach.
+24481	A community network-driven COVID-19 testing and vaccination intervention for vulnerable populations in the Central United States: results from a Rapid Acceleration of Diagnostics Underserved Populations randomized controlled trial.
+24482	An Evaluation of TransLife Care: A Locally Developed Structural HIV Prevention Intervention for Transgender Women in Chicago, Illinois.
+24483	HIV Prevention and Care Among Black Cisgender Sexual Minority Men and Transgender Women: Protocol for an HIV Status-Neutral Cohort Study Using an Observational-Implementation Hybrid Approach.
+24484	Multi-Level and Intersectional Stigma Experienced by Black Transgender Women in Chicago: a Qualitative Study to Inform Sociostructural Interventions for Reducing Stigma and Improving Health Outcomes.
+24485	The Relationship between Substance Use Stigma and COVID-19 Vaccine Hesitancy.
+24486	A cross-sectional analysis of psychosocial and structural barriers and facilitators associated with PrEP use among a sample of transgender women in Chicago, IL.
+24487	Findings From the Step Up, Test Up Study of an Electronic Screening and Brief Intervention for Alcohol Misuse in Adolescents and Young Adults Presenting for HIV Testing: Randomized Controlled Efficacy Trial.
+24488	Support for evidence-informed opioid policies and interventions: The role of racial attitudes, political affiliation, and opioid stigma.
+24489	Factors predicting incarceration history and incidence among Black and Latino men who have sex with men (MSM) residing in a major urban center.
+24490	Do partner services linked to molecular clusters yield people with viremia or new HIV?
+24491	Digital Epidemiology of Prescription Drug References on X (Formerly Twitter): Neural Network Topic Modeling and Sentiment Analysis.
+24492	Results and Methodological Implications of the Digital Epidemiology of Prescription Drug References Among Twitter Users: Latent Dirichlet Allocation (LDA) Analyses.
+24493	Using WhatsApp for vaccine promotion in low- and middle-income countries: practitioner-informed perspectives.
+24494	A Social Norms Intervention to Improve Vaccination Intentions: Outcomes from the Happy Baby Program in the Slum Areas of Varanasi, India.
+24495	Explaining Twitter's inability to effectively moderate content during the COVID-19 pandemic.
+24496	More work for ASHAs? Exploring the role of whatsapp messaging and community health work in urban slum areas of Varanasi, India.
+24497	Social norms, vaccine confidence, and interpersonal communication as predictors of vaccination intentions: Findings from slum areas in Varanasi, India.
+24498	Assessing Message Deployment During Public Health Emergencies Through Social Media: Empirical Test of Optimizing Content for Effective Dissemination.
+24499	The Be REAL Framework: Enhancing Relationship-Building Skills for Community Health Workers.
+24500	Corrigendum: LetsTalkShots: personalized vaccine risk communication.
+24501	The efficacy of Facebook's vaccine misinformation policies and architecture during the COVID-19 pandemic.
+24502	Evaluation of online videos to engage viewers and support decision-making for COVID-19 vaccination: how narratives and race/ethnicity enhance viewer experiences.
+24503	Fighting the infodemic: the 4 i Framework for Advancing Communication and Trust.
+24504	LetsTalkShots: personalized vaccine risk communication.
+24505	Correction: Social network analysis of COVID-19 vaccine YouTube videos in Odisha, India: mapping the channel network and analyzing comment sentiment.
+24506	Social network analysis of COVID-19 vaccine YouTube videos in Odisha, India: mapping the channel network and analyzing comment sentiment.
+24507	Production of vaccination videos in India: learnings from a science-art partnership.
+24508	Trusted information sources in the early months of the COVID-19 pandemic predict vaccination uptake over one year later.
+24509	Creation, dissemination, and evaluation of videos to promote COVID-19 vaccination in India: A research protocol.
+24510	Promoting Vaccination in India through Videos: The Role of Humor, Collectivistic Appeal and Gender.
+24511	Adapting and Extending a Typology to Identify Vaccine Misinformation on Twitter.
+24512	Facebook Pages, the "Disneyland" Measles Outbreak, and Promotion of Vaccine Refusal as a Civil Right, 2009-2019.
+24513	Exploring off-label vaccine use: a survey of the global national immunization technical advisory group network.
+24514	Letter to the editor regarding 'Autopsy findings in cases of fatal COVID-19 vaccine-induced myocarditis'.
+24515	Mapping the Cognitive Biases Related to Vaccination: A Scoping Review of the Literature.
+24516	Trajectories of neighborhood-level overdose risk predictions for prioritization of harm reduction services: Results from the PROVIDENT study.
+24517	Cognitive functioning in multiple sclerosis with focus on brainstem volume.
+24518	Integrating mobility, travel survey, and malaria case data to understand drivers of malaria importation to Zanzibar, 2022-2023.
+24520	6-Deoxy-6-[(18)F]fluoro-L-ascorbic acid PET/CT in postoperative metastatic differentiated thyroid cancer: a comparative study with fluorine-18 fluorodeoxyglucose.
+24521	Re-Evaluating the Demographic History of, and Inferring the Fine-Scale Recombination Landscape For, Wild Chinese Rhesus Macaques (Macaca mulatta).
+24522	Inferring Fine-Scale Mutation and Recombination Rate Maps in Aye-Ayes (Daubentonia madagascariensis).
+24528	Reservoir host community and vector density predict human tick-borne diseases across the Eastern United States.
+24529	Evaluation of the Relationship Between Network Centrality and Individual Sociodemographics and Behaviors Among People Who Inject Drugs.
+24531	Acute febrile illness in remote and rural communities: Perspectives of health providers and managers in Chattogram, Bangladesh.
+24532	Artificial Intelligence-Assisted Data Extraction With a Large Language Model: A Study Within Reviews.
+24533	Evidence of transmission and dissemination of diverse bla(NDM-5)-producing Escherichia coli clones between refugee and host communities and their environment: a multicenter cross-sectional study.
+24534	Hypoglycemia Beliefs, Impaired Hypoglycemia Awareness, and Severe Hypoglycemia in Insulin-Treated Type 2 Diabetes: Insights From CGM Users.
+24535	The impact of meteorological variables on Salmonella bacteraemia in Mysuru District, Karnataka State, India: a retrospective time-series analysis.
+24536	A deep learning approach for enhancing pandemic prediction: A retrospective evaluation of transformer neural networks and multi-source data fusion for infectious disease forecasting.
+24538	Assessing Individual and Workplace Characteristics in Connection to Air Force Service Members' Retention Intentions.
+24539	Low Uptake and Disparities in Respiratory Syncytial Virus Vaccination Among US Veterans.
+24540	History of interpersonal trauma exposure is a robust risk factor for alcohol and substance use disorders during adolescence.

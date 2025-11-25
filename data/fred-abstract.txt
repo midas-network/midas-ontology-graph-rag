@@ -1,0 +1,8 @@
+Title:
+Increasing child vaccination coverage can reduce influenza cases across age groups: An agent-based modeling study
+Abstract:
+Objectives: Availability of caregiver-administered nasal spray live attenuated influenza vaccine (LAIV) raises the potential for increased influenza vaccine uptake. Direct and indirect benefits (decreased influenza cases and hospitalizations) of increased uptake among school-age children may be realized across the age spectrum. We used an agent-based model to determine the extent to which increased vaccination of children might affect overall influenza epidemiology.
+Methods: The Framework for Reproducing Epidemiological Dynamics (FRED) uses a population based on the US census and accounts for individual characteristics to estimate the effect of changes in parameters including vaccine uptake, on outcomes. We modeled increases in vaccine uptake among school-age children 5-17 years old on influenza cases and hospitalizations by age group.
+Results: Increasing vaccination rates in school-aged children by 5%-15% decreased their symptomatic influenza cases by 3.2%-10.9%, and among all age groups by 3.3%-11.6%, corresponding to an estimated annual reduction in cases of 522,867-1,810,170 among school-age children and of 1,394,687-4,945,952 overall. Annual U.S. hospitalizations could decrease by as much as 49,977, with the greatest impact (23,258) in those ages 65 years and over.
+Conclusions: The opportunity to increase vaccination coverage in school-age children using LAIV can have a positive impact across all ages.
+Keywords: Disease transmission; Epidemiological models; Human; Infectious; Influenza; School age population; Vaccination.

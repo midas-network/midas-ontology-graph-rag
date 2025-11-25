@@ -111,6 +111,7 @@ def create_ontology_documents(G):
                 text += ". Synonyms: " + ", ".join(data["synonyms"])
             # Metadata with graph links
             metadata = {
+                "source": "ontology",
                 "type": "Class",
                 "label": data["label"],
                 "parents": data.get("parents", []),
@@ -131,6 +132,7 @@ def create_ontology_documents(G):
                 text += ". Connects " + (", ".join(dom_labels) if dom_labels else "things")
                 text += " to " + (", ".join(rng_labels) if rng_labels else "things") + "."
             metadata = {
+                "source": "ontology",
                 "type": "Property",
                 "label": data["label"],
                 "domain": data.get("domain", []),
