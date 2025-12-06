@@ -1,7 +1,9 @@
 """
 Example of using hybrid retrieval with papers and ontology.
 """
+import sys
 import json
+import argparse
 from langchain_core.vectorstores import InMemoryVectorStore
 
 from model.graph_rag import initialize_embedding_model, setup_graph_retriever
@@ -10,12 +12,18 @@ from model.hybrid_retrieval import (
     retrieve_hybrid,
     format_context_for_llm,
     prepare_llm_prompt,
+    prepare_llm_prompt_without_context,
     print_retrieval_summary
 )
 from utils.extract_paper_attributes import create_paper_documents, add_bidirectional_edges
 
+def read_abstract(abstract_path: str) -> str:
+    with open(abstract_path, "r", encoding="utf-8") as f:
+        abstract = f.read()
+    return abstract
 
-def build_query(abstract_path: str) -> str:
+
+def build_query(abstract: str) -> str:
     """
     Build a query that asks for extraction of paper attributes from an abstract.
 
@@ -43,13 +51,18 @@ data_used (e.g. ["surveillance case data"], ["hospital admissions", "mobility da
 key_outcome_measures (e.g. ["incidence", "hospitalizations", "deaths"], ["R0", "attack rate"], ["bed occupancy", "ICU demand"])
 code_available (e.g. "yes – GitHub", "no", "unspecified")"""
 
-    with open(abstract_path, "r", encoding="utf-8") as f:
-        abstract = f.read()
-
     return query_template + "\n\n" + abstract
 
 
 def main():
+
+    print("in main")
+
+    parser = argparse.ArgumentParser(description = "LLM Code for extracting details from infectious disease modeling abstracts")
+    parser.add_argument("-a","--Abstract",action="store_true",help="Abstract only in RAG input")
+    parser.add_argument("-n","--Norag",action="store_true", help="no rag")
+    args = parser.parse_args()
+    
     # Configuration
     ONTOLOGY_PATH = "midas-data.owl"
     PAPERS_PATH = "./data/modeling_papers.json"
@@ -90,26 +103,38 @@ def main():
     print("  - Ontology -> parents/children -> Related concepts")
 
     # 5. Query with hybrid retrieval
-    query = build_query("data/fred-abstract.txt")
+    
+    abstract = read_abstract("data/fred-abstract.txt")
+    query = build_query(abstract)
     print(f"\nQuery: {query}\n")
 
+    if args.Abstract == True:
+        raginput = abstract
+    else:
+        raginput = query
 
-    paper_results, ontology_results, all_results = retrieve_hybrid(
-        query=query,
-        vector_store=vector_store,
-        graph_retriever=graph_retriever,
-        k_papers=20,
-        k_ontology=20
-    )
+    if args.Norag is not True:
+        print("Proceeding with RAG")
 
-    # 6. Print summary
-    print_retrieval_summary(paper_results, ontology_results)
+        paper_results, ontology_results, all_results = retrieve_hybrid(
+            query=raginput,
+            vector_store=vector_store,
+            graph_retriever=graph_retriever,
+            k_papers=20,
+            k_ontology=20
+        )
 
-    # 7. Format context for LLM
-    context = format_context_for_llm(all_results)
+        # 6. Print summary
+        print_retrieval_summary(paper_results, ontology_results)
 
-    # 8. Prepare complete prompt
-    prompt = prepare_llm_prompt(query, context)
+        # 7. Format context for LLM
+        context = format_context_for_llm(all_results)
+
+        # 8. Prepare complete prompt
+        prompt = prepare_llm_prompt(query, context)
+    else:
+        print("Proceeding without rag")
+        prompt = prepare_llm_prompt_without_context(query)
 
     from langchain_ollama import ChatOllama
     llm = ChatOllama(model="gpt-oss")

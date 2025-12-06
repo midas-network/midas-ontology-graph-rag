@@ -1,0 +1,95 @@
+in main
+Loading ontology...
+Loaded 307 classes and 2 properties from the ontology.
+
+Loading papers and extracting ontology mentions...
+  Extracted 21348 total ontology mentions from 5737 papers
+  Average: 3.7 mentions per paper
+
+Creating bidirectional edges...
+  Created 21348 bidirectional edges
+  183 ontology concepts are mentioned in papers
+
+✓ Loaded 5737 papers and 309 ontology concepts
+✓ Papers linked to ontology via 'mentions' edges
+✓ Ontology linked to papers via 'mentioned_by' edges
+
+Creating vector store and embeddings...
+
+Setting up GraphRetriever with edge traversal...
+✓ GraphRetriever configured to traverse:
+  - Paper -> mentions -> Ontology concepts
+  - Ontology -> mentioned_by -> Papers
+  - Ontology -> parents/children -> Related concepts
+
+Query: Given the paper abstract at the end of this prompt, report the status of each of these variables:
+    model_type (e.g. "agent-based", "SEIR compartmental", "network", "metapopulation")
+model_determinism (e.g. "deterministic", "stochastic", "both", "unspecified")
+pathogen_name (e.g. "SARS-CoV-2", "Influenza A(H1N1)", "Plasmodium falciparum")
+pathogen_type (e.g. "virus", "bacterium", "parasite", "fungus", "unspecified")
+host_species (e.g. "human", "cattle", "wild birds", "mosquito vector", "multi-host")
+primary_population (e.g. "general adult population", "school children", "healthcare workers", "men who have sex with men")
+population_setting_type (e.g. "community", "hospital", "long-term care facility", "school", "refugee camp")
+geographic_scope (e.g. "city-level", "sub-national", "national", "multi-country", "global")
+geographic_units (e.g. "New York City, USA", "Sierra Leone", "European Union", "Wuhan, China")
+historical_vs_hypothetical (e.g. "historical", "hypothetical future outbreak", "mixed", "unspecified")
+study_goal_category (e.g. "forecast/nowcast", "scenario analysis", "intervention evaluation", "parameter estimation", "methodological")
+intervention_present (e.g. "yes", "no", "unspecified")
+intervention_types (e.g. ["vaccination", "school closure"], ["testing and isolation", "contact tracing"], ["vector control"])
+data_used (e.g. ["surveillance case data"], ["hospital admissions", "mobility data"], ["no data (theoretical)"])
+key_outcome_measures (e.g. ["incidence", "hospitalizations", "deaths"], ["R0", "attack rate"], ["bed occupancy", "ICU demand"])
+code_available (e.g. "yes – GitHub", "no", "unspecified")
+
+Title:
+Increasing child vaccination coverage can reduce influenza cases across age groups: An agent-based modeling study
+Abstract:
+Objectives: Availability of caregiver-administered nasal spray live attenuated influenza vaccine (LAIV) raises the potential for increased influenza vaccine uptake. Direct and indirect benefits (decreased influenza cases and hospitalizations) of increased uptake among school-age children may be realized across the age spectrum. We used an agent-based model to determine the extent to which increased vaccination of children might affect overall influenza epidemiology.
+Methods: The Framework for Reproducing Epidemiological Dynamics (FRED) uses a population based on the US census and accounts for individual characteristics to estimate the effect of changes in parameters including vaccine uptake, on outcomes. We modeled increases in vaccine uptake among school-age children 5-17 years old on influenza cases and hospitalizations by age group.
+Results: Increasing vaccination rates in school-aged children by 5%-15% decreased their symptomatic influenza cases by 3.2%-10.9%, and among all age groups by 3.3%-11.6%, corresponding to an estimated annual reduction in cases of 522,867-1,810,170 among school-age children and of 1,394,687-4,945,952 overall. Annual U.S. hospitalizations could decrease by as much as 49,977, with the greatest impact (23,258) in those ages 65 years and over.
+Conclusions: The opportunity to increase vaccination coverage in school-age children using LAIV can have a positive impact across all ages.
+Keywords: Disease transmission; Epidemiological models; Human; Infectious; Influenza; School age population; Vaccination.
+
+Proceeding without rag
+
+================================================================================
+SENDING TO OLLAMA
+================================================================================
+
+================================================================================
+LLM RESPONSE
+================================================================================
+**Study reference**  
+[1] *Increasing child vaccination coverage can reduce influenza cases across age groups: An agent-based modeling study* (title and abstract provided in the prompt).
+
+| Variable | Status | Source |
+|----------|--------|--------|
+| **model_type** | Agent‑based | [1] |
+| **model_determinism** | Unspecified (the abstract does not describe whether the simulations are deterministic or stochastic) | [1] |
+| **pathogen_name** | Influenza (commonly Influenza A) | [1] |
+| **pathogen_type** | Virus | [1] |
+| **host_species** | Human | [1] |
+| **primary_population** | School‑age children (5–17 years) | [1] |
+| **population_setting_type** | Community (nationwide population model, no single facility or school focus) | [1] |
+| **geographic_scope** | National | [1] |
+| **geographic_units** | United States (whole country) | [1] |
+| **historical_vs_hypothetical** | Hypothetical (scenario of increased vaccine uptake) | [1] |
+| **study_goal_category** | Intervention evaluation / Scenario analysis (assessing the impact of increased LAIV coverage) | [1] |
+| **intervention_present** | Yes | [1] |
+| **intervention_types** | Vaccination (caregiver‑administered nasal‑spray live‑attenuated influenza vaccine – LAIV) | [1] |
+| **data_used** | Census population data (used to construct the model’s demographic structure); no explicit mention of empirical surveillance or hospital data | [1] |
+| **key_outcome_measures** | Incidence (symptomatic influenza cases by age group), hospitalizations, absolute case reductions | [1] |
+| **code_available** | Unspecified (the abstract does not state whether the model code is publicly released) | [1] |
+
+**Notes & Reasoning**
+
+1. The title and abstract explicitly state that an **agent‑based model** (FRED) is used.  
+2. The abstract does not describe the stochastic or deterministic nature of the simulation, so we record it as **unspecified**.  
+3. The study concerns **influenza**; influenza is a **virus** affecting **humans**.  
+4. The main focus is on **school‑age children (5–17 yrs)**, but results are reported for all age groups.  
+5. The model is built on the **US Census**, representing a **national** (United States) population—there is no specific city or sub‑national focus mentioned.  
+6. The scenario examines **increased vaccination uptake**, which is a **hypothetical** future intervention.  
+7. The purpose is to evaluate how vaccination affects outcomes, fitting the **intervention evaluation / scenario analysis** category.  
+8. Only **vaccination** is listed as the intervention; no other measures (e.g., social distancing, testing) are described.  
+9. The abstract mentions the use of census data but does not indicate use of real surveillance or hospital data; thus we list **census data**.  
+10. Outcomes reported are **incidence (symptomatic cases)** and **hospitalizations**, plus quantified reductions.  
+11. No mention of code release is provided, so **unspecified**.
