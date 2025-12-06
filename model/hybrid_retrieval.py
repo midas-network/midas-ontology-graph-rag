@@ -138,6 +138,32 @@ Answer:"""
 
     return prompt
 
+def prepare_llm_prompt_without_context(query,system_instructions=None):
+    """
+    Prepare a complete prompt for the LLM, without supporting context
+
+    Args:
+        query: The user's question
+        system_instructions: Optional system instructions for the LLM
+
+    Returns:
+        str: Complete formatted prompt
+    """
+    if system_instructions is None:
+        system_instructions = (
+            "You are a helpful research assistant. Please answer the questions accurately. "
+            "Cite specific papers when referencing information from them."
+        )
+
+    prompt = f"""{system_instructions}
+
+Question: {query}
+
+Answer:"""
+
+    return prompt
+    
+
 
 def print_retrieval_summary(paper_docs, ontology_docs):
     """
