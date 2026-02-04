@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════════════════════════════
+⚠️ REMINDER BEFORE YOU START EXTRACTING ⚠️
+
+DEFINITION FORMAT - Use formal ontological structure with ALL fields:
+
+FOR SINGLE-VALUE ATTRIBUTES:
+attribute_name: value
+  provenance: "quote from abstract"
+  parent_class: The immediate superclass
+  differentia: Characteristics distinguishing from siblings
+  key_relationships: relation1 target1, relation2 target2
+  definition: A [parent class] that [differentia] (key relationships: ...)
+  reasoning: your logic
+
+FOR MULTI-VALUE ATTRIBUTES (comma-separated):
+attribute_name: value1, value2, value3
+  provenance1: "quote for value1"
+  parent_class1: The immediate superclass for value1
+  differentia1: Distinguishing characteristics for value1
+  key_relationships1: relation1 target1, relation2 target2
+  definition1: A [parent class] that [differentia] (key relationships: ...)
+  reasoning1: logic for value1
+  provenance2: "quote for value2"
+  parent_class2: The immediate superclass for value2
+  differentia2: Distinguishing characteristics for value2
+  key_relationships2: relation1 target1, relation2 target2
+  definition2: A [parent class] that [differentia] (key relationships: ...)
+  reasoning2: logic for value2
+  provenance3: "quote for value3"
+  parent_class3: The immediate superclass for value3
+  differentia3: Distinguishing characteristics for value3
+  key_relationships3: relation1 target1, relation2 target2
+  definition3: A [parent class] that [differentia] (key relationships: ...)
+  reasoning3: logic for value3
+
+DO NOT skip ANY fields (provenance, parent_class, differentia, key_relationships, definition, reasoning)!
+DO NOT give one definition for multiple values!
+DO NOT use condensed format!
+DO NOT use markdown (**,  bullets)!
+DO NOT write encyclopedic descriptions - only what is necessarily true!
+
+NOW EXTRACT FROM THE ABSTRACT BELOW:
+═══════════════════════════════════════════════════════════════════════════════

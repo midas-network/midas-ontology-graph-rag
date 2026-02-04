@@ -44,3 +44,13 @@ coverage.xml
 # Misc
 *.swp
 *.swo
+
+# Ontologies (downloaded files - large and not source code)
+ontologies/
+
+# Temporary test files (not part of core codebase)
+tmptests/
+
+# Documentation markdown files (except main README.md)
+.ai/md/
+

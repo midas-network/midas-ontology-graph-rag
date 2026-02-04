@@ -1,0 +1,694 @@
+# INSTRUCTIONS FOR LLM (READ EVERY RUN)
+
+## Environment
+
+- **Runtime**: Python 3.11.5 (GCC 11.2.0), IPython 8.15.0 available
+- **Standards**: PEP 8, PEP 257, PEP 484, PEP 585, PEP 604
+- **Target compatibility**: Python 3.10+ (use `X | Y` union syntax, not `Union[X, Y]`)
+
+---
+
+## 1. Code Architecture
+
+### 1.1 Function Design
+- **Single responsibility**: Each function does one thing well
+- **Small helpers**: Extract logic into focused helpers (< 25 lines preferred)
+- **Pure functions**: Prefer functions without side effects; isolate I/O at boundaries
+- **Explicit arguments**: No mutable default arguments; use `None` sentinel pattern:
+  ```python
+  def process(items: list[str] | None = None) -> list[str]:
+      items = items if items is not None else []
+  ```
+- **Limit parameters**: Max 5 positional args; beyond that, use dataclasses/TypedDict or keyword-only (`*`)
+
+### 1.2 Class Design
+- Use classes for stateful components; prefer functions for stateless transformations
+- Favor composition over inheritance
+- Use `@dataclass` or `@dataclass(frozen=True)` for data containers
+- Use `Protocol` for structural typing over ABCs when possible
+
+### 1.3 Module Structure
+- No executable code at module level (except `if __name__ == "__main__":`)
+- Imports must not trigger side effects
+- Keep modules import-safe: lightweight setup only
+
+---
+
+## 2. Type Hints (Mandatory)
+
+### 2.1 All public interfaces must be typed
+```python
+def load_config(path: Path, *, strict: bool = True) -> dict[str, Any]:
+    ...
+```
+
+### 2.2 Use modern syntax (Python 3.10+)
+```python
+# Correct
+def fetch(url: str) -> dict | None: ...
+def process(items: list[str]) -> list[str]: ...
+
+# Avoid
+from typing import Union, List, Optional
+def fetch(url: str) -> Optional[dict]: ...
+```
+
+### 2.3 Common patterns
+```python
+from typing import Any, TypeVar, Callable, Iterator, Literal
+from collections.abc import Mapping, Sequence, Iterable
+from pathlib import Path
+
+T = TypeVar("T")
+
+# Callable with specific signature
+Handler = Callable[[str, int], bool]
+
+# Literal for constrained strings
+Mode = Literal["train", "eval", "test"]
+```
+
+### 2.4 TypedDict for structured dicts
+```python
+from typing import TypedDict, NotRequired
+
+class ExtractionResult(TypedDict):
+    attribute: str
+    value: str
+    provenance: str
+    definition: str
+    reasoning: str
+    confidence: NotRequired[float]
+```
+
+---
+
+## 3. Documentation
+
+### 3.1 Docstrings (Google style, mandatory for public API)
+```python
+def extract_attributes(
+    text: str,
+    schema: dict[str, Any],
+    *,
+    include_provenance: bool = True,
+) -> list[ExtractionResult]:
+    """Extract structured attributes from unstructured text.
+
+    Args:
+        text: Source text to process.
+        schema: Attribute schema defining expected fields.
+        include_provenance: Whether to include source spans. Defaults to True.
+
+    Returns:
+        List of extraction results with provenance and reasoning.
+
+    Raises:
+        ValueError: If schema is empty or malformed.
+        ExtractionError: If LLM call fails after retries.
+
+    Example:
+        >>> results = extract_attributes("Patient age 45", AGE_SCHEMA)
+        >>> results[0]["attribute"]
+        'age'
+    """
+```
+
+### 3.2 Comments
+- Explain *why*, not *what*
+- Keep minimal and purposeful
+- ASCII only (no emojis, no Unicode symbols unless file already uses them)
+- Use `# TODO(username):` or `# FIXME:` for actionable items
+
+---
+
+## 4. Project Structure
+
+```
+project/
+├── src/                      # or package name at root
+│   ├── __init__.py
+│   ├── core/                 # Core business logic
+│   ├── utils/                # Shared utilities
+│   │   ├── __init__.py
+│   │   ├── loaders/          # Data loading utilities
+│   │   └── ontology_linker/  # Ontology helpers
+│   └── formatters/           # Output formatters
+├── data/
+│   ├── prompt/               # Prompt templates and pieces
+│   └── ontologies/           # Ontology payloads (external resources)
+├── scripts/                  # Operational scripts
+│   └── download_ontologies.py
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── conftest.py
+├── runs/                     # Runtime outputs (timestamped, gitignored)
+├── pyproject.toml
+└── README.md
+```
+
+**Rules**:
+- Do not scatter new modules outside established directories without explicit intent
+- Ontology payloads are external resources: track manifests/checksums in git, not large RDF/OWL files
+- Write outputs under `runs/` with timestamped filenames
+- Avoid writing outside repo unless explicitly required
+
+---
+
+## 5. Configuration Management
+
+### 5.1 Hierarchy (highest to lowest priority)
+1. CLI arguments
+2. Environment variables
+3. Config file (TOML/YAML)
+4. Code defaults
+
+### 5.2 Implementation
+```python
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+
+@dataclass
+class Config:
+    """Application configuration with env var overrides."""
+    
+    # Paths
+    ontology_path: Path = field(
+        default_factory=lambda: Path(os.getenv("ONTOLOGY_PATH", "data/ontologies"))
+    )
+    output_dir: Path = field(
+        default_factory=lambda: Path(os.getenv("OUTPUT_DIR", "runs"))
+    )
+    
+    # Feature flags (explicit booleans, safe defaults)
+    enable_ontology_linking: bool = False
+    debug_mode: bool = field(
+        default_factory=lambda: os.getenv("DEBUG", "").lower() in ("1", "true")
+    )
+    
+    # LLM settings
+    llm_host: str = field(default_factory=lambda: os.getenv("LLM_HOST", "localhost"))
+    llm_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "default"))
+    llm_timeout: int = 30
+    
+    def __post_init__(self) -> None:
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+```
+
+### 5.3 Rules
+- Keep configurable items near the top of scripts
+- Prefer explicit flags/booleans
+- Default to safe values (features off, conservative timeouts)
+- Honor env vars where present
+- Use `ONTOLOGY_PATH`, `LLM_HOST`, etc. instead of hard-coding paths
+
+---
+
+## 6. Error Handling
+
+### 6.1 Fail fast with actionable messages
+```python
+class ConfigurationError(Exception):
+    """Raised for configuration issues with actionable guidance."""
+    pass
+
+def load_ontology(path: Path) -> dict:
+    if not path.exists():
+        raise ConfigurationError(
+            f"Ontology file not found: {path}\n"
+            f"Run: python scripts/download_ontologies.py\n"
+            f"Or set ONTOLOGY_PATH to an existing directory"
+        )
+    ...
+```
+
+### 6.2 Patterns
+```python
+# Custom exceptions for domain errors
+class LLMConnectionError(Exception):
+    """LLM host unreachable."""
+    pass
+
+class ExtractionError(Exception):
+    """Extraction pipeline failure."""
+    pass
+
+# Context manager for resource cleanup
+from contextlib import contextmanager
+
+@contextmanager
+def managed_connection(host: str, timeout: int = 30):
+    conn = None
+    try:
+        conn = connect(host, timeout=timeout)
+        yield conn
+    except ConnectionError as e:
+        raise LLMConnectionError(
+            f"Cannot reach LLM host: {host}\n"
+            f"Check LLM_HOST env var or verify service is running"
+        ) from e
+    finally:
+        if conn:
+            conn.close()
+```
+
+### 6.3 Rules
+- Never swallow exceptions silently
+- Surface actionable hints: missing env vars, file paths, hosts, models
+- Use exception chaining (`raise ... from e`)
+- Log before raising if context would otherwise be lost
+
+---
+
+## 7. Logging and Output
+
+### 7.1 Structured logging setup
+```python
+import logging
+import sys
+
+def configure_logging(*, debug: bool = False) -> logging.Logger:
+    level = logging.DEBUG if debug else logging.INFO
+    
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[logging.StreamHandler(sys.stderr)],
+    )
+    
+    # Quiet noisy libraries
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    
+    return logging.getLogger(__name__)
+```
+
+### 7.2 Progress output
+```python
+def process_batch(items: list[str], *, quiet: bool = False) -> list[Result]:
+    results = []
+    total = len(items)
+    
+    for i, item in enumerate(items, 1):
+        result = process_single(item)
+        results.append(result)
+        
+        if not quiet and i % 100 == 0:
+            print(f"[{i}/{total}] Processed {i} items", flush=True)
+    
+    return results
+```
+
+### 7.3 Rules
+- Keep console output concise
+- Prefer structured prints for progress
+- Gate debug output behind a flag (`--debug`, `DEBUG=1`)
+- Avoid noisy debug logs in normal operation
+
+---
+
+## 8. I/O and File Handling
+
+### 8.1 Output file naming
+```python
+from datetime import datetime
+from pathlib import Path
+
+def get_output_path(
+    base_dir: Path,
+    prefix: str,
+    suffix: str = ".json",
+) -> Path:
+    """Generate timestamped output path.
+    
+    Example: runs/extraction_20240115_143022.json
+    """
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return base_dir / f"{prefix}_{timestamp}{suffix}"
+```
+
+### 8.2 Safe file writing
+```python
+import json
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+def write_json_atomic(path: Path, data: dict) -> None:
+    """Write JSON atomically to prevent partial writes."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with NamedTemporaryFile(
+        mode="w",
+        dir=path.parent,
+        suffix=".tmp",
+        delete=False,
+    ) as f:
+        json.dump(data, f, indent=2)
+        temp_path = Path(f.name)
+    
+    temp_path.rename(path)
+```
+
+### 8.3 Capturing stdout/stderr
+```python
+import subprocess
+from pathlib import Path
+
+def run_with_capture(
+    cmd: list[str],
+    log_path: Path,
+    *,
+    timeout: int = 300,
+) -> subprocess.CompletedProcess:
+    """Run command, capturing output to file."""
+    with open(log_path, "w") as log_file:
+        return subprocess.run(
+            cmd,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            timeout=timeout,
+            check=True,
+        )
+```
+
+---
+
+## 9. LLM Integration
+
+### 9.1 Host probing
+```python
+import httpx
+
+def probe_llm_host(host: str, *, timeout: int = 5) -> bool:
+    """Check if LLM host is reachable."""
+    try:
+        response = httpx.get(f"{host}/health", timeout=timeout)
+        return response.status_code == 200
+    except httpx.RequestError:
+        return False
+
+def ensure_llm_available(host: str, model: str) -> None:
+    """Validate LLM availability before processing."""
+    if not probe_llm_host(host):
+        raise LLMConnectionError(
+            f"LLM host unreachable: {host}\n"
+            f"Set LLM_HOST env var or start the service"
+        )
+```
+
+### 9.2 Test mode
+```python
+def call_llm(
+    prompt: str,
+    *,
+    host: str,
+    model: str,
+    timeout: int = 30,
+    test_mode: bool = False,
+) -> str:
+    """Call LLM with optional test mode for validation."""
+    if test_mode:
+        test_prompt = "Respond with 'OK' if you can read this."
+        # Use short timeout for probe
+        response = _send_request(host, model, test_prompt, timeout=5)
+        if "OK" not in response:
+            raise LLMConnectionError(f"Test probe failed: {response[:100]}")
+        return "[TEST MODE] LLM connection verified"
+    
+    return _send_request(host, model, prompt, timeout=timeout)
+```
+
+### 9.3 Rules
+- Probe hosts before use
+- Honor configured model/host from config/env
+- Provide reasonable timeouts
+- Offer TEST mode that sends a short probe message
+
+---
+
+## 10. Ontology Handling
+
+### 10.1 Controlled by feature flag
+```python
+@dataclass
+class ExtractionConfig:
+    enable_ontology_linking: bool = False
+    ontology_path: Path | None = None
+
+def extract_with_ontology(
+    text: str,
+    config: ExtractionConfig,
+) -> ExtractionResult:
+    result = extract_base(text)
+    
+    if config.enable_ontology_linking and config.ontology_path:
+        result["ontology_matches"] = link_to_ontology(
+            result["value"],
+            config.ontology_path,
+        )
+    # Do not add ontology_matches key when disabled
+    
+    return result
+```
+
+### 10.2 Resource management
+```python
+# scripts/download_ontologies.py
+"""Download ontology files from configured sources.
+
+Usage:
+    python scripts/download_ontologies.py
+    
+Environment:
+    ONTOLOGY_PATH: Target directory (default: data/ontologies)
+"""
+
+MANIFEST = {
+    "snomed_core.owl": {
+        "url": "https://example.com/snomed_core.owl",
+        "sha256": "abc123...",
+    },
+}
+
+def download_ontologies(target_dir: Path) -> None:
+    ...
+```
+
+### 10.3 Rules
+- Treat ontology linking as optional, controlled by boolean
+- Do not recommend ontologies in extraction output when disabled
+- Keep payloads under `data/ontologies/` or `resources/ontologies/`
+- Track manifests/checksums in git, not large files
+- Prefer env/config for paths (`ONTOLOGY_PATH`)
+
+---
+
+## 11. Similarity and Matching
+
+```python
+from difflib import SequenceMatcher
+
+def compute_similarity(
+    a: str,
+    b: str,
+    *,
+    use_embeddings: bool = True,
+    embedding_model: Any | None = None,
+) -> tuple[float, str]:
+    """Compute string similarity, reporting method used.
+    
+    Returns:
+        Tuple of (similarity_score, method_used)
+    """
+    if use_embeddings and embedding_model is not None:
+        try:
+            vec_a = embedding_model.encode(a)
+            vec_b = embedding_model.encode(b)
+            score = cosine_similarity(vec_a, vec_b)
+            return score, "embeddings"
+        except Exception:
+            pass  # Fall through to difflib
+    
+    # Fallback to difflib
+    score = SequenceMatcher(None, a.lower(), b.lower()).ratio()
+    return score, "difflib"
+```
+
+---
+
+## 12. Extraction Output Format
+
+### 12.1 Required fields for every attribute
+```python
+class AttributeExtraction(TypedDict):
+    attribute: str          # Attribute name
+    value: str | list[str]  # Extracted value(s)
+    provenance: str         # Source text span or reference
+    definition: str         # What this attribute means
+    reasoning: str          # Why this value was extracted
+    confidence: NotRequired[float]
+```
+
+### 12.2 Multi-value formatting (numbered)
+```python
+def format_multi_value(values: list[str]) -> dict:
+    """Format multi-value extractions with numbering."""
+    return {
+        "values": {f"{i}": v for i, v in enumerate(values, 1)},
+        "count": len(values),
+    }
+
+# Output example:
+# {
+#     "attribute": "symptoms",
+#     "values": {"1": "fever", "2": "cough", "3": "fatigue"},
+#     "count": 3,
+#     "provenance": "lines 12-15",
+#     "definition": "Patient-reported symptoms",
+#     "reasoning": "Explicitly listed in chief complaint"
+# }
+```
+
+---
+
+## 13. Prompt Engineering
+
+### 13.1 Rules
+- Keep instructions minimal and precise
+- Avoid redundant reminder blocks unless toggled by flag
+- Use numbered fields for multi-value attributes
+- Store prompts in `data/prompt/` as templates
+
+### 13.2 Template structure
+```python
+# data/prompt/extraction_base.py
+EXTRACTION_PROMPT = """Extract the following attributes from the text.
+
+For each attribute, provide:
+1. value: The extracted value
+2. provenance: Exact text span supporting this extraction  
+3. reasoning: Brief explanation of extraction logic
+
+{schema_block}
+
+Text:
+{input_text}
+
+Output as JSON."""
+
+def build_prompt(
+    text: str,
+    schema: dict,
+    *,
+    include_examples: bool = False,
+) -> str:
+    schema_block = format_schema(schema)
+    prompt = EXTRACTION_PROMPT.format(
+        schema_block=schema_block,
+        input_text=text,
+    )
+    
+    if include_examples:
+        prompt = add_examples(prompt, schema)
+    
+    return prompt
+```
+
+---
+
+## 14. Testing
+
+### 14.1 Test structure
+```python
+# tests/unit/test_extraction.py
+import pytest
+from src.core.extraction import extract_attributes
+
+class TestExtractAttributes:
+    """Unit tests for attribute extraction."""
+    
+    def test_extracts_single_attribute(self) -> None:
+        result = extract_attributes("Age: 45", SIMPLE_SCHEMA)
+        
+        assert len(result) == 1
+        assert result[0]["attribute"] == "age"
+        assert result[0]["value"] == "45"
+        assert "provenance" in result[0]
+    
+    def test_handles_missing_attribute(self) -> None:
+        result = extract_attributes("No age mentioned", SIMPLE_SCHEMA)
+        
+        assert result[0]["value"] is None
+        assert "not found" in result[0]["reasoning"].lower()
+    
+    @pytest.mark.parametrize("text,expected", [
+        ("Age 45", "45"),
+        ("45 years old", "45"),
+        ("forty-five", "45"),
+    ])
+    def test_age_variations(self, text: str, expected: str) -> None:
+        result = extract_attributes(text, SIMPLE_SCHEMA)
+        assert result[0]["value"] == expected
+```
+
+### 14.2 Quick sanity checks
+```python
+def sanity_check() -> None:
+    """Run after changes to verify basic functionality."""
+    # Test imports
+    from src.core import extraction
+    from src.utils import loaders
+    
+    # Test config loads
+    config = Config()
+    assert config.output_dir.exists()
+    
+    # Test basic extraction
+    result = extraction.extract_attributes("test", {})
+    assert isinstance(result, list)
+    
+    print("Sanity check passed")
+
+if __name__ == "__main__":
+    sanity_check()
+```
+
+### 14.3 Rules
+- Run quick sanity checks after changes when feasible
+- Keep new code import-safe (no side effects on import)
+- Use pytest fixtures for shared setup
+- Mark slow/integration tests: `@pytest.mark.slow`
+
+---
+
+## 15. Style Summary
+
+| Rule | Guidance |
+|------|----------|
+| Line length | 88-100 characters (Black/Ruff default) |
+| Quotes | Double quotes for strings |
+| Imports | Sorted, grouped (stdlib, third-party, local) |
+| Naming | `snake_case` functions/vars, `PascalCase` classes, `UPPER_CASE` constants |
+| Comments | ASCII only, minimal, explain *why* |
+| Formatting | Use Black or Ruff formatter |
+| Linting | Ruff with sensible rule set |
+
+---
+
+## 16. Pre-commit Checklist
+
+Before committing:
+
+- [ ] Type hints on all public functions
+- [ ] Docstrings on public API
+- [ ] No side effects on import
+- [ ] Tests pass (`pytest`)
+- [ ] Linter clean (`ruff check .`)
+- [ ] Formatter applied (`ruff format .`)
+- [ ] No hardcoded paths (use config/env)
+- [ ] Outputs go to `runs/` with timestamps
+- [ ] Errors have actionable messages
+- [ ] Debug logging gated by flag

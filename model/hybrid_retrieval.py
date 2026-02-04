@@ -110,7 +110,7 @@ def format_context_for_llm(retrieved_docs, include_metadata=False):
 
 def prepare_llm_prompt(query, context, system_instructions=None):
     """
-    Prepare a complete prompt for the LLM.
+    Prepare a complete prompt_text for the LLM.
 
     Args:
         query: The user's question
@@ -118,7 +118,7 @@ def prepare_llm_prompt(query, context, system_instructions=None):
         system_instructions: Optional system instructions for the LLM
 
     Returns:
-        str: Complete formatted prompt
+        str: Complete formatted prompt_text
     """
     if system_instructions is None:
         system_instructions = (
@@ -140,14 +140,14 @@ Answer:"""
 
 def prepare_llm_prompt_without_context(query,system_instructions=None):
     """
-    Prepare a complete prompt for the LLM, without supporting context
+    Prepare a complete prompt_text for the LLM, without supporting context
 
     Args:
         query: The user's question
         system_instructions: Optional system instructions for the LLM
 
     Returns:
-        str: Complete formatted prompt
+        str: Complete formatted prompt_text
     """
     if system_instructions is None:
         system_instructions = (

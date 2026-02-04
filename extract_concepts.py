@@ -1,154 +1,154 @@
+from __future__ import annotations
+
 """
-Example of using hybrid retrieval with papers and ontology.
+Extract concepts from an abstract using ontology context and few-shot examples.
+No RAG needed - ontology provided as static context, papers as examples.
+Enhanced with concept-to-ontology linking and HTML report generation.
 """
+import time
+import os
 import sys
+import contextlib
 import json
-import argparse
-from langchain_core.vectorstores import InMemoryVectorStore
+import logging
 
-from model.graph_rag import initialize_embedding_model, setup_graph_retriever
-from model.ontology import build_ontology_graph, create_ontology_documents, load_ontology
-from model.hybrid_retrieval import (
-    retrieve_hybrid,
-    format_context_for_llm,
-    prepare_llm_prompt,
-    prepare_llm_prompt_without_context,
-    print_retrieval_summary
+# Ensure project root is on sys.path for package imports when run as script
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from utils.config import ExtractionConfig
+from utils.logging.logger import configure_logging
+from utils.loaders.ontology_loader import (
+    load_midas_ontology,
+    start_background_ontology_loading,
+    finalize_ontology_loading,
 )
-from utils.extract_paper_attributes import create_paper_documents, add_bidirectional_edges
+from utils.llm.llm_utils import probe_llm_host
+from utils.llm.llm_client import send_to_llm, test_respond_ok
+from utils.ontology_linker.link_concepts import link_concepts_to_ontologies
+from utils.prompt.builders import (
+    prepare_and_display_prompt,
+    load_and_prepare_abstract,
+)
+from utils.prompt.examples import load_few_shot_examples
+from utils.parsers.extraction_parser import (
+    parse_and_display_extracted_data,
+)
+from utils.reporting.run_reports import generate_reports
 
-def read_abstract(abstract_path: str) -> str:
-    with open(abstract_path, "r", encoding="utf-8") as f:
-        abstract = f.read()
-    return abstract
+
+def _log_config(logger: logging.Logger, config: ExtractionConfig) -> None:
+    logger.info("Configuration: %s", config)
 
 
-def build_query(abstract: str) -> str:
-    """
-    Build a query that asks for extraction of paper attributes from an abstract.
-
-    Args:
-        abstract_path: Path to the text file containing the paper abstract
-
-    Returns:
-        Complete query string with instructions and abstract
-    """
-    query_template = """Given the paper abstract at the end of this prompt, report the status of each of these variables:
-    model_type (e.g. "agent-based", "SEIR compartmental", "network", "metapopulation")
-model_determinism (e.g. "deterministic", "stochastic", "both", "unspecified")
-pathogen_name (e.g. "SARS-CoV-2", "Influenza A(H1N1)", "Plasmodium falciparum")
-pathogen_type (e.g. "virus", "bacterium", "parasite", "fungus", "unspecified")
-host_species (e.g. "human", "cattle", "wild birds", "mosquito vector", "multi-host")
-primary_population (e.g. "general adult population", "school children", "healthcare workers", "men who have sex with men")
-population_setting_type (e.g. "community", "hospital", "long-term care facility", "school", "refugee camp")
-geographic_scope (e.g. "city-level", "sub-national", "national", "multi-country", "global")
-geographic_units (e.g. "New York City, USA", "Sierra Leone", "European Union", "Wuhan, China")
-historical_vs_hypothetical (e.g. "historical", "hypothetical future outbreak", "mixed", "unspecified")
-study_goal_category (e.g. "forecast/nowcast", "scenario analysis", "intervention evaluation", "parameter estimation", "methodological")
-intervention_present (e.g. "yes", "no", "unspecified")
-intervention_types (e.g. ["vaccination", "school closure"], ["testing and isolation", "contact tracing"], ["vector control"])
-data_used (e.g. ["surveillance case data"], ["hospital admissions", "mobility data"], ["no data (theoretical)"])
-key_outcome_measures (e.g. ["incidence", "hospitalizations", "deaths"], ["R0", "attack rate"], ["bed occupancy", "ICU demand"])
-code_available (e.g. "yes – GitHub", "no", "unspecified")"""
-
-    return query_template + "\n\n" + abstract
+def _run_sanity_checks(logger: logging.Logger, config: ExtractionConfig) -> bool:
+    logger.info("Running sanity check (test_respond_ok)...")
+    ok, raw = test_respond_ok(config.llm_model, config.llm_host, timeout_seconds=30, logger=logger)
+    logger.info("Sanity check OK: %s; response: %s", ok, raw[:120])
+    if not ok:
+        logger.error("Sanity check failed; probing host for diagnostics...")
+        probe_llm_host(config.llm_host)
+        return False
+    return True
 
 
 def main():
+    """Entry point for attribute extraction run."""
+    config = ExtractionConfig()
+    logger = configure_logging(debug=config.debug)
+    logger.info("Starting attribute extraction...")
+    _log_config(logger, config)
 
-    print("in main")
+    probe_llm_host(config.llm_host, logger=logger)
 
-    parser = argparse.ArgumentParser(description = "LLM Code for extracting details from infectious disease modeling abstracts")
-    parser.add_argument("-a","--Abstract",action="store_true",help="Abstract only in RAG input")
-    parser.add_argument("-n","--Norag",action="store_true", help="no rag")
-    args = parser.parse_args()
-    
-    # Configuration
-    ONTOLOGY_PATH = "midas-data.owl"
-    PAPERS_PATH = "./data/modeling_papers.json"
+    if config.run_sanity_check and not config.test_mode:
+        if not _run_sanity_checks(logger, config):
+            logger.error("Aborting run due to failed sanity check.")
+            return
 
-    # 1. Load and prepare ontology
-    print("Loading ontology...")
-    g, classes, properties = load_ontology(ONTOLOGY_PATH)
-    G = build_ontology_graph(g, classes, properties)
-    ontology_docs, label_map = create_ontology_documents(G)
+    if config.test_mode:
+        logger.info("TEST_MODE enabled; performing LLM ping only.")
+        ok, raw = test_respond_ok(config.llm_model, config.llm_host, timeout_seconds=30, logger=logger)
+        logger.info("Test mode result ok=%s response=%s", ok, raw[:120])
+        return
 
-    # 2. Load and prepare papers WITH edges to ontology
-    print("\nLoading papers and extracting ontology mentions...")
-    with open(PAPERS_PATH, "r", encoding="utf-8") as f:
-        papers = json.load(f)
-    paper_docs = create_paper_documents(papers, G)
-
-    # 3. Create bidirectional edges between papers and ontology
-    print("\nCreating bidirectional edges...")
-    ontology_docs = add_bidirectional_edges(ontology_docs, paper_docs)
-
-    print(f"\n✓ Loaded {len(paper_docs)} papers and {len(ontology_docs)} ontology concepts")
-    print(f"✓ Papers linked to ontology via 'mentions' edges")
-    print(f"✓ Ontology linked to papers via 'mentioned_by' edges")
-
-    # 4. Create vector store
-    print("\nCreating vector store and embeddings...")
-    embedding_model = initialize_embedding_model()
-    all_docs = ontology_docs + paper_docs
-
-    vector_store = InMemoryVectorStore.from_documents(all_docs, embedding_model)
-
-    # 5. Setup graph retriever with edge traversal enabled
-    print("\nSetting up GraphRetriever with edge traversal...")
-    graph_retriever = setup_graph_retriever(vector_store, include_papers=True)
-    print("✓ GraphRetriever configured to traverse:")
-    print("  - Paper -> mentions -> Ontology concepts")
-    print("  - Ontology -> mentioned_by -> Papers")
-    print("  - Ontology -> parents/children -> Related concepts")
-
-    # 5. Query with hybrid retrieval
-    
-    abstract = read_abstract("data/fred-abstract.txt")
-    query = build_query(abstract)
-    print(f"\nQuery: {query}\n")
-
-    if args.Abstract == True:
-        raginput = abstract
+    if config.enable_midas_ontology:
+        midas_graph, ontology_context, label_map, classes, properties = load_midas_ontology(str(config.ontology_path))
     else:
-        raginput = query
+        logger.info("MIDAS ontology loading disabled")
+        midas_graph, ontology_context, label_map, classes, properties = None, "", {}, [], []
 
-    if args.Norag is not True:
-        print("Proceeding with RAG")
+    examples_context = load_few_shot_examples(str(config.papers_path), config.num_examples, config.use_examples, logger=logger)
 
-        paper_results, ontology_results, all_results = retrieve_hybrid(
-            query=raginput,
-            vector_store=vector_store,
-            graph_retriever=graph_retriever,
-            k_papers=20,
-            k_ontology=20
-        )
+    abstract, query = load_and_prepare_abstract(
+        str(config.abstract_path),
+        include_examples=config.include_format_examples,
+        include_reminders=config.include_reminders,
+        include_few_shot=config.include_few_shot,
+        include_fields=config.include_fields,
+        include_ontologies=config.include_ontologies,
+        logger=logger,
+    )
 
-        # 6. Print summary
-        print_retrieval_summary(paper_results, ontology_results)
+    prompt = prepare_and_display_prompt(query, ontology_context, examples_context, logger=logger)
 
-        # 7. Format context for LLM
-        context = format_context_for_llm(all_results)
-
-        # 8. Prepare complete prompt
-        prompt = prepare_llm_prompt(query, context)
+    if config.enable_ontology_linking:
+        executor, background_tasks = start_background_ontology_loading()
     else:
-        print("Proceeding without rag")
-        prompt = prepare_llm_prompt_without_context(query)
+        executor, background_tasks = None, None
 
-    from langchain_ollama import ChatOllama
-    llm = ChatOllama(model="gpt-oss")
+    response = send_to_llm(
+        prompt=prompt,
+        llm_model=config.llm_model,
+        ollama_host=config.llm_host,
+        timeout_seconds=config.llm_timeout,
+        logger=logger,
+    )
 
-    print("\n" + "=" * 80)
-    print("SENDING TO OLLAMA")
-    print("=" * 80)
-    response = llm.invoke(prompt)
+    if config.enable_ontology_linking:
+        ontologies = finalize_ontology_loading(background_tasks, executor, midas_graph)
+    else:
+        logger.info("Ontology linking disabled")
+        ontologies = None
 
-    print("\n" + "=" * 80)
-    print("LLM RESPONSE")
-    print("=" * 80)
-    print(response.content)
+    extracted_data = parse_and_display_extracted_data(response.content, logger=logger)
+
+    if config.enable_ontology_linking and ontologies:
+        lookup_results = link_concepts_to_ontologies(extracted_data, ontologies, logger=logger)
+    else:
+        logger.info("Skipping ontology linking (disabled)")
+        lookup_results = []
+
+    output_html, json_output_file, json_output = generate_reports(
+        extracted_data, lookup_results, response.content, config.llm_model, str(config.abstract_path), logger=logger, output_dir=str(config.output_dir)
+    )
+
+    logger.info("EXTRACTION COMPLETE | HTML: %s | JSON: %s", output_html, json_output_file)
 
 
 if __name__ == "__main__":
-    main()
+    from datetime import datetime
+
+    class Tee:
+        """Write stdout to multiple streams (console + log file)."""
+        def __init__(self, *streams):
+            self.streams = streams
+
+        def write(self, data):
+            for stream in self.streams:
+                stream.write(data)
+
+        def flush(self):
+            for stream in self.streams:
+                stream.flush()
+
+    log_dir = os.path.join("data", "output", "runs")
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
+
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        tee = Tee(sys.stdout, log_file)
+        with contextlib.redirect_stdout(tee):
+            main()
+            print(f"\nRun log captured at {log_path}")

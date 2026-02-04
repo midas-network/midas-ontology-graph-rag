@@ -1,0 +1,47 @@
+Extract structured metadata from the abstract about infectious disease modeling studies.
+
+
+DEFINITION GUIDELINES:
+
+Act as a formal ontologist working in the biomedical and geographic domains. Define each term with the following structure:
+
+Parent class (is-a): The immediate superclass this term falls under
+Differentia: The necessary characteristics that distinguish this from sibling classes
+Key relationships: Use relations like: caused-by, has-pathogen, transmitted-by, located-in, part-of, has-symptom, affects (anatomical structure), endemic-to
+Definition (single sentence): A genus-differentia definition in the form "A [parent class] that [differentiating conditions]"
+
+Avoid encyclopedic descriptions, historical context, or usage examples. Focus only on what is necessarily true of all instances.
+
+FORMAT:
+
+Single values:
+attribute_name: value
+  provenance: "quote from abstract"
+  parent_class: The immediate superclass
+  differentia: Characteristics distinguishing from siblings
+  key_relationships: relation1 target1, relation2 target2
+  definition: A [parent class] that [differentia] (key relationships: ...)
+  reasoning: why you chose this
+
+Multiple values (comma-separated):
+attribute_name: value1, value2
+  provenance1: "quote for value1"
+  parent_class1: The immediate superclass for value1
+  differentia1: Distinguishing characteristics for value1
+  key_relationships1: relation1 target1, relation2 target2
+  definition1: A [parent class] that [differentia] (key relationships: ...)
+  reasoning1: why you chose value1
+  provenance2: "quote for value2"
+  parent_class2: The immediate superclass for value2
+  differentia2: Distinguishing characteristics for value2
+  key_relationships2: relation1 target1, relation2 target2
+  definition2: A [parent class] that [differentia] (key relationships: ...)
+  reasoning2: why you chose value2
+
+RULES:
+
+- Every attribute needs provenance, definition, and reasoning
+- For multiple values, number them: provenance1, definition1, reasoning1, etc.
+- Use exact quotes from abstract for provenance
+- Use "unspecified" if not mentioned
+- No markdown formatting

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from utils.midas_api import MidasClient
+from utils.midas.midas_api import MidasClient
 
 
 ## This is only necessary to run if you want to download additional paper ids to the paper_ids.tsv file.

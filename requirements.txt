@@ -9,3 +9,5 @@ langchain-graph-retriever~=0.8.0
 langchain-huggingface~=0.3.1
 sentence-transformers~=5.1.1
 langchain-ollama~=0.2.0
+jupyter~=1.0.0
+ipykernel~=6.29.0
