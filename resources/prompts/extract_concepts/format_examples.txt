@@ -1,0 +1,34 @@
+## FORMAT
+
+Single values:
+```
+attribute_name: value
+  provenance: "quote from abstract"
+  parent_class: The immediate superclass
+  differentia: Characteristics distinguishing from siblings
+  key_relationships: relation1 target1, relation2 target2
+  definition: A [parent class] that [differentia] (key relationships: ...)
+  reasoning: why you chose this
+```
+
+Multiple values (comma-separated):
+```
+attribute_name: value1, value2, value3
+  provenance1: "quote for value1"
+  parent_class1: ...
+  differentia1: ...
+  key_relationships1: ...
+  definition1: ...
+  reasoning1: why you chose value1
+  provenance2: "quote for value2"
+  parent_class2: ...
+  differentia2: ...
+  key_relationships2: ...
+  definition2: ...
+  reasoning2: why you chose value2
+  provenance3: "quote for value3"
+  ...
+```
+
+---
+

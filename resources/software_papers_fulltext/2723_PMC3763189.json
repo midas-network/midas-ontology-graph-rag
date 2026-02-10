@@ -1,0 +1,9 @@
+{
+  "paperID": 2723,
+  "pmcid": "PMC3763189",
+  "original_title": "Removing the regional level from the Niger vaccine supply chain.",
+  "title": "Removing the Regional Level from the Niger Vaccine Supply Chain",
+  "abstract": "Since many of the world’s vaccine supply chains contain multiple levels, the question remains of whether removing a level could bring efficiencies. We utilized HERMES to generate a detailed discrete-event simulation model of Niger’s vaccine supply chain and compare the current four-tier (central, regional, district and integrated health center levels) with a modified three-tier structure (removing the regional level). Different scenarios explored various accompanying shipping policies and frequencies. Removing the regional level and implementing a collection-based shipping policy from the district stores increases vaccine availability from a mean of 70% to 100% when districts could collect vaccines at least weekly. Alternatively, implementing a delivery-based shipping policy from the central store monthly in three-route and eight-route scenarios only increases vaccine availability to 87%. Restricting central-to district vaccine shipments to a quarterly schedule for three-route and eight-route scenarios reduces vaccine availability to 49%. The collection-based shipping policy from district stores reduces supply chain logistics cost per dose administered from US$0.14 at baseline to US$0.13 after removing the regional level. Removing the regional level from Niger’s vaccine supply chain can substantially improve vaccine availability as long as certain concomitant adjustments to shipping policies and frequencies are implemented.",
+  "body": "",
+  "xml_size": 10344
+}

@@ -1,0 +1,9 @@
+{
+  "paperID": 12862,
+  "pmcid": "PMC6697579",
+  "original_title": "HemOnc: A new standard vocabulary for chemotherapy regimen representation in the OMOP common data model.",
+  "title": "HemOnc: a New Standard Vocabulary for Chemotherapy Regimen Representation in the OMOP Common Data Model",
+  "abstract": "Systematic application of observational data to the understanding of impacts of cancer treatments requires detailed information models allowing meaningful comparisons between treatment regimens. Unfortunately, details of systemic therapies are scarce in registries and data warehouses, primarily due to the complex nature of the protocols and a lack of standardization. Since 2011, we have been creating a curated and semi-structured website of chemotherapy regimens, HemOnc.org. In coordination with the Observational Health Data Sciences and Informatics (OHDSI) Oncology Subgroup, we have transformed a substantial subset of this content into the OMOP common data model, with bindings to multiple external vocabularies, e.g., RxNorm and the National Cancer Institute Thesaurus. Currently, there are >73,000 concepts and >177,000 relationships in the full vocabulary. Content related to the definition and composition of chemotherapy regimens has been released within the ATHENA tool (athena.ohdsi.org) for widespread utilization by the OHDSI membership. Here, we describe the rationale, data model, and initial contents of the HemOnc vocabulary along with several use cases for which it may be valuable.",
+  "body": "",
+  "xml_size": 9490
+}

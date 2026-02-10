@@ -1,0 +1,9 @@
+{
+  "paperID": 5952,
+  "pmcid": "PMC2907208",
+  "original_title": "Searching for footprints of positive selection in whole-genome SNP data from nonequilibrium populations.",
+  "title": "Searching for Footprints of Positive Selection in Whole-Genome SNP Data From Nonequilibrium Populations",
+  "abstract": "A major goal of population genomics is to reconstruct the history of natural populations and to infer the neutral and selective scenarios that can explain the present-day polymorphism patterns. However, the separation between neutral and selective hypotheses has proven hard, mainly because both may predict similar patterns in the genome. This study focuses on the development of methods that can be used to distinguish neutral from selective hypotheses in equilibrium and nonequilibrium populations. These methods utilize a combination of statistics on the basis of the site frequency spectrum (SFS) and linkage disequilibrium (LD). We investigate the patterns of genetic variation along recombining chromosomes using a multitude of comparisons between neutral and selective hypotheses, such as selection or neutrality in equilibrium and nonequilibrium populations and recurrent selection models. We perform hypothesis testing using the classical P-value approach, but we also introduce methods from the machine-learning field. We demonstrate that the combination of SFS- and LD-based statistics increases the power to detect recent positive selection in populations that have experienced past demographic changes.",
+  "body": "",
+  "xml_size": 7421
+}

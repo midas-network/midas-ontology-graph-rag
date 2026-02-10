@@ -1,0 +1,120 @@
+# FIELDS TO EXTRACT
+
+### Model Characteristics
+
+**model_type**
+The computational/mathematical framework used.
+- agent-based, individual-based
+- SEIR compartmental, SIR compartmental, SEIRS compartmental
+- network, metapopulation, branching process
+- statistical/regression, machine learning
+- hybrid (compartmental + agent-based), microsimulation
+
+**model_determinism**
+Whether the model incorporates randomness.
+- deterministic | stochastic | both | unspecified
+- Agent-based models are typically stochastic; ODE-based compartmental models are typically deterministic. Use domain knowledge to infer if not stated.
+
+---
+
+### Pathogen & Disease
+
+**pathogen_name**
+Scientific or common name of the causative agent. IMPORTANT: List both the common name AND the scientific name if the scientific name can be reliably inferred from domain knowledge (e.g., malaria → also list Plasmodium falciparum unless another species is specified).
+
+**pathogen_type**
+Biological classification: virus | bacterium | parasite | fungus | prion | unspecified
+
+**disease_name**
+Clinical name of the disease.
+
+---
+
+### Population & Setting
+
+**host_species**
+The species affected or modeled.
+
+**primary_population**
+The main human population subgroup(s) studied. IMPORTANT: Consider ALL populations relevant to the study. If the study examines disease importation via travel/mobility, include "travelers." If no specific subgroup is targeted, include "general population." Multiple values are common.
+
+**population_setting_type**
+The physical/social context of transmission.
+
+---
+
+### Geography & Time
+
+**geographic_scope**
+The spatial scale of the study. IMPORTANT: Select ALL applicable scales. A study can be both "sub-national" and "national" if it examines dynamics across these scales.
+
+**geographic_units**
+Specific locations named or clearly referenced in the study. IMPORTANT: Be thorough. Include all countries, regions, cities, islands, and sub-regions mentioned. Check the title for locations not repeated in the abstract. If the study discusses movement between regions, include BOTH the origin and destination regions.
+
+**study_dates_start** / **study_dates_end**
+Format: YYYY-MM-DD, YYYY-MM, or YYYY. If different data sources cover different time periods, report the overall range (earliest start to latest end).
+
+**historical_vs_hypothetical**
+- If the study uses real-world observed data from a past period → "historical"
+- If the study projects future scenarios → "hypothetical future outbreak"
+- If both → "mixed"
+- Only use "unspecified" if truly ambiguous
+
+---
+
+### Study Purpose
+
+**study_goal_category**
+The primary analytical objective(s). Select all that apply. Interpret the study's stated aims broadly — e.g., "understand drivers of importation" maps to "transmission dynamics/drivers."
+
+---
+
+### Interventions
+
+**intervention_present**
+- yes | no | unspecified
+- If the abstract does not mention any intervention, use "no" rather than "unspecified."
+
+**intervention_types** (if present)
+
+---
+
+### Data & Methods
+
+**data_used**
+Types of data used. IMPORTANT: Be exhaustive. Check the title for data types. Common patterns:
+- "travel survey" in the title → include "travel survey"
+- "case data" in the title → include "case data" or "surveillance case data"
+- "mobility data" → include "mobility data"
+- "climate" or "rainfall" → include BOTH "climate data" AND "rainfall data" if rainfall is a subset of climate data used
+- "survey" → include the specific survey type (e.g., "travel survey", "contact survey")
+
+**data_source**
+Specific repositories or datasets named. Use "unspecified" if not named.
+
+**calibration_mentioned**
+- yes | no
+- Look for ANY mention of model fitting, validation, comparison to data, correlation analysis, or statistical calibration.
+
+**calibration_techniques**
+Include any statistical or analytical technique used to fit, validate, or compare model outputs to observed data, including: correlation, regression, MLE, MCMC, ABC, least squares, etc.
+
+---
+
+### Outcomes & Outputs
+
+**key_outcome_measures**
+IMPORTANT: Infer from what the model tracks and reports, not just explicitly labeled "outcomes." If the model produces case counts → "cases." If it examines incidence patterns → "incidence." If hospitalizations are reported → "hospitalizations." Be thorough.
+
+---
+
+### Reproducibility
+
+**code_available**
+- If code repository is mentioned → "yes — [repository]"
+- If stated as available upon request → "available upon request"
+- If the abstract says nothing about code → "unspecified"
+- Only use "no" if the abstract explicitly states code is not available
+
+---
+

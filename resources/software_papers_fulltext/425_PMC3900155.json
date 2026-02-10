@@ -1,0 +1,9 @@
+{
+  "paperID": 425,
+  "pmcid": "PMC3900155",
+  "original_title": "Apollo: giving application developers a single point of access to public health models using structured vocabularies and Web services.",
+  "title": "Apollo: Giving application developers a single point of access to public health models using structured vocabularies and Web services",
+  "abstract": "This paper describes the Apollo Web Services and Apollo-SV, its related ontology. The Apollo Web Services give an end-user application a single point of access to multiple epidemic simulators. An end user can specify an analytic problem—which we define as a configuration and a query of results—exactly once and submit it to multiple epidemic simulators. The end user represents the analytic problem using a standard syntax and vocabulary, not the native languages of the simulators. We have demonstrated the feasibility of this design by implementing a set of Apollo services that provide access to two epidemic simulators and two visualizer services.",
+  "body": "",
+  "xml_size": 6974
+}

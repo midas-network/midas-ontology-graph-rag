@@ -1,0 +1,9 @@
+{
+  "paperID": 1980,
+  "pmcid": "PMC1560630",
+  "original_title": "Key design elements of a data utility for national biosurveillance: event-driven architecture, caching, and Web service model.",
+  "title": "Key Design Elements of a Data Utility for National Biosurveillance: Event-driven\nArchitecture, Caching, and Web Service Model",
+  "abstract": "The National Retail Data Monitor (NRDM) has monitored over-the-counter (OTC) medication\nsales in the United States since December 2002. The NRDM\ncollects data from over 18,600 retail stores and processes over 0.6 million\nsales records per day. This paper describes key architectural\nfeatures that we have found necessary for a data utility component in\na national biosurveillance system. These elements include event-driven\narchitecture to provide analyses of data in near real time, multiple\nlevels of caching to improve query response time, high availability\nthrough the use of clustered servers, scalable data storage through the\nuse of storage area networks and a web-service function for interoperation\nwith affiliated systems. The methods and architectural principles are relevant to the design of\nany production data utility for public health surveillance—systems\nthat collect data from multiple sources in near real time for use\nby analytic programs and user interfaces that have substantial requirements\nfor time-series data aggregated in multiple dimensions.",
+  "body": "",
+  "xml_size": 6411
+}

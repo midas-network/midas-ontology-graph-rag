@@ -1,0 +1,9 @@
+{
+  "paperID": 3307,
+  "pmcid": "PMC3715346",
+  "original_title": "The Regional Healthcare Ecosystem Analyst (RHEA): a simulation modeling tool to assist infectious disease control in a health system.",
+  "title": "The Regional Healthcare Ecosystem Analyst (RHEA): a simulation modeling tool to assist infectious disease control in a health system",
+  "abstract": "As healthcare systems continue to expand and interconnect with each other through patient sharing, administrators, policy makers, infection control specialists, and other decision makers may have to take account of the entire healthcare ‘ecosystem’ in infection control. We developed a software tool, the Regional Healthcare Ecosystem Analyst (RHEA), that can accept user-inputted data to rapidly create a detailed agent-based simulation model (ABM) of the healthcare ecosystem (ie, all healthcare facilities, their adjoining community, and patient flow among the facilities) of any region to better understand the spread and control of infectious diseases. To demonstrate RHEA's capabilities, we fed extensive data from Orange County, California, USA, into RHEA to create an ABM of a healthcare ecosystem and simulate the spread and control of methicillin-resistant Staphylococcus aureus. Various experiments explored the effects of changing different parameters (eg, degree of transmission, length of stay, and bed capacity). Our model emphasizes how individual healthcare facilities are components of integrated and dynamic networks connected via patient movement and how occurrences in one healthcare facility may affect many other healthcare facilities. A decision maker can utilize RHEA to generate a detailed ABM of any healthcare system of interest, which in turn can serve as a virtual laboratory to test different policies and interventions.",
+  "body": "",
+  "xml_size": 11368
+}

@@ -1,0 +1,9 @@
+{
+  "paperID": 23990,
+  "pmcid": "PMC7756619",
+  "original_title": "Systems biology markup language (SBML) level 3 package: multistate, multicomponent and multicompartment species, version 1, release 2.",
+  "title": "Systems biology markup language (SBML) level 3 package: multistate, multicomponent and multicompartment species, version 1, release 2",
+  "abstract": "Rule-based modeling is an approach that permits constructing reaction networks based on the specification of rules for molecular interactions and transformations. These rules can encompass details such as the interacting sub-molecular domains and the states and binding status of the involved components. Conceptually, fine-grained spatial information such as locations can also be provided. Through “wildcards” representing component states, entire families of molecule complexes sharing certain properties can be specified as patterns. This can significantly simplify the definition of models involving species with multiple components, multiple states, and multiple compartments. The systems biology markup language (SBML) Level 3 Multi Package Version 1 extends the SBML Level 3 Version 1 core with the “type” concept in the Species and Compartment classes. Therefore, reaction rules may contain species that can be patterns and exist in multiple locations. Multiple software tools such as Simmune and BioNetGen support this standard that thus also becomes a medium for exchanging rule-based models. This document provides the specification for Release 2 of Version 1 of the SBML Level 3 Multi package. No design changes have been made to the description of models between Release 1 and Release 2; changes are restricted to the correction of errata and the addition of clarifications.",
+  "body": "",
+  "xml_size": 15322
+}

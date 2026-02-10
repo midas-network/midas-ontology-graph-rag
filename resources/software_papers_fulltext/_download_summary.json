@@ -1,0 +1,752 @@
+{
+  "total": 124,
+  "success": 124,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "paperID": 20,
+      "pmcid": "PMC6204670",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 24,
+      "pmcid": "PMC4612219",
+      "status": "success",
+      "body_length": 7816
+    },
+    {
+      "paperID": 25,
+      "pmcid": "PMC3866560",
+      "status": "success",
+      "body_length": 8946
+    },
+    {
+      "paperID": 233,
+      "pmcid": "PMC3816335",
+      "status": "success",
+      "body_length": 31488
+    },
+    {
+      "paperID": 288,
+      "pmcid": "PMC3549804",
+      "status": "success",
+      "body_length": 41795
+    },
+    {
+      "paperID": 342,
+      "pmcid": "PMC5120338",
+      "status": "success",
+      "body_length": 38314
+    },
+    {
+      "paperID": 425,
+      "pmcid": "PMC3900155",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 496,
+      "pmcid": "PMC2787530",
+      "status": "success",
+      "body_length": 32393
+    },
+    {
+      "paperID": 526,
+      "pmcid": "PMC3900386",
+      "status": "success",
+      "body_length": 45696
+    },
+    {
+      "paperID": 5670,
+      "pmcid": "PMC4450454",
+      "status": "success",
+      "body_length": 35611
+    },
+    {
+      "paperID": 5721,
+      "pmcid": "PMC2110895",
+      "status": "success",
+      "body_length": 28112
+    },
+    {
+      "paperID": 5745,
+      "pmcid": "PMC4338386",
+      "status": "success",
+      "body_length": 23841
+    },
+    {
+      "paperID": 5765,
+      "pmcid": "PMC4537111",
+      "status": "success",
+      "body_length": 56957
+    },
+    {
+      "paperID": 5901,
+      "pmcid": "PMC5654261",
+      "status": "success",
+      "body_length": 21041
+    },
+    {
+      "paperID": 5952,
+      "pmcid": "PMC2907208",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 7604,
+      "pmcid": "PMC3521385",
+      "status": "success",
+      "body_length": 8842
+    },
+    {
+      "paperID": 7682,
+      "pmcid": "PMC5731493",
+      "status": "success",
+      "body_length": 31553
+    },
+    {
+      "paperID": 7688,
+      "pmcid": "PMC6355096",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 7706,
+      "pmcid": "PMC3389766",
+      "status": "success",
+      "body_length": 7280
+    },
+    {
+      "paperID": 7717,
+      "pmcid": "PMC4824126",
+      "status": "success",
+      "body_length": 7680
+    },
+    {
+      "paperID": 7720,
+      "pmcid": "PMC3431219",
+      "status": "success",
+      "body_length": 50898
+    },
+    {
+      "paperID": 7726,
+      "pmcid": "PMC2518932",
+      "status": "success",
+      "body_length": 37784
+    },
+    {
+      "paperID": 7987,
+      "pmcid": "PMC4769743",
+      "status": "success",
+      "body_length": 20959
+    },
+    {
+      "paperID": 8180,
+      "pmcid": "PMC5324298",
+      "status": "success",
+      "body_length": 50653
+    },
+    {
+      "paperID": 8412,
+      "pmcid": "PMC3626834",
+      "status": "success",
+      "body_length": 25510
+    },
+    {
+      "paperID": 9660,
+      "pmcid": "PMC3440302",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 9664,
+      "pmcid": "PMC5210586",
+      "status": "success",
+      "body_length": 26617
+    },
+    {
+      "paperID": 9667,
+      "pmcid": "PMC6381768",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 10550,
+      "pmcid": "PMC5394686",
+      "status": "success",
+      "body_length": 30199
+    },
+    {
+      "paperID": 10851,
+      "pmcid": "PMC6107375",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 10883,
+      "pmcid": "PMC7014720",
+      "status": "success",
+      "body_length": 33311
+    },
+    {
+      "paperID": 11046,
+      "pmcid": "PMC4301600",
+      "status": "success",
+      "body_length": 46493
+    },
+    {
+      "paperID": 11323,
+      "pmcid": "PMC7319462",
+      "status": "success",
+      "body_length": 25687
+    },
+    {
+      "paperID": 11325,
+      "pmcid": "PMC5796597",
+      "status": "success",
+      "body_length": 53349
+    },
+    {
+      "paperID": 11647,
+      "pmcid": "PMC5860116",
+      "status": "success",
+      "body_length": 6391
+    },
+    {
+      "paperID": 11724,
+      "pmcid": "PMC6366910",
+      "status": "success",
+      "body_length": 21408
+    },
+    {
+      "paperID": 11806,
+      "pmcid": "PMC6764089",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 11951,
+      "pmcid": "PMC5082933",
+      "status": "success",
+      "body_length": 29908
+    },
+    {
+      "paperID": 11998,
+      "pmcid": "PMC6659240",
+      "status": "success",
+      "body_length": 78521
+    },
+    {
+      "paperID": 11999,
+      "pmcid": "PMC6602452",
+      "status": "success",
+      "body_length": 28782
+    },
+    {
+      "paperID": 12001,
+      "pmcid": "PMC6821242",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 12093,
+      "pmcid": "PMC6853675",
+      "status": "success",
+      "body_length": 34297
+    },
+    {
+      "paperID": 12094,
+      "pmcid": "PMC5952413",
+      "status": "success",
+      "body_length": 11735
+    },
+    {
+      "paperID": 12221,
+      "pmcid": "PMC6509961",
+      "status": "success",
+      "body_length": 22714
+    },
+    {
+      "paperID": 557,
+      "pmcid": "PMC5793812",
+      "status": "success",
+      "body_length": 22240
+    },
+    {
+      "paperID": 593,
+      "pmcid": "PMC3488134",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 671,
+      "pmcid": "PMC4236011",
+      "status": "success",
+      "body_length": 27163
+    },
+    {
+      "paperID": 709,
+      "pmcid": "PMC3879298",
+      "status": "success",
+      "body_length": 61721
+    },
+    {
+      "paperID": 729,
+      "pmcid": "PMC4052784",
+      "status": "success",
+      "body_length": 52301
+    },
+    {
+      "paperID": 970,
+      "pmcid": "PMC3406005",
+      "status": "success",
+      "body_length": 18391
+    },
+    {
+      "paperID": 12302,
+      "pmcid": "PMC3962542",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 12414,
+      "pmcid": "PMC6612835",
+      "status": "success",
+      "body_length": 31647
+    },
+    {
+      "paperID": 12469,
+      "pmcid": "PMC7592912",
+      "status": "success",
+      "body_length": 6974
+    },
+    {
+      "paperID": 12772,
+      "pmcid": "PMC7656677",
+      "status": "success",
+      "body_length": 19806
+    },
+    {
+      "paperID": 12826,
+      "pmcid": "PMC5850291",
+      "status": "success",
+      "body_length": 17500
+    },
+    {
+      "paperID": 12862,
+      "pmcid": "PMC6697579",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 14036,
+      "pmcid": "PMC3009726",
+      "status": "success",
+      "body_length": 20544
+    },
+    {
+      "paperID": 14561,
+      "pmcid": "PMC8449872",
+      "status": "success",
+      "body_length": 21134
+    },
+    {
+      "paperID": 14578,
+      "pmcid": "PMC8170388",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 14588,
+      "pmcid": "PMC6379124",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 15740,
+      "pmcid": "PMC9002473",
+      "status": "success",
+      "body_length": 78888
+    },
+    {
+      "paperID": 16029,
+      "pmcid": "PMC9110363",
+      "status": "success",
+      "body_length": 35516
+    },
+    {
+      "paperID": 17213,
+      "pmcid": "PMC10019712",
+      "status": "success",
+      "body_length": 15460
+    },
+    {
+      "paperID": 1132,
+      "pmcid": "PMC4990825",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 1151,
+      "pmcid": "PMC3338707",
+      "status": "success",
+      "body_length": 27563
+    },
+    {
+      "paperID": 1222,
+      "pmcid": "PMC3496579",
+      "status": "success",
+      "body_length": 40590
+    },
+    {
+      "paperID": 1225,
+      "pmcid": "PMC6251172",
+      "status": "success",
+      "body_length": 33657
+    },
+    {
+      "paperID": 1399,
+      "pmcid": "PMC3287481",
+      "status": "success",
+      "body_length": 37388
+    },
+    {
+      "paperID": 1422,
+      "pmcid": "PMC6488660",
+      "status": "success",
+      "body_length": 66530
+    },
+    {
+      "paperID": 1445,
+      "pmcid": "PMC2813259",
+      "status": "success",
+      "body_length": 27598
+    },
+    {
+      "paperID": 1471,
+      "pmcid": "PMC3852955",
+      "status": "success",
+      "body_length": 38050
+    },
+    {
+      "paperID": 1584,
+      "pmcid": "PMC2274789",
+      "status": "success",
+      "body_length": 35493
+    },
+    {
+      "paperID": 18390,
+      "pmcid": "PMC9834133",
+      "status": "success",
+      "body_length": 89694
+    },
+    {
+      "paperID": 20035,
+      "pmcid": "PMC10991582",
+      "status": "success",
+      "body_length": 25680
+    },
+    {
+      "paperID": 20435,
+      "pmcid": "PMC11154842",
+      "status": "success",
+      "body_length": 72542
+    },
+    {
+      "paperID": 20529,
+      "pmcid": "PMC11176426",
+      "status": "success",
+      "body_length": 35181
+    },
+    {
+      "paperID": 22196,
+      "pmcid": "PMC11771024",
+      "status": "success",
+      "body_length": 49592
+    },
+    {
+      "paperID": 22672,
+      "pmcid": "PMC11109959",
+      "status": "success",
+      "body_length": 61100
+    },
+    {
+      "paperID": 22696,
+      "pmcid": "PMC6540566",
+      "status": "success",
+      "body_length": 35519
+    },
+    {
+      "paperID": 22698,
+      "pmcid": "PMC4919894",
+      "status": "success",
+      "body_length": 44596
+    },
+    {
+      "paperID": 22713,
+      "pmcid": "PMC7292388",
+      "status": "success",
+      "body_length": 42525
+    },
+    {
+      "paperID": 23192,
+      "pmcid": "PMC12099329",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 1676,
+      "pmcid": "PMC3592980",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 1853,
+      "pmcid": "PMC5771499",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 1980,
+      "pmcid": "PMC1560630",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 2130,
+      "pmcid": "PMC6683435",
+      "status": "success",
+      "body_length": 49939
+    },
+    {
+      "paperID": 23608,
+      "pmcid": "PMC12291348",
+      "status": "success",
+      "body_length": 89909
+    },
+    {
+      "paperID": 23748,
+      "pmcid": "PMC12331125",
+      "status": "success",
+      "body_length": 56972
+    },
+    {
+      "paperID": 23979,
+      "pmcid": "PMC11324519",
+      "status": "success",
+      "body_length": 70888
+    },
+    {
+      "paperID": 23990,
+      "pmcid": "PMC7756619",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 2297,
+      "pmcid": "PMC4331705",
+      "status": "success",
+      "body_length": 39728
+    },
+    {
+      "paperID": 2331,
+      "pmcid": "PMC3375642",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 2415,
+      "pmcid": "PMC4058532",
+      "status": "success",
+      "body_length": 13359
+    },
+    {
+      "paperID": 2723,
+      "pmcid": "PMC3763189",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 2985,
+      "pmcid": "PMC4578688",
+      "status": "success",
+      "body_length": 76463
+    },
+    {
+      "paperID": 3086,
+      "pmcid": "PMC2543030",
+      "status": "success",
+      "body_length": 42628
+    },
+    {
+      "paperID": 3100,
+      "pmcid": "PMC4989460",
+      "status": "success",
+      "body_length": 41797
+    },
+    {
+      "paperID": 3210,
+      "pmcid": "PMC3048541",
+      "status": "success",
+      "body_length": 45009
+    },
+    {
+      "paperID": 3307,
+      "pmcid": "PMC3715346",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 3369,
+      "pmcid": "PMC5335794",
+      "status": "success",
+      "body_length": 42909
+    },
+    {
+      "paperID": 3460,
+      "pmcid": "PMC4304363",
+      "status": "success",
+      "body_length": 17546
+    },
+    {
+      "paperID": 3516,
+      "pmcid": "PMC2687026",
+      "status": "success",
+      "body_length": 24581
+    },
+    {
+      "paperID": 3552,
+      "pmcid": "PMC5540821",
+      "status": "success",
+      "body_length": 11189
+    },
+    {
+      "paperID": 4171,
+      "pmcid": "PMC6891986",
+      "status": "success",
+      "body_length": 135293
+    },
+    {
+      "paperID": 4187,
+      "pmcid": "PMC6060545",
+      "status": "success",
+      "body_length": 11693
+    },
+    {
+      "paperID": 4374,
+      "pmcid": "PMC3394420",
+      "status": "success",
+      "body_length": 34876
+    },
+    {
+      "paperID": 4612,
+      "pmcid": "PMC4177671",
+      "status": "success",
+      "body_length": 38186
+    },
+    {
+      "paperID": 4700,
+      "pmcid": "PMC4795633",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 4711,
+      "pmcid": "PMC4532456",
+      "status": "success",
+      "body_length": 57258
+    },
+    {
+      "paperID": 4781,
+      "pmcid": "PMC4812706",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 4845,
+      "pmcid": "PMC5466693",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 4984,
+      "pmcid": "PMC5995201",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 5010,
+      "pmcid": "PMC6349385",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 5027,
+      "pmcid": "PMC6247931",
+      "status": "success",
+      "body_length": 7059
+    },
+    {
+      "paperID": 5090,
+      "pmcid": "PMC6258546",
+      "status": "success",
+      "body_length": 31800
+    },
+    {
+      "paperID": 5104,
+      "pmcid": "PMC6314628",
+      "status": "success",
+      "body_length": 35758
+    },
+    {
+      "paperID": 5139,
+      "pmcid": "PMC6457559",
+      "status": "success",
+      "body_length": 44298
+    },
+    {
+      "paperID": 5219,
+      "pmcid": "PMC169008",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 5223,
+      "pmcid": "PMC1314894",
+      "status": "success",
+      "body_length": 40803
+    },
+    {
+      "paperID": 5229,
+      "pmcid": "PMC2564732",
+      "status": "success",
+      "body_length": 37822
+    },
+    {
+      "paperID": 5271,
+      "pmcid": "PMC5850352",
+      "status": "success",
+      "body_length": 45151
+    },
+    {
+      "paperID": 5281,
+      "pmcid": "PMC5857373",
+      "status": "success",
+      "body_length": 22412
+    },
+    {
+      "paperID": 5347,
+      "pmcid": "PMC3586808",
+      "status": "success",
+      "body_length": 0
+    },
+    {
+      "paperID": 5387,
+      "pmcid": "PMC6938382",
+      "status": "success",
+      "body_length": 64777
+    }
+  ]
+}

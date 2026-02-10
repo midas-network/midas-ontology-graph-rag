@@ -1,0 +1,9 @@
+{
+  "paperID": 9667,
+  "pmcid": "PMC6381768",
+  "original_title": "NLPReViz: an interactive tool for natural language processing on clinical text.",
+  "title": "NLPReViz: an interactive tool for natural language processing on clinical text",
+  "abstract": "The gap between domain experts and natural language processing expertise is a barrier to extracting understanding from clinical text. We describe a prototype tool for interactive review and revision of natural language processing models of binary concepts extracted from clinical notes. We evaluated our prototype in a user study involving 9 physicians, who used our tool to build and revise models for 2 colonoscopy quality variables. We report changes in performance relative to the quantity of feedback. Using initial training sets as small as 10 documents, expert review led to final F1scores for the “appendiceal-orifice” variable between 0.78 and 0.91 (with improvements ranging from 13.26% to 29.90%). F1for “biopsy” ranged between 0.88 and 0.94 (−1.52% to 11.74% improvements). The average System Usability Scale score was 70.56. Subjective feedback also suggests possible design improvements.",
+  "body": "",
+  "xml_size": 9310
+}

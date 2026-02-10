@@ -692,3 +692,170 @@ Before committing:
 - [ ] Outputs go to `runs/` with timestamps
 - [ ] Errors have actionable messages
 - [ ] Debug logging gated by flag
+
+---
+
+## 17. Output Formatting for Gold Standard Evaluation
+
+Format all evaluation output following these guidelines to maximize readability for data scientists.
+
+### 17.1 Run Header
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  MIDAS-LLM GOLD STANDARD EVALUATION                                          ║
+║  Started: 2026-02-04 21:06:36                                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+LLM Host: http://gpu-n28:34733
+Available Models: llama3.1:8b, mistral:7b, adrienbrault/biomistral-7b:Q4_K_M
+```
+
+### 17.2 Configuration Table
+
+Use clean aligned columns with clear groupings:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ CONFIGURATION                                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Paths                                                           │
+│   ontology_path           data/ontologies                       │
+│   output_dir              data/output/runs                      │
+│   papers_path             data/modeling_papers.json             │
+│   abstract_path           data/fred-abstract.txt                │
+│                                                                 │
+│ Feature Flags                                                   │
+│   enable_ontology_linking   ○                                   │
+│   enable_midas_ontology     ○                                   │
+│   include_format_examples   ○                                   │
+│   include_reminders         ○                                   │
+│   include_few_shot          ○                                   │
+│   include_fields            ●                                   │
+│   include_ontologies        ○                                   │
+│   use_examples              ○                                   │
+│   simple_prompt             ○                                   │
+│   run_sanity_check          ●                                   │
+│                                                                 │
+│ LLM Settings                                                    │
+│   llm_model               mistral:7b                            │
+│   llm_models              mistral:7b, llama3.1:8b               │
+│   llm_timeout             300s                                  │
+│   num_examples            2                                     │
+└─────────────────────────────────────────────────────────────────┘
+
+Legend: ● = enabled   ○ = disabled
+```
+
+### 17.3 Per-Abstract Evaluation
+
+**Header:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ABSTRACT 1/8: Integrating mobility, travel survey, and malaria case data...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Model Results (Compact View):**
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ MODEL: mistral:7b                                                            │
+│ Extracted 22 attributes in 17.2s                                             │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ EXTRACTION RESULTS                                                           │
+│                                                                              │
+│ Pathogen & Disease                                                           │
+│   pathogen_name      Plasmodium falciparum (malaria parasite)                │
+│   pathogen_type      parasite                                                │
+│   disease_name       malaria                                                 │
+│                                                                              │
+│ Population & Setting                                                         │
+│   host_species       human                                                   │
+│   primary_population not specified                                           │
+│   setting_type       community (urban)                                       │
+│                                                                              │
+│ Geography & Time                                                             │
+│   geographic_scope   local/city-level (sub-national)                         │
+│   geographic_units   Zanzibar, Tanga, Dar es Salaam                          │
+│   study_dates        May 2022 → unspecified                                  │
+│   temporal_type      historical                                              │
+│                                                                              │
+│ Study Characteristics                                                        │
+│   goal_category      transmission dynamics/drivers                           │
+│   intervention       unspecified                                             │
+│   data_used          surveys, digital mobility data, rainfall data           │
+│   key_outcomes       incidence, travel-associated cases, seasonality         │
+│   code_available     unspecified                                             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Evaluation Scorecard:**
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ EVALUATION: mistral:7b                                                       │
+├────────────────┬────────────────┬────────────────┬───────────────────────────┤
+│ Recall         │ Precision      │ F1 Score       │ Details                   │
+│ 68.75%         │ 100.00%        │ 81.48%         │ 22 hits, 12 miss, 0 FP    │
+└────────────────┴────────────────┴────────────────┴───────────────────────────┘
+
+HITS (22)                                              MISSES (12)
+──────────────────────────────────────────────────     ────────────────────────
+✓ pathogen_name    P.falciparum → P.falciparum         ✗ pathogen_name: malaria
+✓ pathogen_type    parasite → parasite                 ✗ primary_population: general population
+✓ disease_name     malaria → malaria                   ✗ geographic_scope: sub-national
+✓ host_species     human → human                       ✗ geographic_units: Unguja
+✓ geographic_units Zanzibar → Zanzibar                 ✗ geographic_units: Tanga
+✓ geographic_units Tanga → Tanzania                    ✗ geographic_units: Morogoro
+✓ geographic_units Dar es Salaam → Dar es Salaam       ✗ data_used: travel survey
+✓ study_dates_start May 2022 → 2022-05                 ✗ data_used: case data
+✓ historical       historical → historical             ✗ data_used: climate data
+✓ study_goal       transmission → transmission         ✗ code_available: no
+✓ data_used        mobility data → mobility data       ✗ study_dates_end: 2024-12
+✓ data_used        rainfall → rainfall                 ✗ calibration: correlation
+✓ key_outcomes     incidence → incidence
+... (truncated for space)
+
+FALSE POSITIVES (0)
+───────────────────
+None
+```
+
+### 17.4 Final Summary
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  EVALUATION SUMMARY                                                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Abstracts Evaluated: 1 of 8
+Gold Standard Values: 32
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MODEL COMPARISON                                                            │
+├──────────────┬──────────┬───────────┬──────────┬──────┬───────┬─────────────┤
+│ Model        │ Recall   │ Precision │ F1       │ Hits │ Miss  │ FP          │
+├──────────────┼──────────┼───────────┼──────────┼──────┼───────┼─────────────┤
+│ mistral:7b   │  68.75%  │  100.00%  │  81.48%  │  22  │  12   │   0         │
+│ llama3.1:8b  │  53.12%  │   80.95%  │  64.15%  │  17  │  15   │   4         │
+└──────────────┴──────────┴───────────┴──────────┴──────┴───────┴─────────────┘
+
+Best Performer: mistral:7b (F1: 81.48%)
+
+Results saved to: data/gold_standard/results/evaluation_20260204_210714.json
+```
+
+### 17.5 Formatting Rules
+
+1. **Use box-drawing characters** for tables and sections (─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼)
+2. **Use Unicode symbols** for status: ✓ (hit), ✗ (miss), ● (enabled), ○ (disabled)
+3. **Group related fields** under semantic headers
+4. **Align columns** for easy scanning
+5. **Suppress verbose LLM responses** — show only extracted key-value pairs
+6. **Show warnings/errors inline** with ⚠ symbol
+7. **Truncate long values** with ellipsis, max 50 chars per cell
+8. **Always show metrics in consistent order**: Recall → Precision → F1
+9. **Use horizontal rules** (━━━) to separate major sections
+10. **Highlight the winning model** in summary
+

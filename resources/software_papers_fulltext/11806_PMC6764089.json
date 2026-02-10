@@ -1,0 +1,9 @@
+{
+  "paperID": 11806,
+  "pmcid": "PMC6764089",
+  "original_title": "SynGO: An Evidence-Based, Expert-Curated Knowledge Base for the Synapse.",
+  "title": "SynGO: an evidence-based, expert-curated knowledgebase for the synapse",
+  "abstract": "Synapses are fundamental information processing units of the brain and synaptic dysregulation is central to many brain disorders (‘synaptopathies’). However, systematic annotation of synaptic genes and ontology of synaptic processes are currently lacking. We established SynGO, an interactive knowledgebase that accumulates available research about synapse biology using Gene Ontology (GO) annotations to novel ontology terms: 87 synaptic locations and 179 synaptic processes. SynGO annotations are exclusively based on published, expert-curated evidence. Using 2922 annotations for 1112 genes, we show that synaptic genes are exceptionally well conserved and less tolerant to mutations than other genes. Many SynGO terms are significantly overrepresented among gene variation associated with intelligence, educational attainment, ADHD, autism and bipolar disorder and among de novo variants associated with neurodevelopmental disorders including schizophrenia. SynGO is a public, universal reference for synapse research and an online analysis-platform for interpretation of large scale -omics data (https://syngoportal.org and http://geneontology.org).",
+  "body": "",
+  "xml_size": 28054
+}
