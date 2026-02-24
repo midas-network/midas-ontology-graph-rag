@@ -47,6 +47,19 @@ SECTION_HEADER_NAMES = {
     "final_checklist_verification", "final_checklist",
 }
 
+ABSENT_VALUE_SYNONYMS = {
+    "unspecified": "not specified",
+    "unknown": "not specified",
+    "n/a": "not applicable",
+    "none": "not mentioned",
+    "not available": "not mentioned",
+    "not stated": "not mentioned",
+    "not reported": "not mentioned",
+}
+
+def normalize_absent_value(value: str) -> str:
+    return ABSENT_VALUE_SYNONYMS.get(value.strip().lower(), value)
+
 
 def _is_known_field(normalized: str) -> bool:
     return normalized in KNOWN_SCHEMA_FIELDS or normalized in METADATA_SUBFIELDS
@@ -409,7 +422,13 @@ def parse_attribute_block(attr: str, content: str) -> dict[str, Any]:
             break
 
         if not value:
-            value = stripped
+            # Strip "value:" prefix from non-normalized LLM output
+            val_prefix = re.match(r'^value\s*:\s*(.+)$', stripped, re.IGNORECASE)
+            if val_prefix:
+                value = val_prefix.group(1).strip()
+            else:
+                value = stripped
+
             is_match = re.search(
                 r'\bis\s+(?:a\s+)?([A-Za-z][A-Za-z0-9\s\-\/]+?)(?:\.|,|$)',
                 stripped,

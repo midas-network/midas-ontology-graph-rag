@@ -488,6 +488,124 @@ def _group_by_attribute(items: list[dict], key: str) -> dict[str, list[dict]]:
     return grouped
 
 
+def generate_abstract_evaluation_report(
+    abstract_id: str,
+    title: str,
+    model: str,
+    evaluation: dict[str, Any],
+    output_dir: str,
+    logger: logging.Logger = LOGGER,
+) -> str:
+    """Generate a per-abstract evaluation report.
+
+    Args:
+        abstract_id: Abstract identifier
+        title: Abstract title
+        model: Model name used for extraction
+        evaluation: Evaluation results for this model on this abstract
+        output_dir: Directory to save the report
+        logger: Logger instance
+
+    Returns:
+        Path to the generated report file
+    """
+    lines = []
+
+    # Header
+    lines.append("=" * 60)
+    lines.append(f"LLM EXTRACTION EVALUATION REPORT - {abstract_id}")
+    lines.append("=" * 60)
+    lines.append("")
+    lines.append(f"Abstract: {title}")
+    lines.append(f"Model: {model}")
+    lines.append("")
+    lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    # Evaluation configuration
+    lines.append("-" * 60)
+    lines.append("EVALUATION CONFIGURATION")
+    lines.append("-" * 60)
+    lines.append("")
+
+    # Legend
+    lines.append("-" * 60)
+    lines.append("EVALUATION LEGEND:")
+    lines.append("-" * 60)
+    lines.append("")
+    lines.append("  HIT           The LLM extracted a value that matches something in the gold standard")
+    lines.append("  MISS          The gold standard expects a value, but the LLM didn't extract it")
+    lines.append("  FALSE POSITIVE  The LLM extracted a value that is NOT in the gold standard")
+    lines.append("")
+
+    # Vector stats (if present)
+    vector_stats = evaluation.get("vector_stats", {})
+    if any(vector_stats.values()):
+        lines.append("VECTOR EVALUATION STATS:")
+        lines.append(f"  Auto-matches (score >= 0.85): {vector_stats.get('auto_matches', 0)}")
+        lines.append(f"  Auto-rejects (score <= 0.50): {vector_stats.get('auto_rejects', 0)}")
+        lines.append(f"  Ambiguous -> LLM: {vector_stats.get('ambiguous_to_llm', 0)}")
+        if vector_stats.get("vector_unavailable", 0) > 0:
+            lines.append(f"  Vector unavailable: {vector_stats.get('vector_unavailable', 0)}")
+        lines.append("")
+
+    # Overall scores
+    scores = evaluation.get("scores", {})
+    lines.append("-" * 60)
+    lines.append("PERFORMANCE METRICS")
+    lines.append("-" * 60)
+    lines.append("")
+    lines.append(f"  Total Expected Values: {scores.get('total_expected', 0)}")
+    lines.append(f"  Total Hits:            {scores.get('total_hits', 0)}")
+    lines.append(f"  Total Misses:          {scores.get('total_misses', 0)}")
+    lines.append(f"  Total False Positives: {scores.get('total_false_positives', 0)}")
+    lines.append("")
+    lines.append(f"  Recall:    {scores.get('recall', 0):.2%}")
+    lines.append(f"  Precision: {scores.get('precision', 0):.2%}")
+    lines.append(f"  F1 Score:  {scores.get('f1', 0):.2%}")
+    lines.append("")
+
+    # Detailed hits
+    hits = evaluation.get("hits", [])
+    if hits:
+        lines.append("-" * 60)
+        lines.append("HITS (LLM extracted value matches gold standard):")
+        lines.append("")
+        for hit in hits:
+            score_str = f" [sim={hit['similarity_score']:.3f}]" if "similarity_score" in hit else ""
+            method_str = f" ({hit['match_method']})" if "match_method" in hit else ""
+            lines.append(f"  {hit['attribute']}: LLM='{hit['extracted_value']}' -> matched gold='{hit['matched_expected']}'{method_str}{score_str}")
+
+    # Misses
+    misses = evaluation.get("misses", [])
+    if misses:
+        lines.append("-" * 60)
+        lines.append("MISSES (gold standard value NOT extracted by LLM):")
+        lines.append("")
+        for miss in misses:
+            lines.append(f"  x {miss['attribute']}: gold='{miss['expected_value']}' was not extracted")
+
+    # False positives
+    false_positives = evaluation.get("false_positives", [])
+    if false_positives:
+        lines.append("-" * 60)
+        lines.append("FALSE POSITIVES (LLM extracted value NOT in gold standard):")
+        lines.append("")
+        for fp in false_positives:
+            expected_vals = ", ".join(fp.get("expected_values", []))
+            score_str = f" [best_sim={fp['similarity_score']:.3f}]" if "similarity_score" in fp else ""
+            lines.append(f"  ? {fp['attribute']}: LLM='{fp['extracted_value']}' not in gold=[{expected_vals}]{score_str}")
+
+    # Write to file
+    os.makedirs(output_dir, exist_ok=True)
+    report_file = os.path.join(output_dir, "evaluation_report.txt")
+    report_content = "\n".join(lines)
+    with open(report_file, "w", encoding="utf-8") as f:
+        f.write(report_content)
+
+    logger.info("Abstract evaluation report saved to: %s", report_file)
+    return report_file
+
+
 def _aggregate_model_scores(results: dict[str, Any]) -> dict[str, dict[str, Any]]:
     """Aggregate scores across all abstracts for each model."""
     model_scores: dict[str, dict[str, Any]] = {}
