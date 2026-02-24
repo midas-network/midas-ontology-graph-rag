@@ -27,7 +27,11 @@ from midas_llm.utils.logging.logger import configure_logging
 from midas_llm.utils.llm.llm_client import send_to_llm
 from midas_llm.utils.llm.llm_utils import autodetect_llm_host
 from midas_llm.utils.prompt.builders import prepare_and_display_prompt, build_query
-from midas_llm.utils.parsers.extraction_parser import parse_and_display_extracted_data, save_response_json
+from midas_llm.utils.parsers.extraction_parser import (
+    parse_and_display_extracted_data,
+    save_response_json,
+    normalize_llm_format,
+)
 from midas_llm.utils.reporting.evaluation_reports import generate_evaluation_text_report, \
     generate_evaluation_html_report
 from midas_llm.utils.evaluation.vector_similarity import vector_match_tiered
@@ -234,6 +238,9 @@ def evaluate_extraction(
         if not expected_values:  # Skip empty expected lists
             continue
 
+        # Normalize expected values once (outside the loop)
+        expected_values = strip_annotations(expected_values)
+
         # Handle comma-separated values
         extracted_values = [v.strip() for v in value.split(",")]
 
@@ -249,13 +256,13 @@ def evaluate_extraction(
             # Special handling for date fields - skip vector eval
             is_date_field = attr in ("study_dates_start", "study_dates_end")
 
-            expected_values = strip_annotations(expected_values)
-            extracted_normalized = normalize_term(extracted_value)
-            expected_normalized = [normalize_term(v) for v in expected_values]
+            # Normalize extracted value before comparison
+            extracted_normalized = normalize_term(ext_val)
+
             # Tier 1: Vector similarity (if enabled and not a date field)
             if use_vector_eval and not is_date_field:
                 decision, best_match, similarity_score = vector_match_tiered(
-                    ext_val,
+                    extracted_normalized,
                     expected_values,
                     high_threshold=vector_high_threshold,
                     low_threshold=vector_low_threshold,
@@ -268,20 +275,20 @@ def evaluate_extraction(
                     match_method = "vector"
                     results["vector_stats"]["auto_matches"] += 1
                     logger.debug("Vector auto-match: '%s' ↔ '%s' (score=%.3f)",
-                                 ext_val, matched_val, similarity_score)
+                                 extracted_normalized, matched_val, similarity_score)
                 elif decision == "NO_MATCH":
                     # Vector says definite no-match, but still try dates_match for date-like values
-                    if dates_match(ext_val, expected_values[0] if expected_values else ""):
+                    if dates_match(extracted_normalized, expected_values[0] if expected_values else ""):
                         matched = True
                         matched_val = expected_values[0]
                         match_method = "date_format"
                     else:
                         results["vector_stats"]["auto_rejects"] += 1
-                        logger.debug("Vector auto-reject: '%s' (score=%.3f)", ext_val, similarity_score)
+                        logger.debug("Vector auto-reject: '%s' (score=%.3f)", extracted_normalized, similarity_score)
                 elif decision == "AMBIGUOUS":
                     results["vector_stats"]["ambiguous_to_llm"] += 1
                     logger.debug("Vector ambiguous: '%s' (score=%.3f), falling through to LLM",
-                                 ext_val, similarity_score)
+                                 extracted_normalized, similarity_score)
                 else:  # UNAVAILABLE
                     results["vector_stats"]["vector_unavailable"] += 1
 
@@ -293,25 +300,25 @@ def evaluate_extraction(
                 ):
                     try:
                         matched, matched_val = evaluate_semantic_match(
-                            attr, ext_val, expected_values, llm_model, llm_host,
+                            attr, extracted_normalized, expected_values, llm_model, llm_host,
                             api_type=config.llm_api_type,
                             timeout_seconds=timeout_seconds,
                         )
                         if matched:
                             match_method = "llm"
                     except Exception as e:
-                        logger.warning("LLM eval failed for '%s': %s", ext_val, e)
+                        logger.warning("LLM eval failed for '%s': %s", extracted_normalized, e)
 
             # Tier 3: Fallback string matching
             if not matched and matched_val is None:
-                matched, matched_val = fallback_string_match(ext_val, expected_values)
+                matched, matched_val = fallback_string_match(extracted_normalized, expected_values)
                 if matched:
                     match_method = "string"
 
             if matched:
                 hit_record = {
                     "attribute": attr,
-                    "extracted_value": ext_val,
+                    "extracted_value": extracted_normalized,
                     "matched_expected": matched_val,
                     "match_method": match_method,
                 }
@@ -323,7 +330,7 @@ def evaluate_extraction(
             else:
                 fp_record = {
                     "attribute": attr,
-                    "extracted_value": ext_val,
+                    "extracted_value": extracted_normalized,
                     "expected_values": expected_values,
                 }
                 if similarity_score is not None:
@@ -463,6 +470,12 @@ def run_evaluation(
                     response_file = abstract_dir / f"{safe_model_name}_response.txt"
                     response_file.write_text(response.content, encoding="utf-8")
                     logger.info("Saved raw response to: %s", response_file)
+
+                    # Save normalized response to file
+                    normalized = normalize_llm_format(response.content)
+                    normalized_file = abstract_dir / f"{safe_model_name}_response_normalized.txt"
+                    normalized_file.write_text(normalized, encoding="utf-8")
+                    logger.info("Saved normalized response to: %s", normalized_file)
 
                     # Save response as JSON
                     save_response_json(

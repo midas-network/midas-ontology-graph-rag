@@ -617,6 +617,8 @@ def create_response_json(
     """
     # Parse the response to extract structured data
     normalized = normalize_llm_format(response_content)
+
+
     extracted = parse_llm_response(normalized)
 
     return {

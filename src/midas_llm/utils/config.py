@@ -103,7 +103,7 @@ class ExtractionConfig:
 
     # Embeddings / Sentence Transformers
     embedding_model: str = field(default_factory=lambda: os.getenv(
-        "EMBEDDING_MODEL", "FremyCompany/BioLORD-2023-C"
+        "EMBEDDING_MODEL","FremyCompany/BioLORD-2023-C"
     ))
 
     def __post_init__(self) -> None:
