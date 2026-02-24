@@ -1,7 +1,0 @@
-{
-  "use_vector_eval": true,
-  "use_llm_eval": true,
-  "vector_high_threshold": 0.85,
-  "vector_low_threshold": 0.5,
-  "embedding_model": "all-MiniLM-L6-v2"
-}

@@ -435,6 +435,16 @@ def run_evaluation(
                     embedding_model=embedding_model,
                 )
 
+                # Save full raw response to file
+                if run_folder:
+                    abstract_dir = Path(run_folder) / abstract_id
+                    os.makedirs(abstract_dir, exist_ok=True)
+                    # Sanitize model name for filename (replace / with -)
+                    safe_model_name = model.replace("/", "-").replace("\\", "-")
+                    response_file = abstract_dir / f"{safe_model_name}_response.txt"
+                    response_file.write_text(response.content, encoding="utf-8")
+                    logger.info("Saved raw response to: %s", response_file)
+
                 abstract_results["models"][model] = {
                     "extracted": extracted,
                     "evaluation": evaluation,
