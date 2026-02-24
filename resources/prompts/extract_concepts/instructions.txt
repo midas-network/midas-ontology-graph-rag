@@ -1,68 +1,149 @@
-# LLM Extraction Prompt — Improved
+LLM Extraction Prompt — Fixed (NO JSON, SAME FORMAT)
 
 === Your Task ===
-Extract structured metadata from the **title AND abstract** about infectious disease modeling studies.
+Extract structured metadata from the title AND abstract about infectious disease modeling studies.
 
----
+CRITICAL EXTRACTION PRINCIPLES
 
-## CRITICAL EXTRACTION PRINCIPLES
+Extract from BOTH the title and abstract. The title often contains key information (data types, geographic units, disease names) that may not be repeated in the abstract body.
 
-1. **Extract from BOTH the title and abstract.** The title often contains key information (data types, geographic units, disease names) that may not be repeated in the abstract body.
+Infer using domain knowledge. Do NOT limit yourself to only explicitly stated terms. Use standard biomedical and epidemiological knowledge to infer values that are clearly implied. Examples:
 
-2. **Infer using domain knowledge.** Do NOT limit yourself to only explicitly stated terms. Use standard biomedical and epidemiological knowledge to infer values that are clearly implied. Examples:
-   - If the disease is "malaria," infer the pathogen is "Plasmodium falciparum" (unless another species is specified) AND list "malaria" as a separate pathogen_name entry.
-   - If the disease is "COVID-19," infer pathogen "SARS-CoV-2."
-   - If the study analyzes "case data," infer key_outcome_measures include "cases" and likely "incidence."
-   - If the study uses real-world data from a specific time period, infer historical_vs_hypothetical = "historical."
-   - If the study mentions "travel" or "mobility" in the context of disease spread, infer "travelers" as a primary_population in addition to other populations.
-   - If "climate" or "rainfall" data is used, list BOTH "climate data" and "rainfall data" as separate data_used entries.
+If the disease is "COVID-19," infer pathogen "SARS-CoV-2."
 
-3. **Be exhaustive with multi-value fields.** For fields like data_used, geographic_units, primary_population, and key_outcome_measures, extract ALL applicable values — err on the side of including more rather than fewer. Ask yourself: "Are there additional values implied by the study context that I haven't listed?"
+If the study analyzes "case data," infer key_outcome_measures include "cases" and likely "incidence."
 
-4. **Extract all geographic units mentioned or strongly implied.** Include:
-   - Countries, regions, states, provinces, cities, islands explicitly named
-   - Sub-regions that are clearly part of the study area (e.g., if the study is about "Zanzibar" and mentions "Unguja," include both; if "mainland Tanzania" regions are discussed as sources, include those too)
+If the study uses real-world data from a specific time period, infer historical_vs_hypothetical = "historical."
 
-5. **"Unspecified" is a last resort.** Only use "unspecified" when there is genuinely no information in the text AND no reasonable domain inference can be made. If you can make a well-supported inference, do so and explain your reasoning. For example:
-   - A study using real-world surveillance data from 2022-2023 → historical (not "unspecified")
-   - A study about malaria transmission in a community → primary_population includes "general population" (not "unspecified")
-   - A study that doesn't mention code sharing → code_available = "no" (not "unspecified"), unless the abstract truly provides no signal either way, in which case use "unspecified"
+If the study mentions "wastewater surveillance," include "wastewater surveillance data" under data_used.
 
-6. **Geographic scope should capture ALL applicable scales.** If a study operates at both sub-national and national levels (e.g., analyzing movement between a sub-national island and the mainland of a country), list BOTH "sub-national" and "national."
+If "climate" or "rainfall" data is used, list BOTH "climate data" and "rainfall data" as separate data_used entries.
 
-7. **For key_outcome_measures, infer from what the model analyzes**, not just what is explicitly listed as an "outcome." If the model uses case counts, then "cases" is an outcome measure. If it examines incidence patterns, "incidence" is an outcome measure.
+Be exhaustive with multi-value fields. For fields like data_used, geographic_units, primary_population, and key_outcome_measures, extract ALL applicable values — err on the side of including more rather than fewer.
 
-8. **For calibration_techniques**, look for any statistical method used to relate model outputs to data, including correlation analysis, regression fitting, likelihood methods, etc. Even simple techniques like "correlation" count.
+Extract all geographic units mentioned or strongly implied. Include countries, regions, states, provinces, cities, islands, and relevant subregions.
 
-9. **For study_goal_category**, map the stated objectives to the closest category. Words like "understand drivers," "factors driving," or "determinants of" → "transmission dynamics/drivers."
+"Unspecified" is a last resort. Only use "unspecified" when there is genuinely no information AND no reasonable inference is possible.
 
----
+If code is not mentioned → code_available = "not mentioned"
 
-## DEFINITION GUIDELINES
+If intervention is not mentioned → intervention_present = "not mentioned"
 
-Act as a formal ontologist working in the biomedical and geographic domains. Define each term with the following structure:
+If dates are not mentioned → study_dates_start = "not specified" and study_dates_end = "not specified"
 
-- **Parent class (is-a):** The immediate superclass this term falls under
-- **Differentia:** The necessary characteristics that distinguish this from sibling classes
-- **Key relationships:** Use relations like: caused-by, has-pathogen, transmitted-by, located-in, part-of, has-symptom, affects (anatomical structure), endemic-to
-- **Definition (single sentence):** A genus-differentia definition in the form "A [parent class] that [differentiating conditions]"
+Geographic scope should capture ALL applicable scales. If both sub-national and national apply, list BOTH.
 
-Avoid encyclopedic descriptions, historical context, or usage examples. Focus only on what is necessarily true of all instances.
+For key_outcome_measures, infer from what the model analyzes, not just what is explicitly listed as an "outcome."
 
----
+For calibration_techniques, treat any method used to relate model outputs to data as calibration (including particle filters, likelihood fitting, regression fitting, correlation, etc.).
 
+For study_goal_category, map stated objectives to the closest category. “forecast”, “predict”, “nowcast”, “near-term prediction” → forecast/nowcast.
 
+DEFINITION GUIDELINES
 
-## RULES
+Act as a formal ontologist working in the biomedical and geographic domains. Define each term with:
 
-- Every attribute needs provenance, definition, and reasoning
-- For multiple values, number them: provenance1, definition1, reasoning1, etc.
-- Use exact quotes from abstract for provenance when the value is explicitly stated
-- For INFERRED values, set provenance to the most relevant quote and prefix reasoning with "[Inferred]" to explain the domain logic
-- Use "unspecified" ONLY as a last resort when no information or inference is possible
-- No markdown formatting in your output
-- When a field can have multiple values, always check: "Am I missing any values that are implied by the title, abstract, or domain knowledge?"
+Parent class (is-a)
 
----
+Differentia
 
+Key relationships (caused-by, transmitted-by, located-in, part-of, etc.)
 
+Definition (single sentence): “A [parent class] that [differentia]”
+
+Avoid encyclopedic descriptions.
+
+RULES (FORMAT IS STRICT)
+
+Every extracted value MUST have provenance, definition, and reasoning.
+
+Use exact quotes from title/abstract for provenance when explicit.
+
+For inferred values:
+
+provenance = the closest supporting quote
+
+reasoning MUST start with "[Inferred]" and explain why the inference is justified
+
+No markdown formatting in the output.
+
+Do NOT output JSON.
+
+MOST IMPORTANT FORMATTING RULE (THIS IS WHAT YOUR PARSER ENFORCES)
+
+When a field has multiple values, you MUST:
+
+Put ALL values in the single value: line as a comma-separated list.
+
+Provide metadata for EACH value using numbered keys:
+
+provenance1, definition1, reasoning1 correspond to the first value
+
+provenance2, definition2, reasoning2 correspond to the second value
+
+provenance3 ... etc.
+
+If you output multiple values but fail to number provenance/definition/reasoning, only the first value will be used and your output will be considered incorrect.
+
+Example of correct multi-value formatting:
+
+field: primary_population
+value: rural communities, small city
+provenance1: "<quote supporting rural communities>"
+definition1: "Parent class: ... | Differentia: ... | Key relationships: ... | Definition: ..."
+reasoning1: "<why rural communities is supported>"
+provenance2: "<quote supporting small city>"
+definition2: "Parent class: ... | Differentia: ... | Key relationships: ... | Definition: ..."
+reasoning2: "<why small city is supported>"
+
+REQUIRED “NOT MENTIONED / NOT SPECIFIED” FIELDS
+
+Even if absent from the title/abstract, you MUST still output these fields using the exact values below:
+
+intervention_present: not mentioned (if no intervention is described)
+
+code_available: not mentioned (if no code availability is described)
+
+study_dates_start: not specified (if no start date is given)
+
+study_dates_end: not specified (if no end date is given)
+
+CALIBRATION CONSISTENCY RULE
+
+If you output ANY calibration_techniques value (e.g., particle filter), you MUST set:
+
+calibration_mentioned: yes
+
+If no calibration technique is present or inferable:
+
+calibration_mentioned: no
+
+OUTPUT (KEEP YOUR EXISTING STRUCTURE EXACTLY)
+
+Return entries using your existing format:
+
+study_id: <string>
+
+field: <field_name>
+value: <one value OR comma-separated values>
+provenance1: <...>
+definition1: <...>
+reasoning1: <...>
+provenance2: <...> (ONLY if there is a 2nd value)
+definition2: <...>
+reasoning2: <...>
+...
+
+Repeat the field block for each field.
+
+FINAL CHECK BEFORE YOU ANSWER
+
+Did you extract from BOTH title and abstract?
+
+For every multi-value value: line, did you include provenance1/2/3..., definition1/2/3..., reasoning1/2/3...?
+
+Did you include intervention_present, code_available, study_dates_start, study_dates_end even if absent?
+
+If you included calibration_techniques, did you set calibration_mentioned = yes?
+
+Now perform the extraction.

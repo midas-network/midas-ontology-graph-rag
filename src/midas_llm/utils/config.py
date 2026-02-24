@@ -25,10 +25,9 @@ def _load_ollama_cfg() -> None:
                     if "=" in line:
                         key, _, value = line.partition("=")
                         key, value = key.strip(), value.strip()
-                        # Only set if not already in env (env takes precedence)
                         if key and key not in os.environ:
                             os.environ[key] = value
-            break  # stop after first found
+            break
 
 
 _load_ollama_cfg()
@@ -81,11 +80,20 @@ class ExtractionConfig:
     prompt_simple_prompt: bool = field(default_factory=lambda: _env_bool("SIMPLE_PROMPT", False))
     num_examples: int = field(default_factory=lambda: _env_int("NUM_EXAMPLES", 2))
 
-    # LLM settings
-    llm_model: str = field(default_factory=lambda: os.getenv("OLLAMA_MODEL", "mistral:7b"))
-    llm_models: list[str] = field(default_factory=lambda: _parse_model_list(os.getenv("OLLAMA_MODELS", "")))
-    llm_host: str = field(default_factory=lambda: os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+    # LLM settings - Ollama
+    ollama_model: str = field(default_factory=lambda: os.getenv("OLLAMA_MODEL", "mistral:7b"))
+    ollama_models: list[str] = field(default_factory=lambda: _parse_model_list(os.getenv("OLLAMA_MODELS", "")))
+    ollama_host: str = field(default_factory=lambda: os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+
+    # LLM settings - NIM / OpenAI-compatible
+    nim_models: list[str] = field(default_factory=lambda: _parse_model_list(
+        os.getenv("NIM_MODELS", "nvidia/llama-3.3-nemotron-super-49b-v1")
+    ))
+    nim_host: str = field(default_factory=lambda: os.getenv("NIM_HOST", "http://localhost:8000"))
+
+    # LLM settings - shared
     llm_timeout: int = field(default_factory=lambda: _env_int("LLM_TIMEOUT", 300000))
+    llm_api_type: str = field(default_factory=lambda: os.getenv("LLM_API_TYPE", "openai_compatible"))  # "ollama" or "openai_compatible"
 
     # Reporting/output
     show_config: bool = field(default_factory=lambda: _env_bool("SHOW_CONFIG", True))
@@ -96,9 +104,36 @@ class ExtractionConfig:
     def __post_init__(self) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.ontology_path.mkdir(parents=True, exist_ok=True)
-        # normalize host
-        if not self.llm_host.startswith(("http://", "https://")):
-            self.llm_host = f"http://{self.llm_host}"
+        # normalize hosts
+        if not self.ollama_host.startswith(("http://", "https://")):
+            self.ollama_host = f"http://{self.ollama_host}"
+        if not self.nim_host.startswith(("http://", "https://")):
+            self.nim_host = f"http://{self.nim_host}"
+
+    @property
+    def active_llm_model(self) -> str:
+        """Return the model for the currently configured API type.
+
+        For openai_compatible (NIM), returns the first model from nim_models.
+        For ollama, returns ollama_model (or first from ollama_models if set).
+        """
+        if self.llm_api_type == "openai_compatible":
+            return self.nim_models[0] if self.nim_models else "meta/llama-3.1-8b-instruct"
+        return self.ollama_models[0] if self.ollama_models else self.ollama_model
+
+    @property
+    def active_llm_models(self) -> list[str]:
+        """Return the model list for the currently configured API type."""
+        if self.llm_api_type == "openai_compatible":
+            return self.nim_models
+        return self.ollama_models
+
+    @property
+    def active_llm_host(self) -> str:
+        """Return the host for the currently configured API type."""
+        if self.llm_api_type == "openai_compatible":
+            return self.nim_host
+        return self.ollama_host
 
     def log_config(self, logger: logging.Logger | None = None) -> None:
         """Log all configuration options in a nicely formatted table."""
@@ -113,5 +148,18 @@ class ExtractionConfig:
         for f in fields(self):
             value = getattr(self, f.name)
             logger.info(f"{f.name:<{max_name}}  {value}")
+        # Also log computed properties
+        logger.info(sep)
+        logger.info("Active LLM settings:")
+        logger.info(f"{'active_llm_model':<{max_name}}  {self.active_llm_model}")
+        logger.info(f"{'active_llm_models':<{max_name}}  {self.active_llm_models}")
+        logger.info(f"{'active_llm_host':<{max_name}}  {self.active_llm_host}")
         logger.info(sep)
 
+    @active_llm_host.setter
+    def active_llm_host(self, value: str) -> None:
+        """Set the host for the currently configured API type."""
+        if self.llm_api_type == "openai_compatible":
+            self.nim_host = value
+        else:
+            self.ollama_host = value

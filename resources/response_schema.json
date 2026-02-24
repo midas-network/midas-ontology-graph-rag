@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://midas-llm.org/schemas/response.json",
+  "title": "LLM Response Schema",
+  "description": "Schema for LLM response metadata and evaluation results saved during gold standard evaluation",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "string",
+      "description": "Raw LLM response text"
+    },
+    "model": {
+      "type": "string",
+      "description": "Model name used for LLM call"
+    },
+    "done": {
+      "type": "boolean",
+      "description": "Whether the response is complete"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the response was received"
+    },
+    "abstract_id": {
+      "type": "string",
+      "description": "Abstract identifier"
+    },
+    "extracted": {
+      "type": "object",
+      "description": "Extracted and parsed data from LLM response"
+    },
+    "evaluation": {
+      "type": "object",
+      "description": "Evaluation results comparing extracted data to gold standard",
+      "properties": {
+        "hits": {
+          "type": "array",
+          "items": {"type": "object"}
+        },
+        "misses": {
+          "type": "array",
+          "items": {"type": "object"}
+        },
+        "false_positives": {
+          "type": "array",
+          "items": {"type": "object"}
+        },
+        "scores": {
+          "type": "object",
+          "properties": {
+            "total_expected": {"type": "integer"},
+            "total_hits": {"type": "integer"},
+            "total_misses": {"type": "integer"},
+            "total_false_positives": {"type": "integer"},
+            "recall": {"type": "number"},
+            "precision": {"type": "number"},
+            "f1": {"type": "number"}
+          }
+        },
+        "vector_stats": {
+          "type": "object",
+          "properties": {
+            "auto_matches": {"type": "integer"},
+            "auto_rejects": {"type": "integer"},
+            "ambiguous_to_llm": {"type": "integer"},
+            "vector_unavailable": {"type": "integer"}
+          }
+        }
+      }
+    },
+    "raw_response": {
+      "type": "string",
+      "description": "First 2000 characters of raw LLM response"
+    }
+  },
+  "required": ["content", "model", "done", "timestamp", "abstract_id"],
+  "additionalProperties": false
+}

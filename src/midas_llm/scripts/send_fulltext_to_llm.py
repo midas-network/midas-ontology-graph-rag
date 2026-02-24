@@ -166,7 +166,7 @@ def main() -> None:
             continue
 
         try:
-            response = send_to_llm(prompt=prompt, llm_model=args.model, ollama_host=llm_host, timeout_seconds=args.timeout, logger=LOGGER)
+            response = send_to_llm(prompt=prompt, llm_model=args.model, llm_host=llm_host, timeout_seconds=args.timeout, logger=LOGGER)
             result.update({"response": response.content, "success": True, "error": None})
         except Exception as exc:  # noqa: BLE001
             LOGGER.error("LLM call failed for %s: %s", path.name, exc)

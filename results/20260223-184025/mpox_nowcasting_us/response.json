@@ -1,0 +1,9 @@
+{
+  "id": "mpox_nowcasting_us",
+  "title": "Nowcasting and forecasting the 2022 U.S. mpox outbreak: Support for public health decision making and lessons learned",
+  "models": {
+    "nvidia/llama-3.3-nemotron-super-49b-v1": {
+      "error": "cannot access local variable 'extracted' where it is not associated with a value"
+    }
+  }
+}

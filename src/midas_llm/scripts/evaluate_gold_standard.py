@@ -26,7 +26,8 @@ from midas_llm.utils.llm.llm_client import send_to_llm
 from midas_llm.utils.llm.llm_utils import autodetect_llm_host
 from midas_llm.utils.prompt.builders import prepare_and_display_prompt, build_query
 from midas_llm.utils.parsers.extraction_parser import parse_and_display_extracted_data
-from midas_llm.utils.reporting.evaluation_reports import generate_evaluation_text_report, generate_evaluation_html_report
+from midas_llm.utils.reporting.evaluation_reports import generate_evaluation_text_report, \
+    generate_evaluation_html_report
 from midas_llm.utils.evaluation.vector_similarity import vector_match_tiered
 
 LOGGER = logging.getLogger("midas-llm")
@@ -45,9 +46,9 @@ def load_gold_standard(path: str | None = None) -> list[dict]:
 
 
 def build_semantic_eval_prompt(
-    attribute: str,
-    extracted_value: str,
-    expected_values: list[str],
+        attribute: str,
+        extracted_value: str,
+        expected_values: list[str],
 ) -> str:
     """Build prompt for LLM to evaluate semantic match."""
     expected_str = ", ".join(f'"{v}"' for v in expected_values)
@@ -73,12 +74,14 @@ Respond with ONLY one word: MATCH or NO_MATCH"""
 
 
 def evaluate_semantic_match(
-    attribute: str,
-    extracted_value: str,
-    expected_values: list[str],
-    llm_model: str,
-    ollama_host: str,
-    logger: logging.Logger,
+        attribute: str,
+        extracted_value: str,
+        expected_values: list[str],
+        llm_model: str,
+        llm_host: str,
+        logger: logging.Logger,
+        timeout_seconds: int = 30,
+            api_type: str = "ollama",
 ) -> tuple[bool, str | None]:
     """Use LLM to evaluate if extracted value semantically matches expected."""
 
@@ -88,9 +91,10 @@ def evaluate_semantic_match(
         response = send_to_llm(
             prompt=prompt,
             llm_model=llm_model,
-            ollama_host=ollama_host,
-            timeout_seconds=30,
+            llm_host=llm_host,
+            timeout_seconds=timeout_seconds,
             logger=logger,
+            api_type=api_type
         )
 
         result = response.content.strip().upper()
@@ -162,16 +166,16 @@ def dates_match(extracted: str, expected: str) -> bool:
 
 
 def evaluate_extraction(
-    extracted: dict[str, Any],
-    expected: dict[str, list[str]],
-    llm_model: str,
-    ollama_host: str,
-    logger: logging.Logger,
-    use_llm_eval: bool = True,
-    use_vector_eval: bool = True,
-    vector_high_threshold: float = 0.85,
-    vector_low_threshold: float = 0.50,
-    embedding_model: str = "all-MiniLM-L6-v2",
+        extracted: dict[str, Any],
+        expected: dict[str, list[str]],
+        llm_model: str,
+        llm_host: str,
+        logger: logging.Logger,
+        use_llm_eval: bool = True,
+        use_vector_eval: bool = True,
+        vector_high_threshold: float = 0.85,
+        vector_low_threshold: float = 0.50,
+        embedding_model: str = "all-MiniLM-L6-v2",
 ) -> dict[str, Any]:
     """Evaluate extraction against expected values using three-tier matching.
 
@@ -248,7 +252,7 @@ def evaluate_extraction(
                     match_method = "vector"
                     results["vector_stats"]["auto_matches"] += 1
                     logger.debug("Vector auto-match: '%s' ↔ '%s' (score=%.3f)",
-                                ext_val, matched_val, similarity_score)
+                                 ext_val, matched_val, similarity_score)
                 elif decision == "NO_MATCH":
                     # Vector says definite no-match, but still try dates_match for date-like values
                     if dates_match(ext_val, expected_values[0] if expected_values else ""):
@@ -261,7 +265,7 @@ def evaluate_extraction(
                 elif decision == "AMBIGUOUS":
                     results["vector_stats"]["ambiguous_to_llm"] += 1
                     logger.debug("Vector ambiguous: '%s' (score=%.3f), falling through to LLM",
-                                ext_val, similarity_score)
+                                 ext_val, similarity_score)
                 else:  # UNAVAILABLE
                     results["vector_stats"]["vector_unavailable"] += 1
 
@@ -269,11 +273,13 @@ def evaluate_extraction(
             if not matched and matched_val is None and use_llm_eval:
                 # Only call LLM if vector was ambiguous or unavailable
                 if not use_vector_eval or similarity_score is None or (
-                    vector_low_threshold < (similarity_score or 0) < vector_high_threshold
+                        vector_low_threshold < (similarity_score or 0) < vector_high_threshold
                 ):
                     try:
                         matched, matched_val = evaluate_semantic_match(
-                            attr, ext_val, expected_values, llm_model, ollama_host, logger
+                            attr, ext_val, expected_values, llm_model, llm_host,
+                            api_type=config.llm_api_type,
+                            timeout_seconds=timeout_seconds,
                         )
                         if matched:
                             match_method = "llm"
@@ -329,11 +335,13 @@ def evaluate_extraction(
         "total_misses": total_misses,
         "total_false_positives": total_false_positives,
         "recall": total_hits / total_expected if total_expected > 0 else 0,
-        "precision": total_hits / (total_hits + total_false_positives) if (total_hits + total_false_positives) > 0 else 0,
+        "precision": total_hits / (total_hits + total_false_positives) if (
+                                                                                      total_hits + total_false_positives) > 0 else 0,
     }
 
     if results["scores"]["precision"] + results["scores"]["recall"] > 0:
-        results["scores"]["f1"] = 2 * (results["scores"]["precision"] * results["scores"]["recall"]) / (results["scores"]["precision"] + results["scores"]["recall"])
+        results["scores"]["f1"] = 2 * (results["scores"]["precision"] * results["scores"]["recall"]) / (
+                    results["scores"]["precision"] + results["scores"]["recall"])
     else:
         results["scores"]["f1"] = 0
 
@@ -341,15 +349,15 @@ def evaluate_extraction(
 
 
 def run_evaluation(
-    abstracts: list[dict],
-    config: ExtractionConfig,
-    logger: logging.Logger,
-    use_llm_eval: bool = True,
-    use_vector_eval: bool = True,
-    vector_high_threshold: float = 0.85,
-    vector_low_threshold: float = 0.50,
-    embedding_model: str = "all-MiniLM-L6-v2",
-    run_folder: str | None = None,
+        abstracts: list[dict],
+        config: ExtractionConfig,
+        logger: logging.Logger,
+        use_llm_eval: bool = True,
+        use_vector_eval: bool = True,
+        vector_high_threshold: float = 0.85,
+        vector_low_threshold: float = 0.50,
+        embedding_model: str = "all-MiniLM-L6-v2",
+        run_folder: str | None = None,
 ) -> dict[str, Any]:
     """Run evaluation on gold standard abstracts.
 
@@ -362,7 +370,7 @@ def run_evaluation(
     all_results = []
 
     # Determine models to run
-    models = config.llm_models if config.llm_models else [config.llm_model]
+    models = config.active_llm_models if config.active_llm_models else [config.active_llm_models]
 
     for abstract_data in abstracts:
         abstract_id = abstract_data["id"]
@@ -405,9 +413,10 @@ def run_evaluation(
                 response = send_to_llm(
                     prompt=prompt,
                     llm_model=model,
-                    ollama_host=config.llm_host,
+                    llm_host=config.active_llm_host,
                     timeout_seconds=config.llm_timeout,
                     logger=logger,
+                    api_type=config.llm_api_type,
                 )
 
                 extracted = parse_and_display_extracted_data(response.content, logger=logger)
@@ -417,7 +426,7 @@ def run_evaluation(
                     extracted,
                     expected,
                     model,
-                    config.llm_host,
+                    config.active_llm_host,
                     logger,
                     use_llm_eval=use_llm_eval,
                     use_vector_eval=use_vector_eval,
@@ -444,8 +453,10 @@ def run_evaluation(
                 vector_stats = evaluation.get("vector_stats", {})
                 if use_vector_eval and any(vector_stats.values()):
                     logger.info("VECTOR EVALUATION STATS:")
-                    logger.info("  Auto-matches (score >= %.2f): %d", vector_high_threshold, vector_stats.get("auto_matches", 0))
-                    logger.info("  Auto-rejects (score <= %.2f): %d", vector_low_threshold, vector_stats.get("auto_rejects", 0))
+                    logger.info("  Auto-matches (score >= %.2f): %d", vector_high_threshold,
+                                vector_stats.get("auto_matches", 0))
+                    logger.info("  Auto-rejects (score <= %.2f): %d", vector_low_threshold,
+                                vector_stats.get("auto_rejects", 0))
                     logger.info("  Ambiguous → LLM: %d", vector_stats.get("ambiguous_to_llm", 0))
                     if vector_stats.get("vector_unavailable", 0) > 0:
                         logger.info("  Vector unavailable: %d", vector_stats.get("vector_unavailable", 0))
@@ -475,8 +486,8 @@ def run_evaluation(
                         if "match_method" in hit:
                             method_str = f" ({hit['match_method']})"
                         logger.info("    ✓ %s: LLM='%s' → matched gold='%s'%s%s",
-                                   hit["attribute"], hit["extracted_value"],
-                                   hit["matched_expected"], method_str, score_str)
+                                    hit["attribute"], hit["extracted_value"],
+                                    hit["matched_expected"], method_str, score_str)
 
                 if evaluation["misses"]:
                     logger.info("  MISSES (gold standard value NOT extracted by LLM):")
@@ -490,7 +501,7 @@ def run_evaluation(
                         if "similarity_score" in fp:
                             score_str = f" [best_sim={fp['similarity_score']:.3f}]"
                         logger.info("    ? %s: LLM='%s' not in gold=%s%s",
-                                   fp["attribute"], fp["extracted_value"], fp["expected_values"], score_str)
+                                    fp["attribute"], fp["extracted_value"], fp["expected_values"], score_str)
 
             except Exception as e:
                 logger.error("Model %s failed: %s", model, e)
@@ -505,7 +516,6 @@ def run_evaluation(
         "models": models,
         "abstracts": all_results,
     }
-
 
 
 def print_summary(results: dict, logger: logging.Logger) -> None:
@@ -541,7 +551,10 @@ def print_summary(results: dict, logger: logging.Logger) -> None:
 
     for model, scores in model_scores.items():
         recall = scores["total_hits"] / scores["total_expected"] if scores["total_expected"] > 0 else 0
-        precision = scores["total_hits"] / (scores["total_hits"] + scores["total_false_positives"]) if (scores["total_hits"] + scores["total_false_positives"]) > 0 else 0
+        precision = scores["total_hits"] / (scores["total_hits"] + scores["total_false_positives"]) if (scores[
+                                                                                                            "total_hits"] +
+                                                                                                        scores[
+                                                                                                            "total_false_positives"]) > 0 else 0
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 
         logger.info("")
@@ -648,7 +661,8 @@ def main():
             status = "✓" if pair["correct"] else "✗"
             match_str = "should match" if pair["expected_match"] else "should NOT match"
             print(f"  {status} '{pair['text_a']}' ↔ '{pair['text_b']}' ({match_str})")
-            print(f"      similarity={pair['similarity']:.3f}, predicted={'MATCH' if pair['predicted_match'] else 'NO_MATCH'}")
+            print(
+                f"      similarity={pair['similarity']:.3f}, predicted={'MATCH' if pair['predicted_match'] else 'NO_MATCH'}")
         return
 
     # Load gold standard first to support --list-papers
@@ -663,7 +677,7 @@ def main():
     logger.info("Starting gold standard evaluation...")
 
     # Autodetect LLM host
-    detected_host = autodetect_llm_host(config.llm_host, logger=logger)
+    detected_host = autodetect_llm_host(config.active_llm_host, logger=logger)
     if detected_host:
         config.llm_host = detected_host
 
@@ -750,4 +764,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

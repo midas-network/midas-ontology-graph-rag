@@ -46,27 +46,47 @@ def candidate_ollama_hosts(initial_host: str | None = None) -> List[str]:
     return candidates
 
 
-def probe_llm_host(host: str, timeout: float = 5.0, *, logger: logging.Logger = LOGGER) -> Tuple[bool, List[str]]:
-    """Best-effort probe of the Ollama host for model availability."""
+def probe_llm_host(
+        host: str,
+        api_type: str = "ollama",
+        timeout: float = 5.0,
+        *,
+        logger: logging.Logger = LOGGER
+) -> Tuple[bool, List[str]]:
+    """Best-effort probe of the LLM host for model availability."""
     host = _normalize_host(host)
-    logger.info("Probing LLM host: %s", host)
+    logger.info("Probing LLM host: %s (api_type=%s)", host, api_type)
+
     try:
-        resp = httpx.get(f"{host}/api/tags", timeout=timeout)
-        resp.raise_for_status()
-        data = resp.json()
-        models = [m.get("name") for m in data.get("models", [])] if isinstance(data, dict) else []
+        if api_type == "openai_compatible":
+            resp = httpx.get(f"{host}/v1/models", timeout=timeout)
+            resp.raise_for_status()
+            data = resp.json()
+            models = [m.get("id") for m in data.get("data", [])] if isinstance(data, dict) else []
+        else:
+            resp = httpx.get(f"{host}/api/tags", timeout=timeout)
+            resp.raise_for_status()
+            data = resp.json()
+            models = [m.get("name") for m in data.get("models", [])] if isinstance(data, dict) else []
+
         logger.info("LLM host reachable. Models: %s", ', '.join(models) if models else 'None reported')
         return True, models
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("LLM host probe failed: %s", exc)
         return False, []
 
 
-def autodetect_llm_host(initial_host: str | None = None, timeout: float = 3.0, *, logger: logging.Logger = LOGGER) -> str | None:
+def autodetect_llm_host(
+        initial_host: str | None = None,
+        api_type: str = "ollama",
+        timeout: float = 3.0,
+        *,
+        logger: logging.Logger = LOGGER
+) -> str | None:
     """Probe likely hosts and return the first reachable one."""
     candidates = candidate_ollama_hosts(initial_host)
     for host in candidates:
-        ok, _ = probe_llm_host(host, timeout=timeout, logger=logger)
+        ok, _ = probe_llm_host(host, api_type=api_type, timeout=timeout, logger=logger)
         if ok:
             if initial_host and _normalize_host(initial_host) != host:
                 logger.info("Selected reachable LLM host %s (initial %s was unreachable)", host, initial_host)

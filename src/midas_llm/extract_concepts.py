@@ -138,10 +138,10 @@ def main() -> None:
         try:
             response = send_to_llm(
                 prompt=prompt,
-                llm_model=model,
-                ollama_host=config.llm_host,
+                llm_model=config.active_llm_model,
+                llm_host=config.active_llm_host,
                 timeout_seconds=config.llm_timeout,
-                logger=logger,
+                api_type=config.llm_api_type,
             )
 
             extracted_data = parse_and_display_extracted_data(response.content, logger=logger)

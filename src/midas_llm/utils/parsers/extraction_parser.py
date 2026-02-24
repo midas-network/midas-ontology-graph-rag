@@ -8,24 +8,229 @@ from ..modeling_domains import identify_modeling_domains
 
 LOGGER = logging.getLogger("midas-llm")
 
+# ── Known schema fields ────────────────────────────────────────────────
+KNOWN_SCHEMA_FIELDS = {
+    "model_type", "model_determinism",
+    "pathogen_name", "pathogen_type",
+    "disease_name",
+    "host_species",
+    "primary_population", "population_setting_type",
+    "geographic_scope", "geographic_units",
+    "study_dates_start", "study_dates_end",
+    "historical_vs_hypothetical",
+    "study_goal_category",
+    "intervention_present", "intervention_types",
+    "data_used", "data_source",
+    "calibration_mentioned", "calibration_techniques",
+    "key_outcome_measures",
+    "code_available",
+    "extraction_notes",
+}
+
+METADATA_SUBFIELDS = {
+    "provenance", "parent_class", "differentia",
+    "key_relationships", "definition", "reasoning",
+}
+
+SECTION_HEADER_NAMES = {
+    "model_characteristics", "pathogen_disease", "pathogen_&_disease",
+    "pathogen_and_disease",
+    "population_setting", "population_&_setting", "population_and_setting",
+    "geography_time", "geography_&_time", "geography_and_time",
+    "study_purpose", "interventions",
+    "data_methods", "data_&_methods", "data_and_methods",
+    "outcomes_outputs", "outcomes_&_outputs", "outcomes_and_outputs",
+    "reproducibility", "additional_notes",
+    "final_checklist_verification", "final_checklist",
+}
+
+
+def _is_known_field(normalized: str) -> bool:
+    return normalized in KNOWN_SCHEMA_FIELDS or normalized in METADATA_SUBFIELDS
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Format normalizer — rewrites non-standard LLM output conventions into
+# the canonical format that parse_llm_response() expects.
+# ═══════════════════════════════════════════════════════════════════════
+
+def _is_nemotron_format(raw: str) -> bool:
+    """Detect **field**: name / **value**: val pattern (Nemotron-style)."""
+    field_lines = re.findall(
+        r'^\*\*field\*\*\s*:', raw, re.MULTILINE | re.IGNORECASE
+    )
+    value_lines = re.findall(
+        r'^\*\*value\*\*\s*:', raw, re.MULTILINE | re.IGNORECASE
+    )
+    return len(field_lines) >= 3 and len(value_lines) >= 3
+
+
+def _normalize_nemotron(raw: str) -> str:
+    """Rewrite Nemotron **field**/**value** blocks into canonical format.
+
+    Input:
+        **field**: model_type
+        **value**: stochastic
+        **provenance1**: "some quote"
+        **reasoning1**: Inferred because...
+
+    Output:
+        **model_type**
+        stochastic
+        provenance1: "some quote"
+        reasoning1: Inferred because...
+    """
+    lines = raw.split('\n')
+    output: list[str] = []
+    i = 0
+
+    # Regex for metadata sub-fields in bold: **provenance1**: ...
+    _meta_bold_re = re.compile(
+        r'^\*\*((?:provenance|definition|reasoning|parent_class|'
+        r'differentia|key_relationships)\d*)\*\*\s*:\s*(.*)',
+        re.IGNORECASE,
+    )
+    # Regex for metadata sub-fields without bold: provenance1: ...
+    _meta_plain_re = re.compile(
+        r'^((?:provenance|definition|reasoning|parent_class|'
+        r'differentia|key_relationships)\d*)\s*:\s*(.*)',
+        re.IGNORECASE,
+    )
+
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+
+        # ── Match: **field**: field_name ──
+        field_match = re.match(
+            r'^\*\*field\*\*\s*:\s*(.+)$', stripped, re.IGNORECASE
+        )
+        if field_match:
+            field_name = field_match.group(1).strip()
+            j = i + 1
+            value_text = ''
+            metadata_lines: list[str] = []
+
+            while j < len(lines):
+                ns = lines[j].strip()
+
+                # Next **field**: → stop
+                if re.match(r'^\*\*field\*\*\s*:', ns, re.IGNORECASE):
+                    break
+
+                # Skip headers / separators / empties
+                if not ns or ns.startswith('#') or ns.startswith('---'):
+                    j += 1
+                    continue
+
+                # **value**: ...
+                val_m = re.match(
+                    r'^\*\*value\*\*\s*:\s*(.*)', ns, re.IGNORECASE
+                )
+                if val_m:
+                    value_text = val_m.group(1).strip()
+                    j += 1
+                    continue
+
+                # Bold metadata: **provenance1**: ...
+                meta_m = _meta_bold_re.match(ns)
+                if meta_m:
+                    metadata_lines.append(
+                        f"  {meta_m.group(1)}: {meta_m.group(2).strip()}"
+                    )
+                    j += 1
+                    continue
+
+                # Plain metadata: provenance1: ...
+                meta_p = _meta_plain_re.match(ns)
+                if meta_p:
+                    metadata_lines.append(f"  {ns}")
+                    j += 1
+                    continue
+
+                # Anything else — treat as value if we don't have one yet
+                if not value_text:
+                    value_text = ns
+                j += 1
+
+            # Emit canonical block
+            output.append(f'**{field_name}**')
+            if value_text:
+                output.append(value_text)
+            output.extend(metadata_lines)
+            output.append('')
+            i = j
+            continue
+
+        # ── Pass through section headers ──
+        if stripped.startswith('#') or stripped.startswith('---'):
+            output.append(line)
+            i += 1
+            continue
+
+        # Bold section header without ### (e.g. **Pathogen & Disease**)
+        if re.match(r'^\*\*[A-Z][a-zA-Z\s&]+\*\*$', stripped):
+            output.append(f'### {stripped}')
+            i += 1
+            continue
+
+        # Skip known non-schema bold fields like **study_id**: ...
+        bold_kv = re.match(r'^\*\*(\w+)\*\*\s*:\s*(.+)$', stripped)
+        if bold_kv and bold_kv.group(1).lower() in ('study_id',):
+            i += 1
+            continue
+
+        # ── FINAL CHECKLIST block — skip entirely ──
+        if re.match(r'^\*?\*?-?\s*\[[ X]\]', stripped) or \
+           re.match(r'^\*\*FINAL\s+CHECKLIST', stripped, re.IGNORECASE):
+            i += 1
+            continue
+
+        # Default pass-through
+        output.append(line)
+        i += 1
+
+    return '\n'.join(output)
+
+
+def normalize_llm_format(raw: str) -> str:
+    """Detect LLM output format and normalize to canonical form."""
+    if _is_nemotron_format(raw):
+        return _normalize_nemotron(raw)
+    return raw
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Core parser
+# ═══════════════════════════════════════════════════════════════════════
 
 def normalize_field_name(field: str) -> str:
-    """Normalize field name by removing markdown formatting."""
-    # Remove markdown bold/italic markers
     field = re.sub(r'^\*+', '', field)
     field = re.sub(r'\*+$', '', field)
     field = re.sub(r'^_+', '', field)
     field = re.sub(r'_+$', '', field)
-    field = re.sub(r'^\#+\s*', '', field)  # Remove heading markers
+    field = re.sub(r'^\#+\s*', '', field)
     return field.strip().lower().replace(' ', '_').replace('-', '_')
 
 
 def clean_value(value: str) -> str:
-    """Clean extracted value by removing markdown formatting."""
-    # Remove leading/trailing ** or *
     value = re.sub(r'^\*+\s*', '', value)
     value = re.sub(r'\s*\*+$', '', value)
     return value.strip()
+
+
+def _looks_like_new_field(stripped: str, field_with_value, field_alone) -> bool:
+    m = field_with_value.match(stripped)
+    if m:
+        norm = normalize_field_name(m.group(1))
+        return _is_known_field(norm) and norm not in SECTION_HEADER_NAMES
+
+    m = field_alone.match(stripped)
+    if m:
+        norm = normalize_field_name(m.group(1))
+        return _is_known_field(norm) and norm not in SECTION_HEADER_NAMES
+
+    return False
 
 
 def parse_llm_response(response_text: str) -> dict[str, dict[str, Any]]:
@@ -33,112 +238,128 @@ def parse_llm_response(response_text: str) -> dict[str, dict[str, Any]]:
 
     Handles various formats:
     - field_name: value
-    - *field_name*: value (markdown italic)
-    - **field_name**: value (markdown bold)
+    - *field_name*: value
+    - **field_name**: value
     - **field_name** (on own line, value follows)
     - - field_name: value (bullet point)
-    - field_name: value (with various whitespace)
+
+    Format-normalised input (Nemotron **field**/**value** style) is
+    handled by normalize_llm_format() which runs before this function.
     """
     attributes: dict[str, dict[str, Any]] = {}
     lines = response_text.split('\n')
     current_attr = None
-    current_content = []
+    current_content: list[str] = []
 
-    # Pattern to match field names with optional markdown formatting and value on same line
-    # Also handles bullet points: - field_name: value
-    # Matches: field_name: value, *field_name*: value, **field_name**: value, - field_name: value
-    field_with_value = re.compile(r'^[-\*•]?\s*[\*_]{0,2}([a-zA-Z][a-zA-Z0-9_\s\-]*)[\*_]{0,2}:\s*(.+)$')
-
-    # Pattern to match sub-fields (provenance, definition, etc.) - possibly with bullet points
-    sub_field_pattern = re.compile(r'^\s*[-\*•]?\s*(provenance|definition|reasoning|parent_class|differentia|key_relationships)\d*:\s*(.*)$', re.IGNORECASE)
-
-    # Pattern for field name on its own line (no colon or empty after colon)
-    # Matches: **field_name**, *field_name*, field_name, - field_name
-    field_alone = re.compile(r'^[-\*•]?\s*[\*_]{0,2}([a-zA-Z][a-zA-Z0-9_\s\-]*)[\*_]{0,2}:?\s*$')
+    field_with_value = re.compile(
+        r'^[-\*•]?\s*[\*_]{0,2}([a-zA-Z][a-zA-Z0-9_\s\-]*)[\*_]{0,2}:\s*(.+)$'
+    )
+    field_alone = re.compile(
+        r'^[-\*•]?\s*[\*_]{0,2}([a-zA-Z][a-zA-Z0-9_\s\-]*)[\*_]{0,2}:?\s*$'
+    )
 
     i = 0
     while i < len(lines):
         line = lines[i]
         stripped = line.strip()
 
-        # Skip empty lines and section headers (including markdown bold section headers)
         if not stripped or stripped.startswith('#') or stripped.startswith('---'):
             if current_attr:
                 current_content.append(line)
             i += 1
             continue
 
-        # Skip section headers like **Model Characteristics** or **Pathogen & Disease**
         if re.match(r'^\*\*[A-Z][a-zA-Z\s&]+\*\*$', stripped):
             i += 1
             continue
 
-        # Check for field with value on same line
+        # ── FINAL CHECKLIST lines — skip ──
+        if re.match(r'^\*?\*?-?\s*\[[ Xx]\]', stripped) or \
+           re.match(r'^\*\*FINAL\s+CHECKLIST', stripped, re.IGNORECASE):
+            i += 1
+            continue
+
+        # ── Case A: field with value on same line ──
         match = field_with_value.match(stripped)
-        if match and not line.startswith(' ') and not line.startswith('\t'):
+        if match and not line.startswith((' ', '\t')):
             raw_field = match.group(1)
             normalized = normalize_field_name(raw_field)
 
-            # Skip preamble/intro lines (long field names that are actually sentences)
-            if len(normalized) > 50 or normalized.startswith('here_are') or normalized.startswith('the_following') or normalized.startswith('based_on'):
+            if len(normalized) > 50 or normalized.startswith(
+                ('here_are', 'the_following', 'based_on', 'below_is')
+            ):
                 i += 1
                 continue
 
-            # Save previous attribute
             if current_attr:
-                attributes[current_attr] = parse_attribute_block(current_attr, '\n'.join(current_content))
+                attributes[current_attr] = parse_attribute_block(
+                    current_attr, '\n'.join(current_content)
+                )
 
             current_attr = normalized
             current_content = [match.group(2)]
             i += 1
             continue
 
-        # Check for field name on its own line
+        # ── Case B: field name on its own line ─────────────────────
         match = field_alone.match(stripped)
-        if match and not line.startswith(' ') and not line.startswith('\t'):
+        if match and not line.startswith((' ', '\t')):
             raw_field = match.group(1)
             normalized = normalize_field_name(raw_field)
 
-            # Skip preamble/intro lines
-            if len(normalized) > 50 or normalized.startswith('here_are') or normalized.startswith('the_following') or normalized.startswith('based_on'):
+            if len(normalized) > 50 or normalized.startswith(
+                ('here_are', 'the_following', 'based_on', 'below_is')
+            ):
                 i += 1
                 continue
 
-            # Skip section header-like names
-            if normalized in ('model_characteristics', 'pathogen_disease', 'pathogen_&_disease',
-                             'population_setting', 'population_&_setting', 'geography_time',
-                             'geography_&_time', 'study_purpose', 'interventions',
-                             'data_methods', 'data_&_methods', 'outcomes_outputs',
-                             'outcomes_&_outputs', 'reproducibility', 'additional_notes'):
+            if normalized in SECTION_HEADER_NAMES:
                 i += 1
                 continue
 
-            # Save previous attribute
+            # Only treat as new field if it's a known schema field
+            if not _is_known_field(normalized):
+                if current_attr:
+                    current_content.append(stripped)
+                i += 1
+                continue
+
             if current_attr:
-                attributes[current_attr] = parse_attribute_block(current_attr, '\n'.join(current_content))
+                attributes[current_attr] = parse_attribute_block(
+                    current_attr, '\n'.join(current_content)
+                )
 
             current_attr = normalized
-            # Look ahead for value - might be description text on next line(s) before provenance
             current_content = []
             i += 1
 
-            # Collect content until we hit provenance: or next field
+            # Look-ahead: collect until next known field
             while i < len(lines):
                 next_line = lines[i]
                 next_stripped = next_line.strip()
 
-                # Check if this is a sub-field like provenance:, definition:, etc.
-                if re.match(r'^\s*(provenance|definition|reasoning|parent_class|differentia|key_relationships)\d*:', next_line, re.IGNORECASE):
+                if re.match(
+                    r'^\s*(provenance|definition|reasoning|parent_class|'
+                    r'differentia|key_relationships)\d*:',
+                    next_line,
+                    re.IGNORECASE,
+                ):
                     current_content.append(next_line)
                     i += 1
                     continue
 
-                # Check if we hit a new top-level field
-                if (field_with_value.match(next_stripped) or field_alone.match(next_stripped)) and not next_line.startswith(' ') and not next_line.startswith('\t'):
-                    break
+                if next_stripped and not next_line.startswith((' ', '\t')):
+                    if _looks_like_new_field(
+                        next_stripped, field_with_value, field_alone
+                    ):
+                        break
 
-                # Check for section header
                 if next_stripped.startswith('#') or next_stripped.startswith('---'):
+                    i += 1
+                    continue
+
+                # Skip checklist lines inside look-ahead
+                if re.match(r'^\*?\*?-?\s*\[[ Xx]\]', next_stripped):
                     i += 1
                     continue
 
@@ -146,113 +367,123 @@ def parse_llm_response(response_text: str) -> dict[str, dict[str, Any]]:
                 i += 1
             continue
 
-        # Otherwise, add to current content
+        # Default: add to current content
         if current_attr:
             current_content.append(line)
         i += 1
 
     if current_attr:
-        attributes[current_attr] = parse_attribute_block(current_attr, '\n'.join(current_content))
+        attributes[current_attr] = parse_attribute_block(
+            current_attr, '\n'.join(current_content)
+        )
     return attributes
 
+
+# ═══════════════════════════════════════════════════════════════════════
+# Attribute block parser (unchanged logic, reformatted)
+# ═══════════════════════════════════════════════════════════════════════
 
 def parse_attribute_block(attr: str, content: str) -> dict[str, Any]:
     domains = identify_modeling_domains(attr)
     lines = content.split('\n')
 
-    # Find the value - might be first line, or might need to extract from description
     value = ''
-    rest_lines = []
+    rest_lines: list[str] = []
 
     for i, line in enumerate(lines):
         stripped = line.strip()
 
-        # Skip empty lines at start
         if not stripped and not value:
             continue
 
-        # Check if this looks like a sub-field (provenance:, definition:, etc.)
-        # Handles both "  provenance:" and "  - provenance:" formats
-        if re.match(r'^[-\*•]?\s*(provenance|definition|reasoning|parent_class|differentia|key_relationships)\d*:', stripped, re.IGNORECASE):
+        if re.match(
+            r'^[-\*•]?\s*(provenance|definition|reasoning|parent_class|'
+            r'differentia|key_relationships)\d*:',
+            stripped,
+            re.IGNORECASE,
+        ):
             rest_lines = lines[i:]
             break
 
-        # If we haven't found a value yet, this might be the value or description
         if not value:
-            # Check for patterns like "is X" or "The X is Y" to extract actual value
-            # For mistral format like "The computational/mathematical framework used is not explicitly mentioned"
             value = stripped
-
-            # Try to extract a more specific value from description
-            # Pattern: "is X" where X is the actual value
-            is_match = re.search(r'\bis\s+(?:a\s+)?([A-Za-z][A-Za-z0-9\s\-\/]+?)(?:\.|,|$)', stripped)
+            is_match = re.search(
+                r'\bis\s+(?:a\s+)?([A-Za-z][A-Za-z0-9\s\-\/]+?)(?:\.|,|$)',
+                stripped,
+            )
             if is_match:
                 extracted = is_match.group(1).strip()
-                # Only use if it's a reasonable length (not a full sentence)
-                if len(extracted) < 50 and extracted.lower() not in ('not', 'the', 'a', 'an'):
+                if len(extracted) < 50 and extracted.lower() not in (
+                    'not', 'the', 'a', 'an',
+                ):
                     value = extracted
         else:
             rest_lines.append(line)
 
     rest_content = '\n'.join(rest_lines)
-    # Normalize: convert "  - provenance:" to "  provenance:" for consistent parsing
-    rest_content_normalized = re.sub(r'\n(\s*)[-\*•]\s*(provenance|definition|reasoning|parent_class|differentia|key_relationships)', r'\n\1\2', rest_content)
-    has_numbered = bool(re.search(r'\n\s*(?:provenance|parent_class|differentia|key_relationships|definition|reasoning)1:', '\n' + rest_content_normalized, re.IGNORECASE))
+    rest_content_normalized = re.sub(
+        r'\n(\s*)[-\*•]\s*(provenance|definition|reasoning|parent_class|'
+        r'differentia|key_relationships)',
+        r'\n\1\2',
+        rest_content,
+    )
+    has_numbered = bool(re.search(
+        r'\n\s*(?:provenance|parent_class|differentia|key_relationships|'
+        r'definition|reasoning)1:',
+        '\n' + rest_content_normalized,
+        re.IGNORECASE,
+    ))
 
     if has_numbered:
-        provenances = {}
-        parent_classes = {}
-        differentias = {}
-        key_relationships_dict = {}
-        definitions = {}
-        reasonings = {}
+        provenances: dict[int, str] = {}
+        parent_classes: dict[int, str] = {}
+        differentias: dict[int, str] = {}
+        key_relationships_dict: dict[int, str] = {}
+        definitions: dict[int, str] = {}
+        reasonings: dict[int, str] = {}
 
-        for i in range(1, 20):
-            prov_pattern = rf'\n\s+provenance{i}:\s*(.+?)(?=\n\s+\w+\d*:|$)'
-            parent_pattern = rf'\n\s+parent_class{i}:\s*(.+?)(?=\n\s+\w+\d*:|$)'
-            diff_pattern = rf'\n\s+differentia{i}:\s*(.+?)(?=\n\s+\w+\d*:|$)'
-            rel_pattern = rf'\n\s+key_relationships{i}:\s*(.+?)(?=\n\s+\w+\d*:|$)'
-            defn_pattern = rf'\n\s+definition{i}:\s*(.+?)(?=\n\s+\w+\d*:|$)'
-            reas_pattern = rf'\n\s+reasoning{i}:\s*(.+?)(?=\n\s+\w+\d*:|$)'
-
-            prov_match = re.search(prov_pattern, '\n' + rest_content_normalized, re.DOTALL)
-            parent_match = re.search(parent_pattern, '\n' + rest_content_normalized, re.DOTALL)
-            diff_match = re.search(diff_pattern, '\n' + rest_content_normalized, re.DOTALL)
-            rel_match = re.search(rel_pattern, '\n' + rest_content_normalized, re.DOTALL)
-            defn_match = re.search(defn_pattern, '\n' + rest_content_normalized, re.DOTALL)
-            reas_match = re.search(reas_pattern, '\n' + rest_content_normalized, re.DOTALL)
-
-            if prov_match:
-                provenances[i] = prov_match.group(1).strip()
-            if parent_match:
-                parent_classes[i] = parent_match.group(1).strip()
-            if diff_match:
-                differentias[i] = diff_match.group(1).strip()
-            if rel_match:
-                key_relationships_dict[i] = rel_match.group(1).strip()
-            if defn_match:
-                definitions[i] = defn_match.group(1).strip()
-            if reas_match:
-                reasonings[i] = reas_match.group(1).strip()
-
-            if not (prov_match or parent_match or diff_match or rel_match or defn_match or reas_match):
+        for idx in range(1, 20):
+            pats = {
+                'prov': rf'\n\s+provenance{idx}:\s*(.+?)(?=\n\s+\w+\d*:|$)',
+                'parent': rf'\n\s+parent_class{idx}:\s*(.+?)(?=\n\s+\w+\d*:|$)',
+                'diff': rf'\n\s+differentia{idx}:\s*(.+?)(?=\n\s+\w+\d*:|$)',
+                'rel': rf'\n\s+key_relationships{idx}:\s*(.+?)(?=\n\s+\w+\d*:|$)',
+                'defn': rf'\n\s+definition{idx}:\s*(.+?)(?=\n\s+\w+\d*:|$)',
+                'reas': rf'\n\s+reasoning{idx}:\s*(.+?)(?=\n\s+\w+\d*:|$)',
+            }
+            found_any = False
+            for key, pat in pats.items():
+                m = re.search(pat, '\n' + rest_content_normalized, re.DOTALL)
+                if m:
+                    val = m.group(1).strip()
+                    found_any = True
+                    if key == 'prov':
+                        provenances[idx] = val
+                    elif key == 'parent':
+                        parent_classes[idx] = val
+                    elif key == 'diff':
+                        differentias[idx] = val
+                    elif key == 'rel':
+                        key_relationships_dict[idx] = val
+                    elif key == 'defn':
+                        definitions[idx] = val
+                    elif key == 'reas':
+                        reasonings[idx] = val
+            if not found_any:
                 break
 
-        definition = '; '.join([f"{definitions[k]}" for k in sorted(definitions.keys())]) if definitions else None
-        provenance = provenances.get(1) if provenances else None
-        parent_class = parent_classes.get(1) if parent_classes else None
-        differentia = differentias.get(1) if differentias else None
-        key_relationships = key_relationships_dict.get(1) if key_relationships_dict else None
-        reasoning = reasonings.get(1) if reasonings else None
+        definition = '; '.join(
+            f"{definitions[k]}" for k in sorted(definitions.keys())
+        ) if definitions else None
 
         return {
             'value': value,
-            'provenance': provenance,
-            'parent_class': parent_class,
-            'differentia': differentia,
-            'key_relationships': key_relationships,
+            'provenance': provenances.get(1),
+            'parent_class': parent_classes.get(1),
+            'differentia': differentias.get(1),
+            'key_relationships': key_relationships_dict.get(1),
             'definition': definition,
-            'reasoning': reasoning,
+            'reasoning': reasonings.get(1),
             'provenances': provenances,
             'parent_classes': parent_classes,
             'differentias': differentias,
@@ -263,13 +494,35 @@ def parse_attribute_block(attr: str, content: str) -> dict[str, Any]:
             'domains': domains,
         }
 
-    provenance_match = re.search(r'\n\s*(?:provenance|citation):\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
-    parent_class_match = re.search(r'\n\s*parent_class:\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
-    differentia_match = re.search(r'\n\s*differentia:\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
-    key_relationships_match = re.search(r'\n\s*key_relationships:\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
-    definition_match = re.search(r'\n\s*definition:\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
-    reasoning_match = re.search(r'\n\s*reasoning:\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
-    ontologies_match = re.search(r'\n\s*ontologies:\s*(.+?)(?=\n\s*\w+:|$)', '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE)
+    # ── Un-numbered sub-fields ──
+    provenance_match = re.search(
+        r'\n\s*(?:provenance|citation):\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
+    parent_class_match = re.search(
+        r'\n\s*parent_class:\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
+    differentia_match = re.search(
+        r'\n\s*differentia:\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
+    key_relationships_match = re.search(
+        r'\n\s*key_relationships:\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
+    definition_match = re.search(
+        r'\n\s*definition:\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
+    reasoning_match = re.search(
+        r'\n\s*reasoning:\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
+    ontologies_match = re.search(
+        r'\n\s*ontologies:\s*(.+?)(?=\n\s*\w+:|$)',
+        '\n' + rest_content_normalized, re.DOTALL | re.IGNORECASE,
+    )
 
     provenance = provenance_match.group(1).strip() if provenance_match else None
     parent_class = parent_class_match.group(1).strip() if parent_class_match else None
@@ -279,18 +532,22 @@ def parse_attribute_block(attr: str, content: str) -> dict[str, Any]:
     reasoning = reasoning_match.group(1).strip() if reasoning_match else None
     ontologies_str = ontologies_match.group(1).strip() if ontologies_match else None
 
-    ontologies = []
+    ontologies: list[str] = []
     if ontologies_str:
         ontologies_str = ontologies_str.strip('[]"\'')
-        ontologies = [ont.strip().strip('"\'') for ont in ontologies_str.split(',') if ont.strip()]
+        ontologies = [
+            ont.strip().strip('"\'')
+            for ont in ontologies_str.split(',')
+            if ont.strip()
+        ]
 
     is_multi_value = ',' in value
     if is_multi_value and (provenance or definition or reasoning):
         num_values = len([v.strip() for v in value.split(',') if v.strip()])
         LOGGER.warning(
-            "FORMAT ERROR: '%s' has %d values (%s) but uses un-numbered fields. "
-            "LLM should use provenance1/provenance2/etc for each value. "
-            "Only the first value's metadata will be used.",
+            "FORMAT ERROR: '%s' has %d values (%s) but uses un-numbered "
+            "fields. LLM should use provenance1/provenance2/etc for each "
+            "value. Only the first value's metadata will be used.",
             attr,
             num_values,
             value,
@@ -309,9 +566,23 @@ def parse_attribute_block(attr: str, content: str) -> dict[str, Any]:
     }
 
 
-def parse_and_display_extracted_data(response_content: str, *, logger: logging.Logger = LOGGER):
+# ═══════════════════════════════════════════════════════════════════════
+# Public entry point
+# ═══════════════════════════════════════════════════════════════════════
+
+def parse_and_display_extracted_data(
+    response_content: str, *, logger: logging.Logger = LOGGER
+):
+    # ── Step 0: normalize non-standard LLM output formats ──
+    normalized = normalize_llm_format(response_content)
+    if normalized != response_content:
+        logger.info(
+            "Detected non-standard LLM output format; "
+            "normalized before parsing"
+        )
+
     logger.info("LLM response:\n%s", response_content)
-    extracted_data = parse_llm_response(response_content)
+    extracted_data = parse_llm_response(normalized)
     logger.info("Extracted %d attributes", len(extracted_data))
     for attr, data in extracted_data.items():
         logger.info("[%s]: %s", attr, data['value'])
