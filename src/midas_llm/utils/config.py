@@ -101,6 +101,11 @@ class ExtractionConfig:
     generate_json_output: bool = field(default_factory=lambda: _env_bool("GENERATE_JSON_OUTPUT", False))
     generate_evaluation_report: bool = field(default_factory=lambda: _env_bool("GENERATE_EVALUATION_REPORT", True))
 
+    # Embeddings / Sentence Transformers
+    embedding_model: str = field(default_factory=lambda: os.getenv(
+        "EMBEDDING_MODEL", "FremyCompany/BioLORD-2023-C"
+    ))
+
     def __post_init__(self) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.ontology_path.mkdir(parents=True, exist_ok=True)

@@ -8,27 +8,42 @@ from typing import Any
 import numpy as np
 
 from .ontology_lookup import lookup_in_all_ontologies
+from ..config import ExtractionConfig
 
 try:
     from sentence_transformers import SentenceTransformer
     _EMBED_MODEL: SentenceTransformer | None = None
+    _EMBED_MODEL_NAME: str | None = None
 except Exception:
     SentenceTransformer = None  # type: ignore
     _EMBED_MODEL = None
+    _EMBED_MODEL_NAME = None
 
 LOGGER = logging.getLogger("midas-llm")
 
 
-def _get_embedder() -> SentenceTransformer | None:
-    global _EMBED_MODEL
+def _get_embedder(model_name: str | None = None) -> SentenceTransformer | None:
+    global _EMBED_MODEL, _EMBED_MODEL_NAME
     if SentenceTransformer is None:
         return None
-    if _EMBED_MODEL is None:
-        model_name = os.environ.get("SIMILARITY_EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+
+    # Use config default if no model_name provided
+    if model_name is None:
+        config = ExtractionConfig()
+        model_name = config.embedding_model
+
+    # Prepend "sentence-transformers/" if not already present
+    if model_name and not model_name.startswith("sentence-transformers/"):
+        model_name = f"sentence-transformers/{model_name}"
+
+    # Reload model if model name changed
+    if _EMBED_MODEL is None or _EMBED_MODEL_NAME != model_name:
         try:
             _EMBED_MODEL = SentenceTransformer(model_name)
+            _EMBED_MODEL_NAME = model_name
         except Exception:  # noqa: BLE001
             _EMBED_MODEL = None
+            _EMBED_MODEL_NAME = None
     return _EMBED_MODEL
 
 

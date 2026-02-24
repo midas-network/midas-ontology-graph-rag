@@ -1,16 +1,29 @@
 {
-  "version": "2.0-audited",
-  "created": "2026-02-20",
-  "audited": "2026-02-20",
-  "description": "20 gold standard abstracts audited for abstract-extractability. Every value tagged (inferred) requires domain knowledge not explicitly in the abstract text.",
+  "version": "3.0-normalized",
+  "created": "2026-02-23",
+  "parent_version": "2.0-audited",
+  "description": "Gold standard with structured extractability tiers, normalized synonyms, and standardized absent-value vocabulary.",
+  "changelog": [
+    "Replaced '(inferred)' suffix with structured {value, tier} objects",
+    "Removed synonym duplicates — synonym normalization handled at eval time",
+    "Standardized absent-value vocabulary: 'not mentioned' / 'not specified' / 'not applicable' / 'no'",
+    "Empty lists [] for fields with no values"
+  ],
   "schema_notes": {
+    "value_format": "Each expected value is either a string (for absent-value markers) or {value, tier} object",
     "extractability_tiers": {
-      "tier1_explicit": "Value is directly stated in the abstract. An LLM should extract this.",
-      "tier2_inferred": "Value requires domain knowledge inference. Tagged with '(inferred)'. Score separately.",
-      "not_mentioned": "Field is relevant but abstract provides no information.",
-      "not_applicable": "Field does not apply to this study type.",
-      "not_specified": "Study could have this info but abstract doesn't state it."
-    }
+      "explicit": "Value is directly stated in the abstract text",
+      "inferred": "Value requires domain knowledge not in the abstract"
+    },
+    "absent_value_vocabulary": {
+      "not mentioned": "Field is relevant but abstract provides no information. Use for binary fields where the abstract is silent.",
+      "not specified": "Study likely has this info but abstract does not state it. Use for free-text fields.",
+      "not applicable": "Field does not apply to this study type (e.g., dates for theoretical studies).",
+      "no": "Binary field where the answer is definitively negative based on abstract content.",
+      "yes": "Binary field where the answer is definitively positive based on abstract content.",
+      "[]": "Empty array — no values exist for this list field."
+    },
+    "calibration_vs_validation": "Calibration = tuning model parameters to fit observed data (e.g., MCMC, least squares fitting). Retrospective forecast evaluation using accuracy metrics (WIS, MAE) is validation, NOT calibration."
   },
   "abstracts": [
     {
@@ -19,35 +32,71 @@
       "journal": "Epidemics, 2024",
       "abstract": "In June of 2022, the U.S. Centers for Disease Control and Prevention (CDC) Mpox Response wanted timely answers to important epidemiological questions which can now be answered more effectively through infectious disease modeling. Infectious disease models have shown to be valuable tools for decision making during outbreaks; however, model complexity often makes communicating the results and limitations of models to decision makers difficult. We performed nowcasting and forecasting for the 2022 mpox outbreak in the United States using the R package EpiNow2. We generated nowcasts/forecasts at the national level, by Census region, and for jurisdictions reporting the greatest number of mpox cases. Modeling results were shared for situational awareness within the CDC Mpox Response and publicly on the CDC website. We retrospectively evaluated forecast predictions at four key phases (early, exponential growth, peak, and decline) during the outbreak using three metrics, the weighted interval score, mean absolute error, and prediction interval coverage. We compared the performance of EpiNow2 with a naïve Bayesian generalized linear model (GLM). The EpiNow2 model had less probabilistic error than the GLM during every outbreak phase except for the early phase. We share our experiences with an existing tool for nowcasting/forecasting and highlight areas of improvement for the development of future tools. We also reflect on lessons learned regarding data quality issues and adapting modeling results for different audiences.",
       "expected": {
-        "model_type": ["EpiNow2", "Bayesian generalized linear model"],
-        "model_determinism": ["stochastic (inferred)"],
-        "pathogen_name": ["monkeypox virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["mpox"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national", "sub-national"],
-        "geographic_units": ["United States", "U.S."],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["forecast/nowcast"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "EpiNow2", "tier": "explicit"},
+          {"value": "Bayesian generalized linear model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "monkeypox virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "mpox", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "explicit"},
+          {"value": "sub-national", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "United States", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "forecast/nowcast", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["surveillance case data (inferred)"],
-        "data_source": ["CDC (inferred)"],
-        "key_outcome_measures": ["cases (inferred)", "weighted interval score", "mean absolute error", "prediction interval coverage"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2022"],
-        "study_dates_end": ["not specified"],
-        "calibration_mentioned": ["no"],
+        "data_used": [
+          {"value": "surveillance case data", "tier": "inferred"}
+        ],
+        "data_source": [
+          {"value": "CDC", "tier": "inferred"}
+        ],
+        "key_outcome_measures": [
+          {"value": "cases", "tier": "inferred"},
+          {"value": "weighted interval score", "tier": "explicit"},
+          {"value": "mean absolute error", "tier": "explicit"},
+          {"value": "prediction interval coverage", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2022", "tier": "explicit"}
+        ],
+        "study_dates_end": "not specified",
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "Abstract names 'EpiNow2' and 'Bayesian GLM' but not 'Bayesian renewal model' — removed",
-        "GitHub is in the full paper only — changed code_available to 'not mentioned'",
-        "Abstract says 'U.S.' not full 'United States' — added both forms",
-        "Abstract never says 'surveillance case data' explicitly — flagged as inferred",
-        "Specific month-level date range not in abstract — simplified to year only"
+        "Abstract names 'EpiNow2' and 'Bayesian GLM' — both explicit",
+        "Removed duplicate 'U.S.' — synonym map handles normalization",
+        "Retrospective evaluation using WIS/MAE/PI is validation, not calibration — calibration_mentioned stays 'no'",
+        "CDC mentioned in context of 'CDC Mpox Response' and 'CDC website' — data_source inferred"
       ]
     },
     {
@@ -56,35 +105,67 @@
       "journal": "Water Research, 2025",
       "abstract": "Wastewater has emerged as a crucial tool for infectious disease surveillance, offering a valuable means to bridge the equity gap between underserved communities and larger urban municipalities. However, using wastewater surveillance in a predictive manner remains a challenge. In this study, we tested if detecting SARS-CoV-2 in wastewater can forecast outbreaks in rural communities. Under the CDC National Wastewater Surveillance program, we monitored the SARS-CoV-2 in the wastewater of five rural communities and a small city in Idaho (USA). We then used a particle filter method coupled with a stochastic susceptible-exposed-infectious-recovered (SEIR) model to infer active case numbers using quantities of SARS-CoV-2 in wastewater. Our findings revealed that while high daily variations in wastewater viral load made real-time interpretation difficult, the SEIR model successfully factored out this noise, enabling accurate forecasts of the Omicron outbreak in five of the six towns shortly after the first detection of virus in wastewater. The model predicted outbreaks with a lead time of 0 to 11 days (average of 6 days) before the surge in reported clinical cases. This study not only underscores the viability of wastewater-based epidemiology (WBE) in rural communities but also demonstrates the potential of advanced epidemiological modeling to enhance the predictive power of wastewater data.",
       "expected": {
-        "model_type": ["SEIR compartmental"],
-        "model_determinism": ["stochastic"],
-        "pathogen_name": ["SARS-CoV-2"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["COVID-19 (inferred)"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["rural communities"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["sub-national (inferred)"],
-        "geographic_units": ["Idaho, USA"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["forecast/nowcast"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "SEIR compartmental", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "explicit"}
+        ],
+        "pathogen_name": [
+          {"value": "SARS-CoV-2", "tier": "explicit"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "COVID-19", "tier": "inferred"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "rural communities", "tier": "explicit"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "sub-national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "Idaho, USA", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "forecast/nowcast", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["wastewater surveillance data", "clinical case data"],
-        "data_source": ["CDC National Wastewater Surveillance program"],
-        "key_outcome_measures": ["active case numbers", "outbreak lead time"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not specified"],
-        "study_dates_end": ["not specified"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["particle filter"]
+        "data_used": [
+          {"value": "wastewater surveillance data", "tier": "explicit"},
+          {"value": "clinical case data", "tier": "explicit"}
+        ],
+        "data_source": [
+          {"value": "CDC National Wastewater Surveillance program", "tier": "explicit"}
+        ],
+        "key_outcome_measures": [
+          {"value": "active case numbers", "tier": "explicit"},
+          {"value": "outbreak lead time", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not specified",
+        "study_dates_end": "not specified",
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "particle filter", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "Abstract says 'SARS-CoV-2' but never 'COVID-19' — disease_name flagged as inferred",
-        "pathogen_type 'virus' not explicitly stated — flagged",
-        "host_species, population_setting_type, geographic_scope all inferred",
-        "GitHub link is in the full paper, not abstract — changed code_available to 'not mentioned'",
-        "Removed 'forecasting accuracy' from outcomes — too vague, covered by lead time metric"
+        "disease_name: abstract says 'SARS-CoV-2' but never 'COVID-19' — disease_name inferred",
+        "pathogen_type 'virus' not separately stated — inferred from domain knowledge",
+        "calibration_mentioned 'yes': particle filter is a sequential data assimilation / parameter estimation method"
       ]
     },
     {
@@ -93,34 +174,73 @@
       "journal": "Computers in Biology and Medicine, 2025",
       "abstract": "Tuberculosis (TB) remains a leading cause of death from a single infectious agent, with TB deaths in 2021 surpassing those from HIV/AIDS. In alignment with the WHO's End TB strategy, South Korea launched a TB elimination plan in 2006. Recognizing the significance of age-dependent factors, we developed a comprehensive mathematical model to analyze the age-specific transmission dynamics of TB, including latent tuberculosis infection (LTBI), from 2012 to 2021. In this study, we enhance our model to include both short and long latent TB cases, allowing for a more detailed investigation of age-specific LTBI interventions and their impact on TB reduction. Utilizing the Markov Chain Monte Carlo (MCMC) method within a Bayesian inferential framework, we estimated model parameters that closely align with actual data with high accuracy. Our results revealed that non-elderly individuals are more responsive to transmission rates, whereas elderly individuals are more influenced by LTBI treatment. Strengthening LTBI treatment interventions significantly reduce TB infectious cases, particularly among those aged 65 and older. Detection and treatment strategies specifically targeting LTBI in the elderly population, along with primary TB treatments, are essential for TB control.",
       "expected": {
-        "model_type": ["mathematical model", "age-specific"],
-        "model_determinism": ["not mentioned"],
-        "pathogen_name": ["Mycobacterium tuberculosis (inferred)"],
-        "pathogen_type": ["bacterium (inferred)"],
-        "disease_name": ["tuberculosis", "latent tuberculosis infection"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["elderly aged 65+", "general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["South Korea"],
-        "historical_vs_hypothetical": ["mixed"],
-        "study_goal_category": ["intervention evaluation", "parameter estimation"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["LTBI detection and treatment"],
-        "data_used": ["TB incidence data (inferred)"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["TB infectious cases", "intervention impact by age group"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2012"],
-        "study_dates_end": ["2021"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["MCMC", "Bayesian inference"]
+        "model_type": [
+          {"value": "mathematical model", "tier": "explicit"},
+          {"value": "age-specific", "tier": "explicit"}
+        ],
+        "model_determinism": "not mentioned",
+        "pathogen_name": [
+          {"value": "Mycobacterium tuberculosis", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "bacterium", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "tuberculosis", "tier": "explicit"},
+          {"value": "latent tuberculosis infection", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "elderly aged 65+", "tier": "explicit"},
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "South Korea", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "mixed", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "intervention evaluation", "tier": "explicit"},
+          {"value": "parameter estimation", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "LTBI detection and treatment", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "TB incidence data", "tier": "inferred"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "TB infectious cases", "tier": "explicit"},
+          {"value": "intervention impact by age group", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2012", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2021", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "MCMC", "tier": "explicit"},
+          {"value": "Bayesian inference", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "Abstract says 'mathematical model' not 'compartmental' — changed model_type",
-        "model_determinism: abstract doesn't say deterministic or stochastic — changed to 'not mentioned'",
-        "Abstract says 'actual data' but never names data type — flagged as inferred",
-        "host_species, population_setting_type, geographic_scope all require inference"
+        "model_determinism: abstract doesn't say deterministic or stochastic — 'not mentioned'",
+        "data_used: abstract says 'actual data' but never names data type — inferred",
+        "calibration: MCMC within Bayesian framework is explicitly calibration"
       ]
     },
     {
@@ -129,34 +249,75 @@
       "journal": "Nature Communications, 2025",
       "abstract": "The Joint Committee for Vaccination and Immunisation recommended to implement an earlier second dose for the Measles-Mumps-Rubella (MMR) vaccine starting in 2026 in the United Kingdom. We investigated the impact of these changes on measles transmission in England. Using an age- and region-stratified mathematical model, we simulated outbreaks with different vaccination schedules and coverage, using electronic health records and outbreak data from 2010 to 2019. Delivering the second MMR dose at 24 months reduced cases by 11.86% (IQR: -3.3; 23.81%) compared to the current schedule (3 years and 4 months) and showed a 22.39% (IQR: 10.05; 32.79%) reduction of cases if achieving the same coverage as the first MMR dose. The effect of delivering an earlier second MMR was lower when waning of vaccine-induced immunity was included (5.28%). Increasing first-dose coverage by 0.5% annually yielded slightly better outcomes than an earlier second dose (14.68% reduction, IQR:1.19; 27.4%).",
       "expected": {
-        "model_type": ["age-stratified mathematical model", "region-stratified"],
-        "model_determinism": ["stochastic (inferred)"],
-        "pathogen_name": ["measles virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["measles"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["children (inferred)", "general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national"],
-        "geographic_units": ["England", "United Kingdom"],
-        "historical_vs_hypothetical": ["mixed"],
-        "study_goal_category": ["scenario analysis", "intervention evaluation"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["vaccination", "vaccination schedule change"],
-        "data_used": ["electronic health records", "outbreak data"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["cases", "case reduction percentage"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2010"],
-        "study_dates_end": ["2019"],
-        "calibration_mentioned": ["yes (inferred)"],
-        "calibration_techniques": ["not specified"]
+        "model_type": [
+          {"value": "age-stratified mathematical model", "tier": "explicit"},
+          {"value": "region-stratified", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "measles virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "measles", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "children", "tier": "inferred"},
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "England", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "mixed", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "scenario analysis", "tier": "explicit"},
+          {"value": "intervention evaluation", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "vaccination", "tier": "explicit"},
+          {"value": "vaccination schedule change", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "electronic health records", "tier": "explicit"},
+          {"value": "outbreak data", "tier": "explicit"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "cases", "tier": "explicit"},
+          {"value": "case reduction percentage", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2010", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2019", "tier": "explicit"}
+        ],
+        "calibration_mentioned": [
+          {"value": "yes", "tier": "inferred"}
+        ],
+        "calibration_techniques": "not specified"
       },
       "audit_notes": [
-        "Abstract says 'age- and region-stratified mathematical model' — used exact phrasing",
-        "IQR implies stochastic output but word 'stochastic' not used — flagged",
-        "host_species, primary_population, population_setting_type all inferred",
-        "Calibration inferred from model fitting to 2010-2019 data but not explicitly stated"
+        "Removed duplicate 'United Kingdom' — abstract focuses on England specifically",
+        "IQR implies stochastic output but word 'stochastic' not used — inferred",
+        "Calibration inferred from model fitting to 2010-2019 data but method not stated"
       ]
     },
     {
@@ -165,35 +326,76 @@
       "journal": "Scientific Reports, 2025",
       "abstract": "A dynamics informed neural networks (DINNs) incorporating the susceptible-exposed-infectious-recovered-vaccinated (SEIRV) model was developed to enhance the understanding of the temporal evolution dynamics of infectious diseases. This work integrates differential equations with deep neural networks to predict time-varying parameters in the SEIRV model. Experimental results based on reported data from China between January 1, and December 1, 2022, demonstrate that the proposed dynamics informed neural networks (DINNs) method can accurately learn the dynamics and predict future states. Our proposed hybrid SEIRV-DNNs model can also be applied to other infectious diseases such as influenza and dengue, with some modifications to the compartments and parameters in the model to accommodate the related control measures. This approach will facilitate improving predictive modeling and optimizing public health intervention strategies.",
       "expected": {
-        "model_type": ["SEIRV model", "dynamics informed neural networks"],
-        "model_determinism": ["deterministic (inferred)"],
-        "pathogen_name": ["SARS-CoV-2 (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["COVID-19"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["China"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["forecast/nowcast", "methodological"],
-        "intervention_present": ["yes (inferred)"],
-        "intervention_types": ["vaccination (inferred)"],
-        "data_used": ["reported data"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["time-varying parameters", "predicted states"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2022-01"],
-        "study_dates_end": ["2022-12"],
-        "calibration_mentioned": ["yes (inferred)"],
-        "calibration_techniques": ["dynamics informed neural networks"]
+        "model_type": [
+          {"value": "SEIRV model", "tier": "explicit"},
+          {"value": "dynamics informed neural networks", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "deterministic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "SARS-CoV-2", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "COVID-19", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "China", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "forecast/nowcast", "tier": "explicit"},
+          {"value": "methodological", "tier": "explicit"}
+        ],
+        "intervention_present": [
+          {"value": "yes", "tier": "inferred"}
+        ],
+        "intervention_types": [
+          {"value": "vaccination", "tier": "inferred"}
+        ],
+        "data_used": [
+          {"value": "reported data", "tier": "explicit"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "time-varying parameters", "tier": "explicit"},
+          {"value": "predicted states", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2022-01", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2022-12", "tier": "explicit"}
+        ],
+        "calibration_mentioned": [
+          {"value": "yes", "tier": "inferred"}
+        ],
+        "calibration_techniques": [
+          {"value": "dynamics informed neural networks", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "model_type: used exact terms from abstract, not paraphrased labels",
-        "Pathogen name not stated — abstract only says 'COVID-19', SARS-CoV-2 is inferred",
-        "Vaccination inferred from 'V' compartment (vaccinated) but not explicitly discussed as intervention",
-        "data_used: abstract says 'reported data' not 'case data' — used exact phrasing",
-        "Previously had 'physics-informed neural networks' — abstract says 'dynamics informed' — fixed"
+        "Pathogen SARS-CoV-2 inferred — abstract only says 'COVID-19'",
+        "Vaccination inferred from 'V' compartment (vaccinated) but not discussed as intervention",
+        "Calibration inferred: DINNs learn parameters from data, which is a form of fitting"
       ]
     },
     {
@@ -202,34 +404,76 @@
       "journal": "Engineering Reports, 2024",
       "abstract": "Tuberculosis (TB) remains a significant global health challenge, claiming over 2 million lives annually, predominantly among adults. Existing TB models often neglect seasonal variations, optimal control, and reinfection, limiting their accuracy in predicting disease dynamics. This study presents a novel data-driven SVEITRS mathematical model incorporating these factors to analyze TB transmission dynamics. Employing the next-generation matrix approach, a basic reproduction number R0 of 1.005341 was calculated, suggesting that without robust public health interventions, TB disease may persist in Kenya. The model equations were solved numerically using fourth- and fifth-order Runge-Kutta methods, with the forward-backward sweep technique applied to the optimal control problem. The model was fitted to historical TB incidence data for Kenya from 2000 to 2022 using lsqcurvefit algorithm in MATLAB software.",
       "expected": {
-        "model_type": ["SVEITRS mathematical model"],
-        "model_determinism": ["deterministic (inferred)"],
-        "pathogen_name": ["Mycobacterium tuberculosis (inferred)"],
-        "pathogen_type": ["bacterium (inferred)"],
-        "disease_name": ["tuberculosis"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["adults"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["Kenya"],
-        "historical_vs_hypothetical": ["mixed"],
-        "study_goal_category": ["transmission dynamics/drivers", "intervention evaluation"],
-        "intervention_present": ["yes (inferred)"],
-        "intervention_types": ["vaccination (inferred)", "public health interventions"],
-        "data_used": ["TB incidence data"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["R0", "active TB cases (inferred)", "optimal control strategies"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2000"],
-        "study_dates_end": ["2022"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["least squares curve fitting", "next-generation matrix"]
+        "model_type": [
+          {"value": "SVEITRS mathematical model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "deterministic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "Mycobacterium tuberculosis", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "bacterium", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "tuberculosis", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "adults", "tier": "explicit"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "Kenya", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "mixed", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "transmission dynamics/drivers", "tier": "explicit"},
+          {"value": "intervention evaluation", "tier": "explicit"}
+        ],
+        "intervention_present": [
+          {"value": "yes", "tier": "inferred"}
+        ],
+        "intervention_types": [
+          {"value": "vaccination", "tier": "inferred"},
+          {"value": "public health interventions", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "TB incidence data", "tier": "explicit"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "R0", "tier": "explicit"},
+          {"value": "active TB cases", "tier": "inferred"},
+          {"value": "optimal control strategies", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2000", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2022", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "least squares curve fitting", "tier": "explicit"},
+          {"value": "next-generation matrix", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "model_determinism: 'deterministic' not explicitly stated in abstract — flagged as inferred",
-        "Intervention: abstract says 'public health interventions' and model has V compartment, but specific interventions not detailed — flagged",
-        "primary_population: abstract says 'predominantly among adults' — extractable",
-        "'active TB cases' as outcome measure is inferred from optimal control context"
+        "model_determinism: Runge-Kutta + differential equations implies deterministic but word not used — inferred",
+        "Vaccination inferred from 'V' compartment in SVEITRS",
+        "lsqcurvefit is least squares curve fitting — calibration explicit"
       ]
     },
     {
@@ -238,35 +482,74 @@
       "journal": "Computation (MDPI), 2025",
       "abstract": "This study presents an extended approach to compartmental modeling of infectious disease spread, focusing on regional heterogeneity within affected areas. Using classical SIS, SIR, and SEIR frameworks, we simulate the dynamics of COVID-19 across two major regions of Ukraine—Dnipropetrovsk and Kharkiv—during the period 2020–2024. The proposed mathematical model incorporates regionally distributed subpopulations and applies a system of differential equations solved using the classical fourth-order Runge-Kutta method. The simulations are validated against real-world epidemiological data from national and international sources. The SEIR model demonstrated superior performance, achieving maximum relative errors of 4.81% and 5.60% in the Kharkiv and Dnipropetrovsk regions, respectively, outperforming the SIS and SIR models. Despite limited mobility and social contact data, the regionally adapted models achieved acceptable accuracy for medium-term forecasting.",
       "expected": {
-        "model_type": ["SIS compartmental", "SIR compartmental", "SEIR compartmental"],
-        "model_determinism": ["deterministic (inferred)"],
-        "pathogen_name": ["SARS-CoV-2 (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["COVID-19"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["sub-national"],
-        "geographic_units": ["Dnipropetrovsk, Ukraine", "Kharkiv, Ukraine"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["forecast/nowcast", "methodological"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "SIS compartmental", "tier": "explicit"},
+          {"value": "SIR compartmental", "tier": "explicit"},
+          {"value": "SEIR compartmental", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "deterministic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "SARS-CoV-2", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "COVID-19", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "sub-national", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "Dnipropetrovsk, Ukraine", "tier": "explicit"},
+          {"value": "Kharkiv, Ukraine", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "forecast/nowcast", "tier": "explicit"},
+          {"value": "methodological", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["epidemiological data"],
-        "data_source": ["national and international sources"],
-        "key_outcome_measures": ["relative error", "forecasting accuracy"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2020"],
-        "study_dates_end": ["2024"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["validation against observed data"]
+        "data_used": [
+          {"value": "epidemiological data", "tier": "explicit"}
+        ],
+        "data_source": [
+          {"value": "national and international sources", "tier": "explicit"}
+        ],
+        "key_outcome_measures": [
+          {"value": "relative error", "tier": "explicit"},
+          {"value": "forecasting accuracy", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2020", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2024", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "validation against observed data", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "model_determinism: 'differential equations' implies deterministic but word not used — flagged",
-        "Abstract says 'COVID-19' but not 'SARS-CoV-2' — pathogen_name flagged as inferred",
-        "data_used: abstract says 'real-world epidemiological data' — simplified to 'epidemiological data'",
-        "Removed Runge-Kutta from calibration_techniques: it's a numerical solver, not a calibration method",
-        "Removed 'cases' from outcomes: abstract reports relative error and forecasting accuracy, not case counts directly"
+        "model_determinism: 'differential equations' + Runge-Kutta implies deterministic — inferred",
+        "Runge-Kutta is a solver, not calibration — excluded from calibration_techniques",
+        "Abstract says 'validated against real-world epidemiological data' — calibration yes"
       ]
     },
     {
@@ -275,34 +558,69 @@
       "journal": "International Journal of Infectious Diseases, 2025",
       "abstract": "Dengue, caused by the dengue virus (DENV), is the fastest-growing mosquito-borne disease worldwide. We utilised monthly data on dengue cases and deaths reported through the World Health Organisation's (WHO) global surveillance system for the period of 1st January to 31st December 2024. We then performed a generalised linear regression model to understand country-level determinants of dengue-related mortality. In 2024, 14.1 million dengue cases were reported globally, surpassing the historic milestone of 7 million observed in 2023. This figure represents a twofold increase compared to 2023 and a 12-fold rise compared to 2014 (n=1,206,644). In 2024, 9,508 dengue-related deaths were recorded, resulting in a global case-fatality rate of 0.07%. In the regression analysis, countries in the Southern hemisphere showed significantly higher incidence rate ratios. The ongoing dengue outbreak underscores the urgent need for global investment in DENV research, vaccine development, vector control, and therapeutic strategies.",
       "expected": {
-        "model_type": ["generalised linear regression model"],
-        "model_determinism": ["not applicable"],
-        "pathogen_name": ["dengue virus", "DENV"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["dengue"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["global"],
-        "geographic_units": ["global"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["burden estimation"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "generalised linear regression model", "tier": "explicit"}
+        ],
+        "model_determinism": "not applicable",
+        "pathogen_name": [
+          {"value": "dengue virus", "tier": "explicit"},
+          {"value": "DENV", "tier": "explicit"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "dengue", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "global", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "global", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "burden estimation", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["case data", "mortality data"],
-        "data_source": ["WHO global surveillance system"],
-        "key_outcome_measures": ["cases", "deaths", "case-fatality rate", "incidence rate ratio"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2024-01"],
-        "study_dates_end": ["2024-12"],
-        "calibration_mentioned": ["no"],
+        "data_used": [
+          {"value": "case data", "tier": "explicit"},
+          {"value": "mortality data", "tier": "explicit"}
+        ],
+        "data_source": [
+          {"value": "WHO global surveillance system", "tier": "explicit"}
+        ],
+        "key_outcome_measures": [
+          {"value": "cases", "tier": "explicit"},
+          {"value": "deaths", "tier": "explicit"},
+          {"value": "case-fatality rate", "tier": "explicit"},
+          {"value": "incidence rate ratio", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2024-01", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2024-12", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "pathogen_type: abstract says 'dengue virus' — 'virus' is in the name but not separately classified",
-        "host_species, primary_population, population_setting_type all inferred",
-        "geographic_units simplified to 'global' — abstract names no specific countries",
-        "data_used: abstract says 'monthly data on dengue cases and deaths' — extractable"
+        "pathogen_type: 'virus' is embedded in the name 'dengue virus' but not separately classified — inferred",
+        "model_determinism 'not applicable': regression model, not a dynamic simulation"
       ]
     },
     {
@@ -311,33 +629,61 @@
       "journal": "BMC Medical Informatics and Decision Making, 2025",
       "abstract": "Computational modelling of disease spread is crucial for understanding the dynamics of infectious outbreaks and assessing the effectiveness of control measures. In particular, network-based models for disease spreading offer detailed, granular insights into heterogeneous interactions and enable dynamic simulation of intervention strategies. Vaccination is among the most impactful interventions in controlling disease spread and has proven essential in preventing the spread of infectious diseases such as measles. However, recent trends indicate a concerning decline in the fraction of vaccinated individuals in various populations, increasing the risk of outbreaks. In this study, we utilize computational simulations on graph-based models to analyze how vaccination affects the spread of infectious diseases.",
       "expected": {
-        "model_type": ["network-based model", "graph-based model"],
-        "model_determinism": ["stochastic (inferred)"],
-        "pathogen_name": ["measles virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["measles"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["not specified"],
-        "geographic_units": ["not specified"],
-        "historical_vs_hypothetical": ["hypothetical"],
-        "study_goal_category": ["intervention evaluation"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["vaccination"],
-        "data_used": ["no data (theoretical) (inferred)"],
-        "data_source": ["not applicable"],
-        "key_outcome_measures": ["disease spread (inferred)", "vaccination impact (inferred)"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not applicable"],
-        "study_dates_end": ["not applicable"],
-        "calibration_mentioned": ["no"],
+        "model_type": [
+          {"value": "network-based model", "tier": "explicit"},
+          {"value": "graph-based model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "measles virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "measles", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": "not specified",
+        "geographic_units": "not specified",
+        "historical_vs_hypothetical": [
+          {"value": "hypothetical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "intervention evaluation", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "vaccination", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "no data (theoretical)", "tier": "inferred"}
+        ],
+        "data_source": "not applicable",
+        "key_outcome_measures": [
+          {"value": "disease spread", "tier": "inferred"},
+          {"value": "vaccination impact", "tier": "inferred"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not applicable",
+        "study_dates_end": "not applicable",
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "Abstract is short and lacks specific outcome metrics — outcomes flagged as inferred",
-        "data_used: abstract doesn't explicitly say 'no data' — it says 'simulations' — flagged as inferred",
-        "Removed 'methodological' from study_goal_category: abstract emphasizes intervention evaluation over methods contribution"
+        "Abstract is short and lacks specific outcome metrics — outcomes inferred",
+        "data_used: abstract says 'simulations' implying no empirical data — inferred",
+        "study_dates 'not applicable': theoretical simulation study"
       ]
     },
     {
@@ -346,34 +692,64 @@
       "journal": "Epidemiologia (MDPI), 2025",
       "abstract": "Understanding the dynamics of HIV transmission in heterogeneous populations is crucial for effective prevention strategies. This study introduces the Risk Modulation Point (RMP), a novel threshold identifying where HIV transmission transitions from unsustainable spread to self-sustaining epidemic dynamics. Using a deterministic, risk-stratified compartmental model, we examined HIV transmission across populations stratified into 100-200 risk groups, each characterized by behavioral heterogeneity modeled through a power-law distribution. The model captures key features of HIV progression, with simulations conducted across high- (~20%), moderate- (~5%), and low- (~0.2%)-prevalence regimes. Our findings reveal universal patterns in HIV dynamics. It identifies key populations and transition regions for targeted interventions such as antiretroviral therapy and pre-exposure prophylaxis. By tracking shifts in the RMP, it also serves as an early warning indicator for epidemic transitions, guiding resource allocation and monitoring.",
       "expected": {
-        "model_type": ["deterministic compartmental model", "risk-stratified"],
-        "model_determinism": ["deterministic"],
-        "pathogen_name": ["HIV"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["HIV (inferred)"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["risk-stratified groups"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["not specified"],
-        "geographic_units": ["not specified"],
-        "historical_vs_hypothetical": ["hypothetical"],
-        "study_goal_category": ["transmission dynamics/drivers", "methodological"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["antiretroviral therapy", "pre-exposure prophylaxis"],
-        "data_used": ["no data (theoretical) (inferred)"],
-        "data_source": ["not applicable"],
-        "key_outcome_measures": ["risk modulation point", "epidemic thresholds", "prevalence"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not applicable"],
-        "study_dates_end": ["not applicable"],
-        "calibration_mentioned": ["no"],
+        "model_type": [
+          {"value": "deterministic compartmental model", "tier": "explicit"},
+          {"value": "risk-stratified", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "deterministic", "tier": "explicit"}
+        ],
+        "pathogen_name": [
+          {"value": "HIV", "tier": "explicit"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "HIV", "tier": "inferred"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "risk-stratified groups", "tier": "explicit"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": "not specified",
+        "geographic_units": "not specified",
+        "historical_vs_hypothetical": [
+          {"value": "hypothetical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "transmission dynamics/drivers", "tier": "explicit"},
+          {"value": "methodological", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "antiretroviral therapy", "tier": "explicit"},
+          {"value": "pre-exposure prophylaxis", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "no data (theoretical)", "tier": "inferred"}
+        ],
+        "data_source": "not applicable",
+        "key_outcome_measures": [
+          {"value": "risk modulation point", "tier": "explicit"},
+          {"value": "epidemic thresholds", "tier": "explicit"},
+          {"value": "prevalence", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not applicable",
+        "study_dates_end": "not applicable",
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "model_determinism: 'deterministic' is explicitly stated — tier 1",
-        "pathogen_type: abstract says 'HIV' but never says 'virus' — flagged as inferred",
-        "disease_name: abstract says 'HIV transmission' not a disease name — flagged as inferred",
-        "data_used: abstract describes simulations but never says 'no data' — flagged as inferred"
+        "model_determinism: 'deterministic' explicitly stated — tier explicit",
+        "disease_name: abstract says 'HIV transmission' not a disease name per se — inferred",
+        "study_dates 'not applicable': theoretical/phenomenological study"
       ]
     },
     {
@@ -382,33 +758,64 @@
       "journal": "Scientific Reports, 2025",
       "abstract": "This study develops a novel HIV/AIDS compartmental model that integrates the critical, interconnected challenges of drug resistance emergence from treated individuals, healthcare constraints via a saturating treatment function, and persistent vertical transmission. The objective is to provide a comprehensive mathematical framework for analyzing these complex dynamics and designing effective intervention strategies. Our analysis reveals that treatment saturation can induce a backward bifurcation, complicating disease eradication efforts, while optimal control simulations demonstrate that a combined strategy of enhanced screening, accelerated treatment initiation, and adherence support significantly reduces infection pools and minimizes disease progression compared to isolated interventions.",
       "expected": {
-        "model_type": ["compartmental model", "optimal control"],
-        "model_determinism": ["deterministic (inferred)"],
-        "pathogen_name": ["HIV"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["HIV/AIDS"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["not specified"],
-        "geographic_units": ["not specified"],
-        "historical_vs_hypothetical": ["hypothetical"],
-        "study_goal_category": ["intervention evaluation", "transmission dynamics/drivers"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["screening", "treatment", "adherence support"],
-        "data_used": ["no data (theoretical) (inferred)"],
-        "data_source": ["not applicable"],
-        "key_outcome_measures": ["backward bifurcation", "infection reduction", "disease progression"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not applicable"],
-        "study_dates_end": ["not applicable"],
-        "calibration_mentioned": ["no"],
+        "model_type": [
+          {"value": "compartmental model", "tier": "explicit"},
+          {"value": "optimal control", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "deterministic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "HIV", "tier": "explicit"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "HIV/AIDS", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": "not specified",
+        "geographic_units": "not specified",
+        "historical_vs_hypothetical": [
+          {"value": "hypothetical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "intervention evaluation", "tier": "explicit"},
+          {"value": "transmission dynamics/drivers", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "screening", "tier": "explicit"},
+          {"value": "treatment", "tier": "explicit"},
+          {"value": "adherence support", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "no data (theoretical)", "tier": "inferred"}
+        ],
+        "data_source": "not applicable",
+        "key_outcome_measures": [
+          {"value": "backward bifurcation", "tier": "explicit"},
+          {"value": "infection reduction", "tier": "explicit"},
+          {"value": "disease progression", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not applicable",
+        "study_dates_end": "not applicable",
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "model_determinism: abstract doesn't say 'deterministic' — flagged as inferred",
-        "Removed 'R0' from outcomes — not mentioned in abstract",
-        "Removed 'optimal control strategies' from outcomes — it's a method, not an outcome measure. Kept backward bifurcation and infection reduction as actual results"
+        "model_determinism: 'optimal control simulations' + no mention of stochasticity — inferred deterministic",
+        "data_used: no empirical data mentioned — theoretical study"
       ]
     },
     {
@@ -417,33 +824,67 @@
       "journal": "EClinicalMedicine (Lancet), 2023",
       "abstract": "Increasing vaccine hesitancy and refusal poses a challenge to public health as even small reductions in vaccine uptake can result in large outbreaks of infectious diseases. Here we estimate the societal costs of vaccine refusal using measles as a case study. We developed a compartmental metapopulation model of measles transmission to explore how the changes in the size and level of social mixing between populations that are 'pro-vaccination' and 'anti-vaccination' impacts the burden of measles. Using the projected cases and deaths, we calculated the health, healthcare, direct medical costs, and productivity loss associated with vaccine refusal. Using measles in England as a case study, we quantified the societal costs that each vaccine refusal imposes on society. When there is a high level of mixing between the pro- and anti-vaccination populations, those that refuse to be vaccinated benefit from the herd immunity afforded by the pro-vaccination population.",
       "expected": {
-        "model_type": ["compartmental metapopulation model"],
-        "model_determinism": ["not mentioned"],
-        "pathogen_name": ["measles virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["measles"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["pro-vaccination population", "anti-vaccination population"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["England"],
-        "historical_vs_hypothetical": ["hypothetical"],
-        "study_goal_category": ["scenario analysis", "burden estimation"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["vaccination"],
-        "data_used": ["projected cases and deaths (inferred)"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["cases", "deaths", "societal costs", "direct medical costs", "productivity loss"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not specified"],
-        "study_dates_end": ["not specified"],
-        "calibration_mentioned": ["not mentioned"],
+        "model_type": [
+          {"value": "compartmental metapopulation model", "tier": "explicit"}
+        ],
+        "model_determinism": "not mentioned",
+        "pathogen_name": [
+          {"value": "measles virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "measles", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "pro-vaccination population", "tier": "explicit"},
+          {"value": "anti-vaccination population", "tier": "explicit"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "England", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "hypothetical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "scenario analysis", "tier": "explicit"},
+          {"value": "burden estimation", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "vaccination", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "projected cases and deaths", "tier": "inferred"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "cases", "tier": "explicit"},
+          {"value": "deaths", "tier": "explicit"},
+          {"value": "societal costs", "tier": "explicit"},
+          {"value": "direct medical costs", "tier": "explicit"},
+          {"value": "productivity loss", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not specified",
+        "study_dates_end": "not specified",
+        "calibration_mentioned": "not mentioned",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "geographic_scope: 'England' implies national but abstract doesn't say 'national' — flagged",
-        "data_used: abstract says 'projected cases and deaths' which are model outputs, not input data — flagged as inferred",
-        "key_outcome_measures: used exact terms from abstract (health, healthcare, direct medical costs, productivity loss)"
+        "geographic_scope: 'England' implies national but not explicitly stated — inferred",
+        "data_used: 'projected cases and deaths' are model outputs used for cost estimation — inferred",
+        "calibration_mentioned: abstract says nothing about calibration — 'not mentioned'"
       ]
     },
     {
@@ -452,33 +893,69 @@
       "journal": "Online Journal of Public Health Informatics, 2025",
       "abstract": "Applying nowcasting methods to partially accrued reportable disease data can help policymakers interpret recent epidemic trends despite data lags and quickly identify and remediate health inequities. During the 2022 mpox outbreak in New York City (NYC), we applied Nowcasting by Bayesian Smoothing (NobBS) to estimate recent cases, citywide and stratified by race or ethnicity (Black or African American, Hispanic or Latino, and White). We evaluated NobBS performance for NYC residents with confirmed or probable mpox diagnosis or illness onset from July 8 through September 30, 2022, as compared with fully accrued cases. We used the mean absolute error (MAE), relative root mean square error (rRMSE), and 95% prediction interval (PI) coverage to compare moving window lengths, stratifying or not by race or ethnicity, diagnosis and onset time elements, and daily and weekly temporal resolution. Stratification by race or ethnicity improved performance and identified differences in epidemic trends across patient groups.",
       "expected": {
-        "model_type": ["Nowcasting by Bayesian Smoothing", "NobBS"],
-        "model_determinism": ["stochastic (inferred)"],
-        "pathogen_name": ["monkeypox virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["mpox"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["NYC residents", "racial/ethnic subgroups"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["city-level"],
-        "geographic_units": ["New York City"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["forecast/nowcast"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "Nowcasting by Bayesian Smoothing", "tier": "explicit"},
+          {"value": "NobBS", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "monkeypox virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "mpox", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "NYC residents", "tier": "explicit"},
+          {"value": "racial/ethnic subgroups", "tier": "explicit"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "city-level", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "New York City", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "forecast/nowcast", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["reportable disease data"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["cases", "MAE", "rRMSE", "prediction interval coverage"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2022-07"],
-        "study_dates_end": ["2022-09"],
-        "calibration_mentioned": ["no"],
+        "data_used": [
+          {"value": "reportable disease data", "tier": "explicit"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "cases", "tier": "explicit"},
+          {"value": "MAE", "tier": "explicit"},
+          {"value": "rRMSE", "tier": "explicit"},
+          {"value": "prediction interval coverage", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2022-07", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2022-09", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "data_source: originally had 'NYC Department of Health' — not stated in abstract — changed to 'not specified'",
-        "primary_population: abstract says 'NYC residents' — extractable. Racial/ethnic groups explicitly named.",
-        "geographic_units: abstract says 'NYC' not 'New York City, USA' — removed 'USA'"
+        "MAE/rRMSE/PI coverage are evaluation metrics, not calibration — calibration_mentioned stays 'no'",
+        "data_source: originally had 'NYC DOHMH' — not in abstract — changed to 'not specified'"
       ]
     },
     {
@@ -488,33 +965,72 @@
       "abstract_note": "Abstract reconstructed from PDF excerpts — verify against published version",
       "abstract": "In this study, we used China's tuberculosis data from 2008 to 2023 for model fitting and parameter estimation. The fractional-order model was fit against observed drug-resistant TB (DR-TB) cases. A stochastic model incorporating environmental white noise was also developed to account for random fluctuations. The model projected DR-TB incidence trajectories from 2024 to 2035 under current conditions. The fractional-order approach, with its memory index parameter, provided a better fit to the biological features of tuberculosis transmission, including its long incubation period and time-cumulative effects. Parameters were estimated through least squares methods.",
       "expected": {
-        "model_type": ["fractional-order model", "stochastic model"],
-        "model_determinism": ["both"],
-        "pathogen_name": ["Mycobacterium tuberculosis (inferred)"],
-        "pathogen_type": ["bacterium (inferred)"],
-        "disease_name": ["drug-resistant tuberculosis"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["China"],
-        "historical_vs_hypothetical": ["mixed"],
-        "study_goal_category": ["forecast/nowcast", "transmission dynamics/drivers"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "fractional-order model", "tier": "explicit"},
+          {"value": "stochastic model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "both", "tier": "explicit"}
+        ],
+        "pathogen_name": [
+          {"value": "Mycobacterium tuberculosis", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "bacterium", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "drug-resistant tuberculosis", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "China", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "mixed", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "forecast/nowcast", "tier": "explicit"},
+          {"value": "transmission dynamics/drivers", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["tuberculosis data"],
-        "data_source": ["National Health Commission of China (inferred)"],
-        "key_outcome_measures": ["DR-TB incidence", "projected trajectory"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2008"],
-        "study_dates_end": ["2023"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["least squares estimation"]
+        "data_used": [
+          {"value": "tuberculosis data", "tier": "explicit"}
+        ],
+        "data_source": [
+          {"value": "National Health Commission of China", "tier": "inferred"}
+        ],
+        "key_outcome_measures": [
+          {"value": "DR-TB incidence", "tier": "explicit"},
+          {"value": "projected trajectory", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2008", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2023", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "least squares estimation", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
         "Abstract reconstructed from PDF — flag for verification",
-        "data_source: the PDF mentions National Health Commission but it's not clearly in the abstract portion — flagged as inferred",
-        "model_determinism 'both': explicitly described — fractional-order (deterministic) and stochastic model with white noise"
+        "model_determinism 'both': fractional-order (deterministic) + stochastic with white noise — explicit",
+        "data_source: National Health Commission mentioned in full paper, not clearly in abstract — inferred"
       ]
     },
     {
@@ -523,34 +1039,69 @@
       "journal": "ACS ES&T Water, 2025",
       "abstract": "Enteric pathogens Salmonella, Campylobacter, and norovirus are the leading causes of gastroenteritis in the United States. The current study applies wastewater-based epidemiology (WBE) to detect and back-estimate the prevalence of these diseases in the tri-county Detroit area (TCDA), Michigan. Concentrations of Salmonella enterica, Campylobacter jejuni, and norovirus (GI and GII) were monitored by ddPCR between January and December 2024 for norovirus and between July and December 2024 for S. enterica and C. jejuni. Average norovirus concentrations peaked during winter and spring months and were higher than S. enterica and C. jejuni concentrations, which peaked primarily during summer months. Based on measurements in wastewater samples, back-estimation of clinical cases revealed that these enteric pathogens are likely underreported in the TCDA when benchmarked against the clinically reported cases.",
       "expected": {
-        "model_type": ["back-estimation"],
-        "model_determinism": ["not applicable"],
-        "pathogen_name": ["Salmonella enterica", "Campylobacter jejuni", "norovirus GI", "norovirus GII"],
-        "pathogen_type": ["bacterium (inferred)", "virus (inferred)"],
-        "disease_name": ["gastroenteritis"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["sub-national"],
-        "geographic_units": ["tri-county Detroit area, Michigan"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["burden estimation"],
-        "intervention_present": ["no"],
+        "model_type": [
+          {"value": "back-estimation", "tier": "explicit"}
+        ],
+        "model_determinism": "not applicable",
+        "pathogen_name": [
+          {"value": "Salmonella enterica", "tier": "explicit"},
+          {"value": "Campylobacter jejuni", "tier": "explicit"},
+          {"value": "norovirus GI", "tier": "explicit"},
+          {"value": "norovirus GII", "tier": "explicit"}
+        ],
+        "pathogen_type": [
+          {"value": "bacterium", "tier": "inferred"},
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "gastroenteritis", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "sub-national", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "tri-county Detroit area, Michigan", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "burden estimation", "tier": "explicit"}
+        ],
+        "intervention_present": "no",
         "intervention_types": [],
-        "data_used": ["wastewater surveillance data", "clinical case data"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["pathogen concentrations", "estimated case counts", "underreporting"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2024-01"],
-        "study_dates_end": ["2024-12"],
-        "calibration_mentioned": ["no"],
+        "data_used": [
+          {"value": "wastewater surveillance data", "tier": "explicit"},
+          {"value": "clinical case data", "tier": "explicit"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "pathogen concentrations", "tier": "explicit"},
+          {"value": "estimated case counts", "tier": "explicit"},
+          {"value": "underreporting", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2024-01", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2024-12", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "pathogen_type: abstract names organisms but doesn't classify them as bacterium/virus — flagged",
-        "disease_name: abstract says 'gastroenteritis' explicitly — tier 1",
-        "Removed ddPCR from calibration_techniques: it's a laboratory detection method, not model calibration",
-        "host_species, population_setting_type inferred — abstract describes wastewater monitoring without naming humans"
+        "pathogen_type: organisms named but not classified as bacterium/virus in abstract — inferred",
+        "ddPCR is a lab detection method, not model calibration — excluded"
       ]
     },
     {
@@ -559,34 +1110,63 @@
       "journal": "Geospatial Health, 2025",
       "abstract": "We developed an integrated Agent-Based Model (ABM) that facilitates analysis in space and time at various temporal resolutions, including disease spread, population mobility and wastewater production, while also being sufficiently generic for different types of infectious diseases or pathogens. The integrated model replicates the epidemic curve for COVID-19 and can estimate the daily infections at the household level, enabling the monitoring of the spatial patterns of infection intensity. Additionally, the model allows monitoring the estimated production of infected wastewater over time and spatially across the sewage and treatment plant. The model addresses differences between resolutions and can potentially support Early Warning Systems (EWS) for future pandemics.",
       "expected": {
-        "model_type": ["Agent-Based Model"],
-        "model_determinism": ["stochastic (inferred)"],
-        "pathogen_name": ["SARS-CoV-2 (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["COVID-19"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)", "household"],
-        "geographic_scope": ["not specified"],
-        "geographic_units": ["not specified"],
-        "historical_vs_hypothetical": ["mixed"],
-        "study_goal_category": ["methodological"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "Agent-Based Model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "SARS-CoV-2", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "COVID-19", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"},
+          {"value": "household", "tier": "explicit"}
+        ],
+        "geographic_scope": "not specified",
+        "geographic_units": "not specified",
+        "historical_vs_hypothetical": [
+          {"value": "mixed", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "methodological", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["epidemic curve data (inferred)"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["epidemic curve", "daily infections", "wastewater production", "spatial infection patterns"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not specified"],
-        "study_dates_end": ["not specified"],
-        "calibration_mentioned": ["yes (inferred)"],
-        "calibration_techniques": ["not specified"]
+        "data_used": [
+          {"value": "epidemic curve data", "tier": "inferred"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "epidemic curve", "tier": "explicit"},
+          {"value": "daily infections", "tier": "explicit"},
+          {"value": "wastewater production", "tier": "explicit"},
+          {"value": "spatial infection patterns", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not specified",
+        "study_dates_end": "not specified",
+        "calibration_mentioned": [
+          {"value": "yes", "tier": "inferred"}
+        ],
+        "calibration_techniques": "not specified"
       },
       "audit_notes": [
-        "Removed 'forecast/nowcast' from study_goal_category: abstract describes a methodological tool, not a forecasting study",
-        "data_used: abstract says 'replicates the epidemic curve' implying input data, but doesn't name specific data — flagged as inferred",
-        "calibration: 'replicates' implies fitting but no calibration method is named",
-        "geographic_scope: no location is named — the model is generic"
+        "Calibration inferred: 'replicates the epidemic curve' implies fitting but no method named",
+        "geographic_scope: no location named — model is generic",
+        "data_used: 'replicates the epidemic curve' implies input data but not named — inferred"
       ]
     },
     {
@@ -595,34 +1175,66 @@
       "journal": "Nature Health, 2026",
       "abstract": "Recent measles outbreaks in the USA have emerged despite the availability of the highly effective measles-mumps-rubella (MMR) vaccine. Current surveillance systems rely primarily on telephone surveys with provider verification or school-entry data, methods prone to incompleteness and systematic exclusion of vulnerable populations. Here, to address these limitations, we used a validated digital participatory surveillance platform to collect parental reports of one-or-more-dose MMR vaccination among children under 5 years of age. Applying Small Area Estimation methods to generate granular, county-level coverage estimates nationwide, we found substantial geographic variation, including areas with MMR coverage below 60%. Analysis of spatial clustering revealed hotspots of undervaccination overlapping closely with recent measles outbreaks, particularly in Texas and New Mexico.",
       "expected": {
-        "model_type": ["Small Area Estimation"],
-        "model_determinism": ["not applicable"],
-        "pathogen_name": ["measles virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["measles"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["children under 5"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national", "county-level"],
-        "geographic_units": ["USA", "Texas", "New Mexico"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["burden estimation"],
-        "intervention_present": ["yes"],
-        "intervention_types": ["vaccination"],
-        "data_used": ["digital participatory surveillance", "parental reports"],
-        "data_source": ["not specified"],
-        "key_outcome_measures": ["vaccination coverage", "spatial clustering", "undervaccination hotspots"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not specified"],
-        "study_dates_end": ["not specified"],
-        "calibration_mentioned": ["no"],
+        "model_type": [
+          {"value": "Small Area Estimation", "tier": "explicit"}
+        ],
+        "model_determinism": "not applicable",
+        "pathogen_name": [
+          {"value": "measles virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "measles", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "children under 5", "tier": "explicit"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "explicit"},
+          {"value": "county-level", "tier": "explicit"}
+        ],
+        "geographic_units": [
+          {"value": "USA", "tier": "explicit"},
+          {"value": "Texas", "tier": "explicit"},
+          {"value": "New Mexico", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "burden estimation", "tier": "explicit"}
+        ],
+        "intervention_present": "yes",
+        "intervention_types": [
+          {"value": "vaccination", "tier": "explicit"}
+        ],
+        "data_used": [
+          {"value": "digital participatory surveillance", "tier": "explicit"},
+          {"value": "parental reports", "tier": "explicit"}
+        ],
+        "data_source": "not specified",
+        "key_outcome_measures": [
+          {"value": "vaccination coverage", "tier": "explicit"},
+          {"value": "spatial clustering", "tier": "explicit"},
+          {"value": "undervaccination hotspots", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not specified",
+        "study_dates_end": "not specified",
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "Removed 'risk assessment' from study_goal_category: abstract focuses on coverage estimation",
-        "Removed 'spatial model' from model_type: abstract says 'Small Area Estimation methods' and 'spatial clustering' but not 'spatial model'",
-        "Fixed study_dates_end: previously '2025 (inferred)' — no date is given — changed to 'not specified'",
-        "geographic_units: abstract says 'USA' not 'United States'"
+        "model_determinism 'not applicable': statistical estimation, not dynamic simulation",
+        "geographic_units: abstract says 'USA' — kept as-is, synonym map handles normalization"
       ]
     },
     {
@@ -631,34 +1243,63 @@
       "journal": "Systems (MDPI), 2023",
       "abstract": "With the COVID-19 pandemic, the role of infectious disease spreading in public places has been brought into focus more than ever. Places that are of particular interest regarding the spread of infectious diseases are international airport terminals. We propose a model which combines a simulation of high geometric detail regarding virus spreading with an account of the temporal progress of infection dynamics. We thus introduce an agent-based social force model for tracking the spread of infectious diseases by modelling aerosol traces and concentration of virus load in the air. We complement this agent-based model to have consistency over a period of several days. We then apply this model to investigate simulations in a realistic airport setting with multiple virus variants of varying contagiousness. According to our experiments, a virus variant has to be at least twelve times more contagious than the respective control to result in a level of infection of more than 30%.",
       "expected": {
-        "model_type": ["agent-based model", "social force model"],
-        "model_determinism": ["stochastic (inferred)"],
-        "pathogen_name": ["generic virus (inferred)"],
-        "pathogen_type": ["virus"],
-        "disease_name": ["COVID-19 (inferred)"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["airport users (inferred)"],
-        "population_setting_type": ["airport"],
-        "geographic_scope": ["facility-level (inferred)"],
-        "geographic_units": ["not specified"],
-        "historical_vs_hypothetical": ["hypothetical"],
-        "study_goal_category": ["scenario analysis", "transmission dynamics/drivers"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "agent-based model", "tier": "explicit"},
+          {"value": "social force model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "stochastic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "generic virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "explicit"}
+        ],
+        "disease_name": [
+          {"value": "COVID-19", "tier": "inferred"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "airport users", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "airport", "tier": "explicit"}
+        ],
+        "geographic_scope": [
+          {"value": "facility-level", "tier": "inferred"}
+        ],
+        "geographic_units": "not specified",
+        "historical_vs_hypothetical": [
+          {"value": "hypothetical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "scenario analysis", "tier": "explicit"},
+          {"value": "transmission dynamics/drivers", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["no data (theoretical) (inferred)"],
-        "data_source": ["not applicable"],
-        "key_outcome_measures": ["infection level", "aerosol concentration", "contagiousness threshold"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not applicable"],
-        "study_dates_end": ["not applicable"],
-        "calibration_mentioned": ["no"],
+        "data_used": [
+          {"value": "no data (theoretical)", "tier": "inferred"}
+        ],
+        "data_source": "not applicable",
+        "key_outcome_measures": [
+          {"value": "infection level", "tier": "explicit"},
+          {"value": "aerosol concentration", "tier": "explicit"},
+          {"value": "contagiousness threshold", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not applicable",
+        "study_dates_end": "not applicable",
+        "calibration_mentioned": "no",
         "calibration_techniques": []
       },
       "audit_notes": [
-        "pathogen_name: abstract discusses 'virus variants' generically with COVID-19 as motivation — changed to 'generic virus (inferred)'",
-        "pathogen_type: 'virus' is explicitly used in abstract ('virus load', 'virus spreading')",
-        "disease_name: COVID-19 mentioned as context but model is generic — flagged as inferred",
-        "geographic_scope: 'facility-level' is a descriptor not in the abstract — flagged as inferred"
+        "pathogen_name: abstract discusses 'virus variants' generically — 'generic virus' inferred",
+        "pathogen_type: 'virus' explicitly used ('virus load', 'virus spreading')",
+        "disease_name: COVID-19 is motivation but model is generic — inferred"
       ]
     },
     {
@@ -667,36 +1308,77 @@
       "journal": "China CDC Weekly, 2025",
       "abstract": "The Chinese Wastewater Surveillance System (CWSS) has emerged as a critical tool for real-time monitoring of epidemiological dynamics and providing proactive early warnings for SARS-CoV-2, poliovirus, monkeypox virus, influenza, norovirus, and other pathogens. Using SARS-CoV-2 as a representative case, the CWSS employed a calibrated baseline methodology to establish risk thresholds based on quantitative wastewater pathogen load data, enabling scientific anomaly identification and comprehensive risk assessment. The spatiotemporal patterns of SARS-CoV-2 nucleic acid concentrations in urban wastewater revealed trajectories corresponding to four epidemic waves occurring in May and August 2023, and March and July 2024. The system integrated three components: national urban wastewater surveillance, inbound international aircraft wastewater surveillance, and pilot public health risk surveillance. This integrated framework demonstrated significant effectiveness in providing early warnings for COVID-19, polio, monkeypox, and other infectious disease outbreaks, while advancing variant tracking capabilities.",
       "expected": {
-        "model_type": ["calibrated baseline methodology"],
-        "model_determinism": ["not applicable"],
-        "pathogen_name": ["SARS-CoV-2", "poliovirus", "monkeypox virus", "influenza", "norovirus"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["COVID-19", "polio (inferred)", "monkeypox (inferred)", "influenza"],
-        "host_species": ["human (inferred)"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community", "airport"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["China (inferred)"],
-        "historical_vs_hypothetical": ["historical"],
-        "study_goal_category": ["methodological"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "calibrated baseline methodology", "tier": "explicit"}
+        ],
+        "model_determinism": "not applicable",
+        "pathogen_name": [
+          {"value": "SARS-CoV-2", "tier": "explicit"},
+          {"value": "poliovirus", "tier": "explicit"},
+          {"value": "monkeypox virus", "tier": "explicit"},
+          {"value": "influenza", "tier": "explicit"},
+          {"value": "norovirus", "tier": "explicit"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "COVID-19", "tier": "explicit"},
+          {"value": "polio", "tier": "inferred"},
+          {"value": "monkeypox", "tier": "inferred"},
+          {"value": "influenza", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "inferred"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "explicit"},
+          {"value": "airport", "tier": "explicit"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "China", "tier": "inferred"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "historical", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "methodological", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["wastewater surveillance data"],
-        "data_source": ["Chinese Wastewater Surveillance System"],
-        "key_outcome_measures": ["early warning", "epidemic wave identification", "variant tracking"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["2023-01"],
-        "study_dates_end": ["2025-06"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["calibrated baseline methodology"]
+        "data_used": [
+          {"value": "wastewater surveillance data", "tier": "explicit"}
+        ],
+        "data_source": [
+          {"value": "Chinese Wastewater Surveillance System", "tier": "explicit"}
+        ],
+        "key_outcome_measures": [
+          {"value": "early warning", "tier": "explicit"},
+          {"value": "epidemic wave identification", "tier": "explicit"},
+          {"value": "variant tracking", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": [
+          {"value": "2023-01", "tier": "explicit"}
+        ],
+        "study_dates_end": [
+          {"value": "2025-06", "tier": "explicit"}
+        ],
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "calibrated baseline methodology", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "disease_name: abstract says 'COVID-19' and 'influenza' explicitly but maps pathogen→disease for polio and monkeypox — flagged as inferred",
-        "geographic_units: abstract says 'urban wastewater' and 'Chinese' but never says 'China' as a geographic unit — flagged as inferred",
-        "geographic_scope: 'national' inferred from system description — not explicitly stated",
-        "Removed 'forecast/nowcast' from study_goal_category: this is a surveillance system description, not a forecasting study",
-        "population_setting_type 'airport': explicit from 'aircraft wastewater surveillance'",
-        "study_dates: abstract mentions 'May and August 2023, and March and July 2024' and system title implies ongoing — dates are approximate"
+        "disease_name: 'COVID-19' and 'influenza' explicit; 'polio' and 'monkeypox' inferred from pathogen names",
+        "geographic_units: abstract says 'Chinese' but never 'China' as a unit — inferred",
+        "population_setting_type: 'community' from urban wastewater, 'airport' from aircraft surveillance — both explicit"
       ]
     },
     {
@@ -705,35 +1387,68 @@
       "journal": "Scholars Journal of Physics, Mathematics and Statistics, 2025",
       "abstract": "Dengue fever has emerged as a growing public health concern worldwide. This study introduces a compartmental mathematical model combining the SEIR (Susceptible-Exposed-Infectious-Recovered) framework for the human population and the SEI (Susceptible-Exposed-Infectious) framework for the vector (mosquito) population. Parameter values for infection were estimated using real-world data from health institutions in Bangladesh. Numerical simulations were implemented. The analysis reveals that the endemic equilibrium exists when R0 > 1. The disease-free equilibrium is locally asymptotically stable if R0 < 1 and unstable if R0 > 1.",
       "expected": {
-        "model_type": ["SEIR-SEI compartmental model"],
-        "model_determinism": ["deterministic (inferred)"],
-        "pathogen_name": ["dengue virus (inferred)"],
-        "pathogen_type": ["virus (inferred)"],
-        "disease_name": ["dengue fever"],
-        "host_species": ["human", "mosquito vector"],
-        "primary_population": ["general population (inferred)"],
-        "population_setting_type": ["community (inferred)"],
-        "geographic_scope": ["national (inferred)"],
-        "geographic_units": ["Bangladesh"],
-        "historical_vs_hypothetical": ["mixed"],
-        "study_goal_category": ["transmission dynamics/drivers"],
-        "intervention_present": ["not mentioned"],
+        "model_type": [
+          {"value": "SEIR-SEI compartmental model", "tier": "explicit"}
+        ],
+        "model_determinism": [
+          {"value": "deterministic", "tier": "inferred"}
+        ],
+        "pathogen_name": [
+          {"value": "dengue virus", "tier": "inferred"}
+        ],
+        "pathogen_type": [
+          {"value": "virus", "tier": "inferred"}
+        ],
+        "disease_name": [
+          {"value": "dengue fever", "tier": "explicit"}
+        ],
+        "host_species": [
+          {"value": "human", "tier": "explicit"},
+          {"value": "mosquito vector", "tier": "explicit"}
+        ],
+        "primary_population": [
+          {"value": "general population", "tier": "inferred"}
+        ],
+        "population_setting_type": [
+          {"value": "community", "tier": "inferred"}
+        ],
+        "geographic_scope": [
+          {"value": "national", "tier": "inferred"}
+        ],
+        "geographic_units": [
+          {"value": "Bangladesh", "tier": "explicit"}
+        ],
+        "historical_vs_hypothetical": [
+          {"value": "mixed", "tier": "explicit"}
+        ],
+        "study_goal_category": [
+          {"value": "transmission dynamics/drivers", "tier": "explicit"}
+        ],
+        "intervention_present": "not mentioned",
         "intervention_types": [],
-        "data_used": ["clinical data"],
-        "data_source": ["health institutions in Bangladesh"],
-        "key_outcome_measures": ["R0", "endemic equilibrium", "stability analysis"],
-        "code_available": ["not mentioned"],
-        "study_dates_start": ["not specified"],
-        "study_dates_end": ["not specified"],
-        "calibration_mentioned": ["yes"],
-        "calibration_techniques": ["parameter estimation from data"]
+        "data_used": [
+          {"value": "clinical data", "tier": "explicit"}
+        ],
+        "data_source": [
+          {"value": "health institutions in Bangladesh", "tier": "explicit"}
+        ],
+        "key_outcome_measures": [
+          {"value": "R0", "tier": "explicit"},
+          {"value": "endemic equilibrium", "tier": "explicit"},
+          {"value": "stability analysis", "tier": "explicit"}
+        ],
+        "code_available": "not mentioned",
+        "study_dates_start": "not specified",
+        "study_dates_end": "not specified",
+        "calibration_mentioned": "yes",
+        "calibration_techniques": [
+          {"value": "parameter estimation from data", "tier": "explicit"}
+        ]
       },
       "audit_notes": [
-        "model_determinism: abstract uses 'differential equations' implicitly (compartmental + Runge-Kutta context) but doesn't say 'deterministic' — flagged",
-        "pathogen_name: abstract title says 'Dengue Virus' but abstract body says 'dengue fever' — pathogen name flagged as inferred from title",
+        "pathogen_name: title says 'Dengue Virus' but abstract body says 'dengue fever' — pathogen inferred",
         "host_species: both explicit — 'human population' and 'vector (mosquito) population'",
-        "data_used: abstract says 'real-world data from health institutions' — simplified to 'clinical data'",
-        "geographic_scope: 'Bangladesh' implies national but abstract doesn't say 'national' — flagged"
+        "data_used: abstract says 'real-world data from health institutions' — simplified to 'clinical data'"
       ]
     }
   ]

@@ -15,6 +15,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from src.midas_llm.data.IdSynonyms import DISEASE_SYNONYMS
+
 # Add src to path when running from repo root
 _src_path = Path(__file__).resolve().parent.parent.parent
 if str(_src_path) not in sys.path:
@@ -175,13 +177,20 @@ def evaluate_extraction(
         use_vector_eval: bool = True,
         vector_high_threshold: float = 0.85,
         vector_low_threshold: float = 0.50,
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str | None = None,
 ) -> dict[str, Any]:
+    # Use config embedding_model if not provided
+    if embedding_model is None:
+        embedding_model = ExtractionConfig().embedding_model
 
     def strip_annotations(values):
         """Remove parenthetical annotations like (inferred), (not mentioned) from a list of values."""
         pattern = re.compile(r'\s*\((inferred|not mentioned)\)')
         return [pattern.sub('', v).strip() for v in values]
+
+    def normalize_term(value: str) -> str:
+        """Normalize known synonyms before similarity comparison."""
+        return DISEASE_SYNONYMS.get(value.strip().lower(), value)
 
     # Evaluation tiers (in order):
     # 1. Vector similarity (fast, no LLM call)
@@ -241,6 +250,8 @@ def evaluate_extraction(
             is_date_field = attr in ("study_dates_start", "study_dates_end")
 
             expected_values = strip_annotations(expected_values)
+            extracted_normalized = normalize_term(extracted_value)
+            expected_normalized = [normalize_term(v) for v in expected_values]
             # Tier 1: Vector similarity (if enabled and not a date field)
             if use_vector_eval and not is_date_field:
                 decision, best_match, similarity_score = vector_match_tiered(
@@ -361,9 +372,12 @@ def run_evaluation(
         use_vector_eval: bool = True,
         vector_high_threshold: float = 0.85,
         vector_low_threshold: float = 0.50,
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str | None = None,
         run_folder: str | None = None,
 ) -> dict[str, Any]:
+    # Use config embedding_model if not provided
+    if embedding_model is None:
+        embedding_model = config.embedding_model
     """Run evaluation on gold standard abstracts.
 
     Uses a three-tier evaluation strategy:
@@ -600,7 +614,7 @@ def main():
     parser.add_argument(
         "-n", "--num-papers",
         type=int,
-        default=1,
+        default=-1,
         help="Number of papers to evaluate (default: 1, use -1 for all)"
     )
     parser.add_argument(
@@ -634,8 +648,8 @@ def main():
     parser.add_argument(
         "--embedding-model",
         type=str,
-        default="all-MiniLM-L6-v2",
-        help="HuggingFace embedding model for vector similarity (default: all-MiniLM-L6-v2)"
+        default=None,
+        help=f"HuggingFace embedding model for vector similarity (default: uses config EMBEDDING_MODEL env var)"
     )
     parser.add_argument(
         "--list-papers",
@@ -651,6 +665,10 @@ def main():
 
     config = ExtractionConfig()
     logger = configure_logging(debug=config.debug)
+
+    # Use config embedding_model if not specified via argument
+    if args.embedding_model is None:
+        args.embedding_model = config.embedding_model
 
     # Handle --validate-thresholds before loading abstracts
     if args.validate_thresholds:

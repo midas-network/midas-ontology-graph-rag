@@ -4,12 +4,24 @@ from graph_retriever.strategies import Eager
 from langchain_graph_retriever import GraphRetriever
 from langchain_huggingface import HuggingFaceEmbeddings
 
+from ..utils.config import ExtractionConfig
 
-def initialize_embedding_model():
-    """Initialize the embedding model for semantic search."""
-    return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
+
+def initialize_embedding_model(model_name: str | None = None):
+    """Initialize the embedding model for semantic search.
+
+    Args:
+        model_name: Optional model name. If not provided, uses config.embedding_model.
+    """
+    if model_name is None:
+        config = ExtractionConfig()
+        model_name = config.embedding_model
+
+    # Prepend "sentence-transformers/" if not already present
+    if model_name and not model_name.startswith("sentence-transformers/"):
+        model_name = f"sentence-transformers/{model_name}"
+
+    return HuggingFaceEmbeddings(model_name=model_name)
 
 def setup_graph_retriever(vector_store, include_papers=False):
     """

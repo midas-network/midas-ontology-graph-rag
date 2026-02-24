@@ -64,6 +64,7 @@ Please provide:
 7. Key outcomes measured
 
 Format each answer on its own line."""
+        LOGGER.info("Prompt files used: [simple_prompt] (no external files)")
         return prompt
         # Fall through to normal mode if simple instructions don't exist
 
@@ -81,12 +82,20 @@ Format each answer on its own line."""
     if include_reminders:
         section_files.append("reminders.txt")
 
+    # Log which files are actually used (after checking existence)
+    used_files = []
     prompt_parts = []
     for filename in section_files:
         path = prompt_base / filename
         content = _read_section(path)
         if content:
+            used_files.append(str(path))
             prompt_parts.append(content)
+        else:
+            LOGGER.warning("Prompt section not found (skipped): %s", str(path))
+
+    LOGGER.info("Prompt files used: [%s]", ", ".join(used_files))
+    LOGGER.info("Prompt directory: %s", prompt_base)
 
     query_template = "\n\n".join(part for part in prompt_parts if part)
     return query_template + "\n\n" + abstract
