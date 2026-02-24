@@ -87,7 +87,9 @@ class ExtractionConfig:
 
     # LLM settings - NIM / OpenAI-compatible
     nim_models: list[str] = field(default_factory=lambda: _parse_model_list(
-        os.getenv("NIM_MODELS", "nvidia/llama-3.3-nemotron-super-49b-v1")
+        #os.getenv("NIM_MODELS", "nvidia/llama-3.3-nemotron-super-49b-v1")
+        #os.getenv("NIM_MODELS", "meta/llama-3.1-8b-instruct")
+        os.getenv("NIM_MODELS", "google/gemma-2-9b-it")
     ))
     nim_host: str = field(default_factory=lambda: os.getenv("NIM_HOST", "http://localhost:8000"))
 

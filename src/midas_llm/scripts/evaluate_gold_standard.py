@@ -701,7 +701,7 @@ def print_summary(results: dict, logger: logging.Logger) -> None:
 def main():
     """Main evaluation workflow."""
     parser = argparse.ArgumentParser(description="Evaluate LLM extraction against gold standard")
-    parser.add_argument("-n", "--num-papers", type=int, default=1,
+    parser.add_argument("-n", "--num-papers", type=int, default=10,
                         help="Number of papers to evaluate (default: 1, use -1 for all)")
     parser.add_argument("--paper-id", type=str, default=None,
                         help="Evaluate a specific paper by ID")
