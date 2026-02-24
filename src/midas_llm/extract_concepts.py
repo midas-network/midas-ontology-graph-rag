@@ -126,7 +126,7 @@ def main() -> None:
         executor, background_tasks = None, None
 
     # Determine which models to use
-    models_to_run = config.llm_models if config.llm_models else [config.llm_model]
+    models_to_run = config.llm_marodels if config.llm_models else [config.llm_model]
     logger.info("Running extraction with %d model(s): %s", len(models_to_run), ", ".join(models_to_run))
 
     all_results = []

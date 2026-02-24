@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import json
 import logging
 import re
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from ..modeling_domains import identify_modeling_domains
@@ -593,3 +596,79 @@ def parse_and_display_extracted_data(
         if data.get('reasoning'):
             logger.info("   Reasoning: %s", data['reasoning'])
     return extracted_data
+
+
+def create_response_json(
+    response_content: str,
+    model: str,
+    abstract_id: str | None = None,
+    evaluation: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Create a JSON object from the LLM response.
+
+    Args:
+        response_content: The raw LLM response text
+        model: The model name used
+        abstract_id: Optional abstract identifier
+        evaluation: Optional evaluation results
+
+    Returns:
+        A dictionary with the response data ready for JSON serialization
+    """
+    # Parse the response to extract structured data
+    normalized = normalize_llm_format(response_content)
+    extracted = parse_llm_response(normalized)
+
+    return {
+        "content": response_content,
+        "model": model,
+        "done": True,
+        "timestamp": datetime.now().isoformat(),
+        "abstract_id": abstract_id,
+        "extracted": extracted,
+        "evaluation": evaluation,
+        "raw_response": response_content[:2000],
+    }
+
+
+def save_response_json(
+    response_content: str,
+    model: str,
+    output_path: Path | str,
+    abstract_id: str | None = None,
+    evaluation: dict[str, Any] | None = None,
+    logger: logging.Logger = LOGGER,
+) -> Path:
+    """Create and save a JSON object from the LLM response.
+
+    Args:
+        response_content: The raw LLM response text
+        model: The model name used
+        output_path: Path where the JSON file should be saved
+        abstract_id: Optional abstract identifier
+        evaluation: Optional evaluation results
+        logger: Logger instance
+
+    Returns:
+        The path to the saved JSON file
+    """
+    output_path = Path(output_path)
+
+    # Create the JSON object
+    response_json = create_response_json(
+        response_content=response_content,
+        model=model,
+        abstract_id=abstract_id,
+        evaluation=evaluation,
+    )
+
+    # Sanitize model name for filename
+    safe_model_name = model.replace("/", "-").replace("\\", "-")
+    json_file = output_path / f"{safe_model_name}_response.json"
+
+    # Write the JSON file
+    with open(json_file, "w", encoding="utf-8") as f:
+        json.dump(response_json, f, indent=2, ensure_ascii=False)
+
+    logger.info("Saved response JSON to: %s", json_file)
+    return json_file

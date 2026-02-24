@@ -25,7 +25,7 @@ from midas_llm.utils.logging.logger import configure_logging
 from midas_llm.utils.llm.llm_client import send_to_llm
 from midas_llm.utils.llm.llm_utils import autodetect_llm_host
 from midas_llm.utils.prompt.builders import prepare_and_display_prompt, build_query
-from midas_llm.utils.parsers.extraction_parser import parse_and_display_extracted_data
+from midas_llm.utils.parsers.extraction_parser import parse_and_display_extracted_data, save_response_json
 from midas_llm.utils.reporting.evaluation_reports import generate_evaluation_text_report, \
     generate_evaluation_html_report
 from midas_llm.utils.evaluation.vector_similarity import vector_match_tiered
@@ -177,18 +177,22 @@ def evaluate_extraction(
         vector_low_threshold: float = 0.50,
         embedding_model: str = "all-MiniLM-L6-v2",
 ) -> dict[str, Any]:
-    """Evaluate extraction against expected values using three-tier matching.
 
-    Evaluation tiers (in order):
-    1. Vector similarity (fast, no LLM call)
-       - similarity >= high_threshold: auto-MATCH
-       - similarity <= low_threshold: auto-NO_MATCH
-       - otherwise: fall through to tier 2
-    2. LLM semantic evaluation (if enabled and vector was ambiguous)
-    3. Fallback string matching (if LLM unavailable or disabled)
+    def strip_annotations(values):
+        """Remove parenthetical annotations like (inferred), (not mentioned) from a list of values."""
+        pattern = re.compile(r'\s*\((inferred|not mentioned)\)')
+        return [pattern.sub('', v).strip() for v in values]
 
-    Returns evaluation results with hits, misses, and false positives.
-    """
+    # Evaluation tiers (in order):
+    # 1. Vector similarity (fast, no LLM call)
+    #    - similarity >= high_threshold: auto-MATCH
+    #    - similarity <= low_threshold: auto-NO_MATCH
+    #    - otherwise: fall through to tier 2
+    # 2. LLM semantic evaluation (if enabled and vector was ambiguous)
+    # 3. Fallback string matching (if LLM unavailable or disabled)
+    #
+    # Returns evaluation results with hits, misses, and false positives.
+
     results = {
         "hits": [],
         "misses": [],
@@ -236,6 +240,7 @@ def evaluate_extraction(
             # Special handling for date fields - skip vector eval
             is_date_field = attr in ("study_dates_start", "study_dates_end")
 
+            expected_values = strip_annotations(expected_values)
             # Tier 1: Vector similarity (if enabled and not a date field)
             if use_vector_eval and not is_date_field:
                 decision, best_match, similarity_score = vector_match_tiered(
@@ -444,6 +449,16 @@ def run_evaluation(
                     response_file = abstract_dir / f"{safe_model_name}_response.txt"
                     response_file.write_text(response.content, encoding="utf-8")
                     logger.info("Saved raw response to: %s", response_file)
+
+                    # Save response as JSON
+                    save_response_json(
+                        response_content=response.content,
+                        model=model,
+                        output_path=abstract_dir,
+                        abstract_id=abstract_id,
+                        evaluation=evaluation,
+                        logger=logger,
+                    )
 
                 abstract_results["models"][model] = {
                     "extracted": extracted,
