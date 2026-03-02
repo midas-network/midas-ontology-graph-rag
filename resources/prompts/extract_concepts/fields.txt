@@ -1,120 +1,176 @@
-# FIELDS TO EXTRACT
+SCHEMA ALIGNMENT RULE (CRITICAL)
 
-### Model Characteristics
+The constrained JSON schema is the source of truth for:
+- required fields
+- JSON shape
+- enum values
+- exact enum spellings
 
-**model_type**
-The computational/mathematical framework used.
-- agent-based, individual-based
-- SEIR compartmental, SIR compartmental, SEIRS compartmental
-- network, metapopulation, branching process
-- statistical/regression, machine learning
-- hybrid (compartmental + agent-based), microsimulation
+If this file conflicts with the schema, FOLLOW THE SCHEMA.
 
-**model_determinism**
-Whether the model incorporates randomness.
-- deterministic | stochastic | both | unspecified
-- Agent-based models are typically stochastic; ODE-based compartmental models are typically deterministic. Use domain knowledge to infer if not stated.
+CONTROLLED VOCABULARY RULE (CRITICAL)
+For these fields:
+- data_used
+- intervention_types
+- model_type
 
----
+Prefer exact MIDAS ontology terms from the controlled vocab file.
+Use the synonym map to normalize variants to preferred MIDAS terms.
+Use free text only if no MIDAS term matches.
 
-### Pathogen & Disease
-
-**pathogen_name**
-Scientific or common name of the causative agent. IMPORTANT: List both the common name AND the scientific name if the scientific name can be reliably inferred from domain knowledge (e.g., malaria → also list Plasmodium falciparum unless another species is specified).
-
-**pathogen_type**
-Biological classification: virus | bacterium | parasite | fungus | prion | unspecified
-
-**disease_name**
-Clinical name of the disease.
+# FIELD SEMANTICS (Constrained JSON Mode)
+This file explains meaning and edge cases only.
+Do not invent enum values not present in the schema.
 
 ---
 
-### Population & Setting
+## MODEL CHARACTERISTICS
 
-**host_species**
-The species affected or modeled.
+### model_type  (controlled vocab preferred)
+Core modeling framework(s) used.
+Prefer MIDAS controlled terms. Multi-value only if truly mixed methods are described.
 
-**primary_population**
-The main human population subgroup(s) studied. IMPORTANT: Consider ALL populations relevant to the study. If the study examines disease importation via travel/mobility, include "travelers." If no specific subgroup is targeted, include "general population." Multiple values are common.
-
-**population_setting_type**
-The physical/social context of transmission.
-
----
-
-### Geography & Time
-
-**geographic_scope**
-The spatial scale of the study. IMPORTANT: Select ALL applicable scales. A study can be both "sub-national" and "national" if it examines dynamics across these scales.
-
-**geographic_units**
-Specific locations named or clearly referenced in the study. IMPORTANT: Be thorough. Include all countries, regions, cities, islands, and sub-regions mentioned. Check the title for locations not repeated in the abstract. If the study discusses movement between regions, include BOTH the origin and destination regions.
-
-**study_dates_start** / **study_dates_end**
-Format: YYYY-MM-DD, YYYY-MM, or YYYY. If different data sources cover different time periods, report the overall range (earliest start to latest end).
-
-**historical_vs_hypothetical**
-- If the study uses real-world observed data from a past period → "historical"
-- If the study projects future scenarios → "hypothetical future outbreak"
-- If both → "mixed"
-- Only use "unspecified" if truly ambiguous
+### model_determinism  (enum in schema)
+Meaning: whether randomness is part of the model/analysis.
+Use exact schema enum values only.
+Infer only when strongly supported by explicit model type/context.
+Use not applicable for analyses where mechanistic determinism is not meaningful.
 
 ---
 
-### Study Purpose
+## PATHOGEN & DISEASE
 
-**study_goal_category**
-The primary analytical objective(s). Select all that apply. Interpret the study's stated aims broadly — e.g., "understand drivers of importation" maps to "transmission dynamics/drivers."
+### pathogen_name
+Causative agent name(s). Use explicit evidence or high-confidence normalization.
+Keep canonical and concise.
 
----
+### pathogen_type  (enum in schema)
+Pathogen class. Use exact schema enum values only.
+Use multiple only if multiple pathogen types are explicitly in scope.
 
-### Interventions
-
-**intervention_present**
-- yes | no | unspecified
-- If the abstract does not mention any intervention, use "no" rather than "unspecified."
-
-**intervention_types** (if present)
-
----
-
-### Data & Methods
-
-**data_used**
-Types of data used. IMPORTANT: Be exhaustive. Check the title for data types. Common patterns:
-- "travel survey" in the title → include "travel survey"
-- "case data" in the title → include "case data" or "surveillance case data"
-- "mobility data" → include "mobility data"
-- "climate" or "rainfall" → include BOTH "climate data" AND "rainfall data" if rainfall is a subset of climate data used
-- "survey" → include the specific survey type (e.g., "travel survey", "contact survey")
-
-**data_source**
-Specific repositories or datasets named. Use "unspecified" if not named.
-
-**calibration_mentioned**
-- yes | no
-- Look for ANY mention of model fitting, validation, comparison to data, correlation analysis, or statistical calibration.
-
-**calibration_techniques**
-Include any statistical or analytical technique used to fit, validate, or compare model outputs to observed data, including: correlation, regression, MLE, MCMC, ABC, least squares, etc.
+### disease_name
+Disease/condition being modeled/analyzed.
+Prefer canonical disease naming.
 
 ---
 
-### Outcomes & Outputs
+## POPULATION & SETTING
 
-**key_outcome_measures**
-IMPORTANT: Infer from what the model tracks and reports, not just explicitly labeled "outcomes." If the model produces case counts → "cases." If it examines incidence patterns → "incidence." If hospitalizations are reported → "hospitalizations." Be thorough.
+### host_species
+Affected or modeled host species (e.g., human, mosquito, swine).
+
+### primary_population
+Main subgroup(s) analyzed.
+Examples: general population, children, healthcare workers, travelers.
+If broad human outbreak with no subgroup focus, general population may be appropriate.
+
+### population_setting_type
+Transmission/analysis setting.
+Examples: community, hospital, household, school, travel/transport setting.
+Keep concise and evidence-based.
 
 ---
 
-### Reproducibility
+## GEOGRAPHY & TIME
 
-**code_available**
-- If code repository is mentioned → "yes — [repository]"
-- If stated as available upon request → "available upon request"
-- If the abstract says nothing about code → "unspecified"
-- Only use "no" if the abstract explicitly states code is not available
+### geographic_scope  (enum in schema)
+Study scale(s). Use exact schema enum values only:
+e.g., facility-level / city-level / sub-national / national / multi-country / global / not specified / not applicable
+Can be multi-valued only if the study clearly spans multiple scales.
+
+### geographic_units
+Named places (countries, states, provinces, cities, regions, etc.).
+Include explicit origin/destination locations for movement/importation studies when named.
+If geography is relevant but no specific unit is named, use the schema-compatible approach used in your dataset (typically ["not specified"] if allowed by evaluation convention).
+
+### study_dates_start
+Earliest overall study/data period start.
+Use YYYY-MM-DD, YYYY-MM, or YYYY.
+Prefer overall study coverage, not a narrow sub-analysis window, unless only that window is given.
+
+### study_dates_end
+Latest overall study/data period end.
+Use YYYY-MM-DD, YYYY-MM, or YYYY.
+Prefer overall study coverage.
+
+### historical_vs_hypothetical  (enum in schema)
+Use exact schema enum values only:
+- historical
+- hypothetical
+- mixed
+- not mentioned
+
+Guidance:
+- historical = observed real-world outbreak/data period
+- hypothetical = simulated/scenario outbreak conditions without observed outbreak grounding
+- mixed = observed data + hypothetical scenarios/projections
 
 ---
 
+## STUDY PURPOSE
+
+### study_goal_category  (enum in schema)
+Use exact schema enum values only.
+Map the stated objective to the closest schema category.
+Use multiple values only when clearly multi-purpose.
+
+---
+
+## INTERVENTIONS
+
+### intervention_present  (enum in schema)
+Use exact schema enum values only.
+Use yes only when interventions/control measures are explicitly evaluated or modeled.
+
+### intervention_types  (controlled vocab preferred)
+Intervention categories if intervention_present indicates interventions are present.
+Prefer MIDAS controlled terms.
+If none, use [].
+
+---
+
+## DATA & METHODS
+
+### data_used  (controlled vocab preferred)
+Types of data/method-related data constructs used.
+Prefer MIDAS controlled terms and normalize using the synonym map.
+Do not over-specify beyond title/abstract evidence.
+
+### data_source
+Named repositories/platforms/agencies/providers only if named.
+If data are described but no source/provider is named, use a schema-compatible absent value convention for this field.
+
+### calibration_mentioned  (enum in schema)
+Use exact schema enum values only.
+Set yes only for parameter fitting / estimation / data assimilation.
+Do NOT count evaluation metrics as calibration.
+
+### calibration_techniques
+List fitting/estimation/calibration methods only (not validation metrics).
+If none, use [].
+If any technique is listed, calibration_mentioned should be yes.
+
+---
+
+## OUTCOMES & OUTPUTS
+
+### key_outcome_measures
+Main reported or predicted outcomes (e.g., cases, incidence, deaths, reproduction number).
+Use concise canonical labels and deduplicate.
+
+---
+
+## REPRODUCIBILITY
+
+### code_available  (enum in schema)
+Use exact schema enum values only.
+Use yes only if code/repository availability is explicitly stated.
+Do not infer from normal practice or software mentions alone.
+Note: this field’s allowed absent values are schema-specific (do not apply a global absent policy blindly).
+
+---
+
+## OPTIONAL NOTES (if included in your schema/pipeline)
+### extraction_notes
+Use only for meaningful ambiguity or normalization caveats.
+Keep brief. Use [] if no note is needed.

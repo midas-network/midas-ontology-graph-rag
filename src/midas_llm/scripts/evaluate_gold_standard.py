@@ -2,6 +2,7 @@
 """Gold standard evaluation script for LLM extraction accuracy.
 
 Compares extracted attributes against expected values using LLM-based semantic matching.
+Supports constrained decoding via MIDAS ontology JSON schema (--constrained flag).
 """
 from __future__ import annotations
 
@@ -33,8 +34,11 @@ from midas_llm.utils.parsers.extraction_parser import (
     save_response_json,
     normalize_llm_format,
 )
-from midas_llm.utils.reporting.evaluation_reports import generate_evaluation_text_report, \
-    generate_evaluation_html_report, generate_abstract_evaluation_report
+from midas_llm.utils.reporting.evaluation_reports import (
+    generate_evaluation_text_report,
+    generate_evaluation_html_report,
+    generate_abstract_evaluation_report,
+)
 from midas_llm.utils.evaluation.vector_similarity import vector_match_tiered
 
 LOGGER = logging.getLogger("midas-llm")
@@ -46,34 +50,100 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 _ANNOTATION_PATTERN = re.compile(r'\s*\((inferred|not mentioned)\)')
 
 
+# ── NEW: JSON output prompt suffix for constrained mode ──────────────
+JSON_OUTPUT_SUFFIX = """
+
+════════════════════════════════════════════════════════════
+CRITICAL OUTPUT FORMAT INSTRUCTIONS
+════════════════════════════════════════════════════════════
+
+You MUST respond with ONLY a valid JSON object. No markdown, no
+backticks, no explanatory text before or after the JSON.
+
+Use this exact structure for EVERY field:
+
+{
+  "field_name": {"values": ["value1", "value2"], "reasoning": "Why you chose these values"}
+}
+
+Rules:
+- Every field MUST be present, even if empty.
+- "values" is ALWAYS an array of strings. Use [] for empty.
+- For binary fields (intervention_present, calibration_mentioned,
+  code_available), use exactly one of: "yes", "no", "not mentioned",
+  "not applicable", "not specified".
+- "reasoning" is a single string. Prefix with "[Inferred]" when using
+  domain knowledge not stated in the abstract.
+- Do NOT include any text outside the JSON object.
+- Do NOT wrap the JSON in markdown code fences.
+"""
+
+
 # ------------------------------------------------------------------
 # Gold standard format helpers
 # ------------------------------------------------------------------
 
 def get_expected_values(field_data) -> list[str]:
-    """Extract plain string values from gold standard v3 format.
-
-    Handles:
-      str:            "not mentioned"                        -> ["not mentioned"]
-      list of dicts:  [{"value": "X", "tier": "explicit"}]  -> ["X"]
-      list of str:    ["X", "Y"]                             -> ["X", "Y"]
-      empty list:     []                                     -> []
     """
+    Return expected values from legacy and constrained gold-standard formats.
+
+    Supported formats:
+      - "yes"
+      - ["a", "b"]
+      - [{"value": "a"}, {"value": "b"}]   # legacy
+      - {"values": ["a", "b"], "reasoning": "..."}  # constrained v3.2+
+      - {"value": "a", ...}  # tolerate singleton dicts
+    """
+    # Legacy scalar
     if isinstance(field_data, str):
         return [field_data]
+
+    # NEW: constrained object format
+    if isinstance(field_data, dict):
+        # Preferred constrained schema shape
+        if "values" in field_data:
+            vals = field_data.get("values", [])
+            if vals is None:
+                return []
+            if isinstance(vals, list):
+                return [str(v) for v in vals if v is not None and str(v) != ""]
+            # tolerate malformed single non-list value
+            return [str(vals)] if str(vals).strip() else []
+
+        # Tolerate legacy singleton object
+        if "value" in field_data:
+            v = field_data.get("value")
+            if v is None:
+                return []
+            return [str(v)] if str(v).strip() else []
+
+        return []
+
+    # Legacy list formats
     if isinstance(field_data, list):
-        return [
-            item["value"] if isinstance(item, dict) else str(item)
-            for item in field_data
-        ]
+        out = []
+        for item in field_data:
+            if isinstance(item, dict):
+                if "value" in item:
+                    v = item.get("value")
+                    if v is not None and str(v).strip():
+                        out.append(str(v))
+                elif "values" in item:
+                    vals = item.get("values", [])
+                    if isinstance(vals, list):
+                        out.extend(str(v) for v in vals if v is not None and str(v).strip())
+                    elif vals is not None and str(vals).strip():
+                        out.append(str(vals))
+            else:
+                s = str(item).strip()
+                if s:
+                    out.append(s)
+        return out
+
     return []
 
 
 def strip_annotations(values: list[str], logger: logging.Logger = LOGGER) -> list[str]:
-    """Remove parenthetical annotations like (inferred), (not mentioned) from a list of string values.
-
-    Assumes values have already been converted to strings via get_expected_values().
-    """
     result = []
     for v in values:
         if not isinstance(v, str):
@@ -87,9 +157,9 @@ def strip_annotations(values: list[str], logger: logging.Logger = LOGGER) -> lis
 
 
 def normalize_term(value: str, logger: logging.Logger = LOGGER) -> str:
-    """Normalize known synonyms before similarity comparison."""
     if not isinstance(value, str):
-        logger.warning("normalize_term: non-string value, got type %s: %s", type(value).__name__, value)
+        logger.warning("normalize_term: non-string value, got type %s: %s",
+                        type(value).__name__, value)
         return str(value)
     return DISEASE_SYNONYMS.get(value.strip().lower(), value)
 
@@ -99,12 +169,118 @@ def normalize_term(value: str, logger: logging.Logger = LOGGER) -> str:
 # ------------------------------------------------------------------
 
 def load_gold_standard(path: str | None = None) -> list[dict]:
-    """Load gold standard test abstracts."""
     if path is None:
         path = str(REPO_ROOT / "resources" / "test_abstracts.json")
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data.get("abstracts", [])
+
+
+# ── NEW: Constrained JSON response parser ────────────────────────────
+
+def parse_constrained_response(
+    content: str, *, logger: logging.Logger = LOGGER
+) -> dict[str, dict[str, Any]]:
+    """Parse JSON response from constrained decoding into the dict
+    format that evaluate_extraction() expects.
+
+    Handles common LLM quirks: markdown fences, preamble text,
+    trailing commas.
+
+    Returns:
+        {field_name: {"value": "comma,separated", "reasoning": "..."}, ...}
+    """
+    raw = content.strip()
+
+    # Strip markdown code fences
+    raw = re.sub(r'^```(?:json)?\s*\n?', '', raw)
+    raw = re.sub(r'\n?```\s*$', '', raw)
+
+    # Strip preamble before first {
+    brace_start = raw.find('{')
+    if brace_start > 0:
+        logger.debug("Stripped preamble: %s", raw[:brace_start][:100])
+        raw = raw[brace_start:]
+
+    # Strip postamble after last }
+    brace_end = raw.rfind('}')
+    if brace_end >= 0 and brace_end < len(raw) - 1:
+        raw = raw[:brace_end + 1]
+
+    # Repair trailing commas
+    raw = re.sub(r',\s*([}\]])', r'\1', raw)
+
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as e:
+        logger.warning("JSON parse failed: %s — falling back to regex", e)
+        parsed = _regex_json_fallback(raw, logger)
+
+    if not isinstance(parsed, dict):
+        logger.error("Parsed JSON is not a dict: %s", type(parsed))
+        return {}
+
+    # Convert to evaluate_extraction format
+    extracted = {}
+    for field_name, field_data in parsed.items():
+        if not isinstance(field_data, dict):
+            extracted[field_name] = {
+                "value": str(field_data),
+                "reasoning": None,
+                "provenance": None,
+                "definition": None,
+                "parent_class": None,
+                "differentia": None,
+                "key_relationships": None,
+                "ontologies": [],
+                "domains": [],
+            }
+            continue
+
+        values = field_data.get("values", [])
+        if isinstance(values, list):
+            value_str = ", ".join(str(v) for v in values)
+        else:
+            value_str = str(values)
+
+        extracted[field_name] = {
+            "value": value_str,
+            "reasoning": field_data.get("reasoning"),
+            "provenance": field_data.get("provenance"),
+            "definition": field_data.get("definition"),
+            "parent_class": None,
+            "differentia": None,
+            "key_relationships": None,
+            "ontologies": [],
+            "domains": [],
+        }
+
+    logger.info("Parsed %d fields from constrained JSON response", len(extracted))
+    for attr, data in extracted.items():
+        logger.info("[%s]: %s", attr, data["value"])
+        if data.get("reasoning"):
+            logger.info("   Reasoning: %s", data["reasoning"])
+
+    return extracted
+
+
+def _regex_json_fallback(raw: str, logger: logging.Logger) -> dict:
+    """Last-resort extraction when JSON parsing fails."""
+    result = {}
+    pattern = re.compile(
+        r'"(\w+)"\s*:\s*\{[^}]*"values"\s*:\s*\[([^\]]*)\]',
+        re.DOTALL,
+    )
+    for match in pattern.finditer(raw):
+        field_name = match.group(1)
+        values = re.findall(r'"([^"]*)"', match.group(2))
+        result[field_name] = {"values": values}
+
+    if result:
+        logger.info("Regex fallback recovered %d fields", len(result))
+    else:
+        logger.error("Regex fallback also failed")
+    return result
 
 
 # ------------------------------------------------------------------
@@ -116,7 +292,6 @@ def build_semantic_eval_prompt(
         extracted_value: str,
         expected_values: list[str],
 ) -> str:
-    """Build prompt for LLM to evaluate semantic match."""
     expected_str = ", ".join(f'"{v}"' for v in expected_values)
 
     return f"""You are evaluating whether an extracted value semantically matches any of the expected values for a scientific metadata field.
@@ -149,8 +324,6 @@ def evaluate_semantic_match(
         timeout_seconds: int = 30,
         api_type: str = "ollama",
 ) -> tuple[bool, str | None]:
-    """Use LLM to evaluate if extracted value semantically matches expected."""
-
     prompt = build_semantic_eval_prompt(attribute, extracted_value, expected_values)
 
     try:
@@ -160,18 +333,17 @@ def evaluate_semantic_match(
             llm_host=llm_host,
             timeout_seconds=timeout_seconds,
             logger=logger,
-            api_type=api_type
+            api_type=api_type,
         )
 
         result = response.content.strip().upper()
         is_match = "MATCH" in result and "NO_MATCH" not in result
 
         if is_match:
-            # Find which expected value it likely matched
             for exp in expected_values:
                 if exp.lower() in extracted_value.lower() or extracted_value.lower() in exp.lower():
                     return True, exp
-            return True, expected_values[0]  # Default to first expected
+            return True, expected_values[0]
 
         return False, None
 
@@ -181,19 +353,15 @@ def evaluate_semantic_match(
 
 
 def fallback_string_match(extracted_value: str, expected_values: list[str]) -> tuple[bool, str | None]:
-    """Fallback string matching when LLM eval fails."""
     extracted_norm = extracted_value.lower().strip().replace("-", " ").replace("_", " ")
 
     for expected in expected_values:
         expected_norm = expected.lower().strip().replace("-", " ").replace("_", " ")
-        # In fallback_string_match, add a minimum length guard:
-        if expected_norm in extracted_norm or extracted_norm in expected_norm:
-            if len(extracted_norm) >= 3 and len(expected_norm) >= 3:
-                return True, expected
         if extracted_norm == expected_norm:
             return True, expected
-        if expected_norm in extracted_norm or extracted_norm in expected_norm:
-            return True, expected
+        if len(extracted_norm) >= 3 and len(expected_norm) >= 3:
+            if expected_norm in extracted_norm or extracted_norm in expected_norm:
+                return True, expected
         if dates_match(extracted_value, expected):
             return True, expected
 
@@ -201,7 +369,6 @@ def fallback_string_match(extracted_value: str, expected_values: list[str]) -> t
 
 
 def dates_match(extracted: str, expected: str) -> bool:
-    """Check if two date strings represent the same date."""
     month_names = {
         'january': '01', 'february': '02', 'march': '03', 'april': '04',
         'may': '05', 'june': '06', 'july': '07', 'august': '08',
@@ -227,7 +394,7 @@ def dates_match(extracted: str, expected: str) -> bool:
 
 
 # ------------------------------------------------------------------
-# Core evaluation engine
+# Core evaluation engine (unchanged)
 # ------------------------------------------------------------------
 
 def evaluate_extraction(
@@ -244,13 +411,6 @@ def evaluate_extraction(
         config: Any = None,
         timeout_seconds: int = 30,
 ) -> dict[str, Any]:
-    """Evaluate extracted attributes against gold standard expected values.
-
-    Uses a three-tier evaluation strategy:
-    1. Vector similarity (fast) - auto-match/reject at thresholds
-    2. LLM semantic evaluation - for ambiguous vector scores
-    3. Fallback string matching
-    """
     if embedding_model is None:
         embedding_model = ExtractionConfig().embedding_model
 
@@ -268,18 +428,12 @@ def evaluate_extraction(
         },
     }
 
-    # Track which expected values were matched (keyed by cleaned string)
     matched_expected: dict[str, set[str]] = {attr: set() for attr in expected}
 
-    # Check each extracted attribute
     for attr, data in extracted.items():
-        logger.debug("Processing attribute: %s, data type: %s, data: %s",
-                      attr, type(data).__name__, data)
+        logger.debug("Processing attribute: %s, data type: %s", attr, type(data).__name__)
 
         value = data.get("value", "") if isinstance(data, dict) else str(data)
-
-        logger.debug("Attribute: %s, extracted value type: %s, value: %s",
-                      attr, type(value).__name__, value)
 
         if attr not in expected:
             results["not_expected"].append({
@@ -288,20 +442,15 @@ def evaluate_extraction(
             })
             continue
 
-        # --- FIX: convert v3 format (dicts/strings) to plain string list ---
         expected_values = get_expected_values(expected[attr])
         if not expected_values:
             continue
 
-        # Strip (inferred) etc. from expected values
         expected_values = strip_annotations(expected_values, logger)
         expected_values = [normalize_term(v, logger) for v in expected_values]
-        logger.debug("Attribute: %s, expected_values (normalized): %s", attr, expected_values)
 
-        # Handle comma-separated extracted values
         if not isinstance(value, str):
-            logger.error("Attribute: %s - value is not a string, got type: %s, value: %s",
-                          attr, type(value).__name__, value)
+            logger.error("Attribute: %s - value is not a string: %s", attr, type(value).__name__)
             continue
 
         extracted_values = [v.strip() for v in value.split(",")]
@@ -317,49 +466,34 @@ def evaluate_extraction(
 
             is_date_field = attr in ("study_dates_start", "study_dates_end")
 
-            # Normalize extracted value using synonym map
             extracted_normalized = normalize_term(ext_val, logger)
             extracted_normalized = normalize_absent_value(extracted_normalized)
 
-            # Tier 1: Vector similarity (if enabled and not a date field)
+            # Tier 1: Vector similarity
             decision = None
             if use_vector_eval and not is_date_field:
                 try:
                     decision, best_match, similarity_score = vector_match_tiered(
-                        extracted_normalized,
-                        expected_values,
+                        extracted_normalized, expected_values,
                         high_threshold=vector_high_threshold,
                         low_threshold=vector_low_threshold,
                         model_name=embedding_model,
                     )
                 except Exception as e:
-                    logger.error(
-                        "Error in vector_match_tiered for attr=%s, extracted=%s, expected=%s: %s",
-                        attr, extracted_normalized, expected_values, e,
-                    )
+                    logger.error("Vector match error for %s: %s", attr, e)
                     decision = "UNAVAILABLE"
 
                 if decision == "MATCH":
-                    matched = True
-                    matched_val = best_match
-                    match_method = "vector"
+                    matched, matched_val, match_method = True, best_match, "vector"
                     results["vector_stats"]["auto_matches"] += 1
-                    logger.debug("Vector auto-match: '%s' <-> '%s' (score=%.3f)",
-                                  extracted_normalized, matched_val, similarity_score)
                 elif decision == "NO_MATCH":
                     if dates_match(extracted_normalized, expected_values[0] if expected_values else ""):
-                        matched = True
-                        matched_val = expected_values[0]
-                        match_method = "date_format"
+                        matched, matched_val, match_method = True, expected_values[0], "date_format"
                     else:
                         results["vector_stats"]["auto_rejects"] += 1
-                        logger.debug("Vector auto-reject: '%s' (score=%.3f)",
-                                      extracted_normalized, similarity_score)
                 elif decision == "AMBIGUOUS":
                     results["vector_stats"]["ambiguous_to_llm"] += 1
-                    logger.debug("Vector ambiguous: '%s' (score=%.3f), falling through to LLM",
-                                  extracted_normalized, similarity_score)
-                else:  # UNAVAILABLE
+                else:
                     results["vector_stats"]["vector_unavailable"] += 1
 
             # Tier 2: LLM semantic evaluation
@@ -372,8 +506,7 @@ def evaluate_extraction(
                         matched, matched_val = evaluate_semantic_match(
                             attr, extracted_normalized, expected_values,
                             llm_model, llm_host,
-                            logger=logger,
-                            api_type=api_type,
+                            logger=logger, api_type=api_type,
                             timeout_seconds=timeout_seconds,
                         )
                         if matched:
@@ -409,7 +542,7 @@ def evaluate_extraction(
                     fp_record["similarity_score"] = round(similarity_score, 4)
                 results["false_positives"].append(fp_record)
 
-    # --- FIX: Check for misses using get_expected_values + strip_annotations ---
+    # Check for misses
     for attr, raw_expected in expected.items():
         for exp_val in strip_annotations(get_expected_values(raw_expected), logger):
             normalized_exp = normalize_term(exp_val, logger)
@@ -419,7 +552,6 @@ def evaluate_extraction(
                     "expected_value": exp_val,
                 })
 
-    # --- FIX: Calculate total_expected using get_expected_values ---
     total_expected = sum(len(get_expected_values(v)) for v in expected.values())
     total_hits = len(results["hits"])
     total_misses = len(results["misses"])
@@ -455,19 +587,22 @@ def run_evaluation(
         vector_low_threshold: float = 0.50,
         embedding_model: str | None = None,
         run_folder: str | None = None,
+        json_schema: dict[str, Any] | None = None,  # ── NEW
 ) -> dict[str, Any]:
-    """Run evaluation on gold standard abstracts.
-
-    Uses a three-tier evaluation strategy:
-    1. Vector similarity (fast) - auto-match/reject at thresholds
-    2. LLM semantic evaluation - for ambiguous vector scores
-    3. String matching - fallback
-    """
     if embedding_model is None:
         embedding_model = config.embedding_model
 
     all_results = []
-    models = config.active_llm_models if config.active_llm_models else [config.active_llm_models]
+    models = config.active_llm_models if config.active_llm_models else [config.active_llm_model]
+
+    # ── NEW: Log constrained decoding status ──
+    if json_schema is not None:
+        logger.info(
+            "Constrained decoding: ENABLED (%d schema properties)",
+            len(json_schema.get("properties", {})),
+        )
+    else:
+        logger.info("Constrained decoding: DISABLED (free-text mode)")
 
     for abstract_data in abstracts:
         abstract_id = abstract_data["id"]
@@ -490,6 +625,10 @@ def run_evaluation(
         )
         prompt = prepare_and_display_prompt(query, "", logger=logger)
 
+        # ── NEW: Append JSON instructions when using constrained mode ──
+        if json_schema is not None:
+            prompt = prompt + JSON_OUTPUT_SUFFIX
+
         if run_folder:
             prompt_file = Path(run_folder) / "prompt.txt"
             prompt_file.write_text(prompt, encoding="utf-8")
@@ -510,6 +649,7 @@ def run_evaluation(
             logger.info("Running model: %s", model)
 
             try:
+                # ── NEW: Pass json_schema to send_to_llm ──
                 response = send_to_llm(
                     prompt=prompt,
                     llm_model=model,
@@ -517,17 +657,29 @@ def run_evaluation(
                     timeout_seconds=config.llm_timeout,
                     logger=logger,
                     api_type=config.llm_api_type,
+                    json_schema=json_schema,  # None → unconstrained
                 )
 
-                extracted = parse_and_display_extracted_data(response.content, logger=logger)
+                # ── NEW: Branch on constrained vs unconstrained ──
+                if response.constrained:
+                    logger.info("Parsing constrained JSON response")
+                    extracted = parse_constrained_response(
+                        response.content, logger=logger
+                    )
+                else:
+                    if json_schema is not None:
+                        logger.warning(
+                            "Constrained decoding was requested but server "
+                            "fell back to unconstrained — using text parser"
+                        )
+                    extracted = parse_and_display_extracted_data(
+                        response.content, logger=logger
+                    )
 
                 logger.info("Evaluating extraction with semantic matching...")
                 evaluation = evaluate_extraction(
-                    extracted,
-                    expected,
-                    model,
-                    config.active_llm_host,
-                    logger,
+                    extracted, expected,
+                    model, config.active_llm_host, logger,
                     use_llm_eval=use_llm_eval,
                     use_vector_eval=use_vector_eval,
                     vector_high_threshold=vector_high_threshold,
@@ -541,28 +693,28 @@ def run_evaluation(
                 if run_folder:
                     safe_model_name = model.replace("/", "-").replace("\\", "-")
 
-                    response_file = abstract_dir / f"{safe_model_name}_response.txt"
+                    response_file = abstract_dir / f"{safe_model_name}_response.json"
                     response_file.write_text(response.content, encoding="utf-8")
-                    logger.info("Saved raw response to: %s", response_file)
 
-                    normalized = normalize_llm_format(response.content)
-                    normalized_file = abstract_dir / f"{safe_model_name}_response_normalized.txt"
-                    normalized_file.write_text(normalized, encoding="utf-8")
-                    logger.info("Saved normalized response to: %s", normalized_file)
+                    # ── NEW: Save constrained status ──
+                    meta_file = abstract_dir / f"{safe_model_name}_meta.json"
+                    meta_file.write_text(json.dumps({
+                        "model": model,
+                        "constrained": response.constrained,
+                        "response_length": len(response.content),
+                    }, indent=2), encoding="utf-8")
 
-                    save_response_json(
-                        response_content=response.content,
-                        model=model,
-                        output_path=abstract_dir,
-                        abstract_id=abstract_id,
-                        evaluation=evaluation,
-                        logger=logger,
-                    )
+                    if not response.constrained:
+                        normalized = normalize_llm_format(response.content)
+                        normalized_file = abstract_dir / f"{safe_model_name}_response_normalized.txt"
+                        normalized_file.write_text(normalized, encoding="utf-8")
+
 
                 abstract_results["models"][model] = {
                     "extracted": extracted,
                     "evaluation": evaluation,
                     "raw_response": response.content[:2000],
+                    "constrained": response.constrained,  # ── NEW
                 }
 
                 # Log legend
@@ -589,9 +741,11 @@ def run_evaluation(
                 # Log summary
                 scores = evaluation["scores"]
                 logger.info(
-                    "Model %s: Recall=%.2f, Precision=%.2f, F1=%.2f (hits=%d, misses=%d, fp=%d)",
+                    "Model %s: Recall=%.2f, Precision=%.2f, F1=%.2f "
+                    "(hits=%d, misses=%d, fp=%d, constrained=%s)",
                     model, scores["recall"], scores["precision"], scores["f1"],
-                    scores["total_hits"], scores["total_misses"], scores["total_false_positives"],
+                    scores["total_hits"], scores["total_misses"],
+                    scores["total_false_positives"], response.constrained,
                 )
 
                 # Log detailed results
@@ -623,7 +777,7 @@ def run_evaluation(
                 abstract_results["models"][model] = {"error": str(e)}
 
             # Save per-abstract evaluation report
-            if run_folder and not evaluation.get("error"):
+            if run_folder and "error" not in abstract_results["models"].get(model, {}):
                 generate_abstract_evaluation_report(
                     abstract_id=abstract_id,
                     title=title,
@@ -647,7 +801,6 @@ def run_evaluation(
 # ------------------------------------------------------------------
 
 def print_summary(results: dict, logger: logging.Logger) -> None:
-    """Print summary of evaluation results."""
     logger.info("")
     logger.info("=" * 60)
     logger.info("EVALUATION SUMMARY")
@@ -699,10 +852,11 @@ def print_summary(results: dict, logger: logging.Logger) -> None:
 # ------------------------------------------------------------------
 
 def main():
-    """Main evaluation workflow."""
-    parser = argparse.ArgumentParser(description="Evaluate LLM extraction against gold standard")
-    parser.add_argument("-n", "--num-papers", type=int, default=10,
-                        help="Number of papers to evaluate (default: 1, use -1 for all)")
+    parser = argparse.ArgumentParser(
+        description="Evaluate LLM extraction against gold standard"
+    )
+    parser.add_argument("-n", "--num-papers", type=int, default=1,
+                        help="Number of papers to evaluate (default: 10, use -1 for all)")
     parser.add_argument("--paper-id", type=str, default=None,
                         help="Evaluate a specific paper by ID")
     parser.add_argument("--no-llm-eval", action="store_true",
@@ -719,6 +873,13 @@ def main():
                         help="List available paper IDs and exit")
     parser.add_argument("--validate-thresholds", action="store_true",
                         help="Run domain validation to find optimal thresholds and exit")
+
+    # ── NEW: Constrained decoding flags ──
+    parser.add_argument("--constrained", action="store_true", default=True,
+                        help="Enable constrained decoding with MIDAS ontology JSON schema")
+    parser.add_argument("--ontology-path", type=str, default="resources/ontologies/midas_data/midas-data.owl",
+                        help="Path to MIDAS OWL ontology file (default: resources/ontologies/midas-data.owl)")
+
     args = parser.parse_args()
 
     config = ExtractionConfig()
@@ -783,11 +944,57 @@ def main():
     if config.show_config:
         config.log_config(logger)
 
+    # ── NEW: Load MIDAS ontology for constrained decoding ──
+    json_schema = None
+    if args.constrained:
+        try:
+            from midas_llm.utils.ontology.midas_vocabulary import MIDASVocabulary
+
+            owl_path = args.ontology_path or str(
+                REPO_ROOT / "resources" / "ontologies" / "midas-data.owl"
+            )
+            logger.info("Loading MIDAS ontology from: %s", owl_path)
+            vocab = MIDASVocabulary.from_owl(owl_path)
+            json_schema = vocab.build_json_schema()
+
+            logger.info(
+                "MIDAS ontology loaded: %d schema properties",
+                len(json_schema.get("properties", {})),
+            )
+            logger.info("Constrained decoding: ENABLED")
+
+            # Also append ontology vocabulary to prompt
+            # (helps even if constrained decoding falls back)
+            vocab_text = vocab.build_prompt_section()
+            logger.info("Ontology vocabulary section: %d chars", len(vocab_text))
+
+        except FileNotFoundError:
+            logger.error(
+                "Ontology file not found: %s — run without --constrained "
+                "or download with:\n"
+                "  curl -o resources/ontologies/midas-data.owl "
+                "https://raw.githubusercontent.com/midas-network/midas-data/"
+                "refs/heads/main/midas-data.owl",
+                owl_path,
+            )
+            return
+        except ImportError:
+            logger.error(
+                "midas_vocabulary module not found. Ensure "
+                "midas_vocabulary.py is in src/midas_llm/utils/ontology/"
+            )
+            return
+        except Exception as e:
+            logger.error("Failed to load MIDAS ontology: %s", e)
+            return
+    else:
+        logger.info("Constrained decoding: DISABLED (use --constrained to enable)")
+
     # Filter abstracts
     if args.paper_id:
         abstracts = [a for a in all_abstracts if a["id"] == args.paper_id]
         if not abstracts:
-            logger.error("Paper ID '%s' not found. Use --list-papers to see available IDs.", args.paper_id)
+            logger.error("Paper ID '%s' not found. Use --list-papers.", args.paper_id)
             return
     elif args.num_papers == -1:
         abstracts = all_abstracts
@@ -811,13 +1018,17 @@ def main():
     else:
         logger.info("LLM semantic matching: DISABLED")
 
-    if not use_vector_eval and not use_llm_eval:
-        logger.info("Using string matching only")
-
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     run_folder = str(REPO_ROOT / "output" / "gold_standard" / "results" / timestamp)
     os.makedirs(run_folder, exist_ok=True)
     logger.info("Run folder: %s", run_folder)
+
+    # ── NEW: Save schema to run folder for reproducibility ──
+    if json_schema is not None:
+        schema_file = os.path.join(run_folder, "constrained_schema.json")
+        with open(schema_file, "w", encoding="utf-8") as f:
+            json.dump(json_schema, f, indent=2)
+        logger.info("Saved constrained schema to: %s", schema_file)
 
     results = run_evaluation(
         abstracts, config, logger,
@@ -827,6 +1038,7 @@ def main():
         vector_low_threshold=args.vector_low_threshold,
         embedding_model=args.embedding_model,
         run_folder=run_folder,
+        json_schema=json_schema,  # ── NEW: passed through
     )
 
     results["evaluation_config"] = {
@@ -835,6 +1047,8 @@ def main():
         "vector_high_threshold": args.vector_high_threshold,
         "vector_low_threshold": args.vector_low_threshold,
         "embedding_model": args.embedding_model,
+        "constrained": args.constrained,  # ── NEW
+        "ontology_path": args.ontology_path,  # ── NEW
     }
 
     output_file = os.path.join(run_folder, "evaluation.json")
@@ -843,8 +1057,12 @@ def main():
     logger.info("Results saved to: %s", output_file)
 
     if config.generate_evaluation_report:
-        report_file = generate_evaluation_text_report(results, run_folder=run_folder, logger=logger)
-        html_report_file = generate_evaluation_html_report(results, run_folder=run_folder, logger=logger)
+        report_file = generate_evaluation_text_report(
+            results, run_folder=run_folder, logger=logger,
+        )
+        html_report_file = generate_evaluation_html_report(
+            results, run_folder=run_folder, logger=logger,
+        )
         logger.info("Human-readable evaluation report: %s", report_file)
         logger.info("HTML evaluation report: %s", html_report_file)
 

@@ -1,19 +1,48 @@
+REMINDERS — CONSTRAINED SCHEMA + CONTROLLED VOCAB MODE
 
-### Additional Notes
+1) SCHEMA FIRST
+- The constrained schema is the source of truth for:
+  - required fields
+  - JSON shape
+  - enum values
+  - exact enum spellings
+- Never invent enum values or paraphrase enum values.
 
-**extraction_notes**
-Any important caveats, ambiguities, or additional context.
+2) CONTROLLED VOCABULARY (MIDAS) — PREFERRED TERMS
+For these fields:
+- data_used
+- intervention_types
+- model_type
 
----
+Use this order:
+a) exact MIDAS preferred term from the vocab file
+b) synonym-map normalization to a preferred MIDAS term
+c) free text only if no MIDAS term matches
 
-## FINAL CHECKLIST (Review before submitting)
+3) EVIDENCE DISCIPLINE
+- Use title + abstract only.
+- Prefer explicit evidence.
+- Avoid unsupported inference.
+- If uncertain, use schema-compatible absent value (for that field) or [] for list fields.
 
-Before finalizing your extraction, verify:
-- [ ] Did I extract information from BOTH the title and abstract?
-- [ ] For multi-value fields, did I list ALL applicable values (not just the first one or two)?
-- [ ] Did I use domain knowledge to infer pathogen scientific names, outcome measures, and other implied values?
-- [ ] Did I list all geographic units, including sub-regions and locations mentioned in movement/travel context?
-- [ ] Did I avoid using "unspecified" when a reasonable inference was possible?
-- [ ] Did I mark historical_vs_hypothetical correctly based on whether real-world data was used?
-- [ ] Did I check data_used against both the title and abstract text?
+4) CALIBRATION VS VALIDATION
+Calibration means fitting/estimation/data assimilation.
+Do NOT list validation/evaluation metrics (WIS, MAE, RMSE, coverage, forecast accuracy summaries) as calibration techniques.
 
+5) MULTI-VALUE HYGIENE
+- Include multiple values only when distinctly supported.
+- Deduplicate near-duplicates.
+- Prefer one canonical form (e.g., United States instead of US/USA duplicates).
+
+6) REASONING QUALITY
+- Keep reasoning short, specific, and evidence-based.
+- Mention normalization if used.
+- Use "[Inferred]" only for small high-confidence inferences.
+
+FINAL CHECK BEFORE RESPONDING
+- Exact schema enum spellings?
+- Controlled MIDAS terms used where applicable?
+- Synonyms normalized to preferred terms?
+- No unsupported guesses?
+- [] used for empty list fields?
+- values is always an array?

@@ -1,0 +1,670 @@
+{
+  "type": "object",
+  "properties": {
+    "model_determinism": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "deterministic",
+              "stochastic",
+              "both",
+              "not mentioned",
+              "not applicable"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "pathogen_type": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "virus",
+              "bacterium",
+              "parasite",
+              "fungus",
+              "prion",
+              "multiple",
+              "not mentioned"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "geographic_scope": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "facility-level",
+              "city-level",
+              "sub-national",
+              "national",
+              "multi-country",
+              "global",
+              "not specified",
+              "not applicable"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "historical_vs_hypothetical": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "historical",
+              "hypothetical",
+              "mixed",
+              "not mentioned"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "study_goal_category": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "forecast/nowcast",
+              "scenario analysis",
+              "intervention evaluation",
+              "parameter estimation",
+              "methodological",
+              "transmission dynamics/drivers",
+              "burden estimation",
+              "risk assessment"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "intervention_present": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "yes",
+              "no",
+              "not mentioned"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "calibration_mentioned": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "yes",
+              "no",
+              "not mentioned"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "code_available": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "yes",
+              "no",
+              "not mentioned",
+              "not specified"
+            ]
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "data_used": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "enum": [
+                  "Age-Stratified",
+                  "Air Quality",
+                  "Antimicrobial Resistance",
+                  "Bacteria",
+                  "Bayesian Model",
+                  "Behavior",
+                  "Biostatistics",
+                  "Case Count",
+                  "Climate",
+                  "Clinical Trial",
+                  "Computer Sciences",
+                  "Conspiracy Theories",
+                  "Contact Rates",
+                  "Control Strategy",
+                  "Cumulative Case Count",
+                  "Cumulative Death Count",
+                  "Cumulative Emergency Department Visit",
+                  "Cumulative Hospitalization",
+                  "Cumulative Infection Count",
+                  "Cumulative Outpatient Visit",
+                  "Cumulative Recovered Count",
+                  "Cumulative Vaccination",
+                  "Data Preparation",
+                  "Data Service",
+                  "Data Set",
+                  "Decision Support Systems",
+                  "Digestive System Disorder",
+                  "Disease",
+                  "Disease Transmission",
+                  "Disease Vector",
+                  "Drug Treatment",
+                  "Educational Activity",
+                  "Emergency Department Visit",
+                  "Ensemble Specification",
+                  "Environment Information",
+                  "Epidemiology",
+                  "Ethnicity",
+                  "Evaluation",
+                  "Event Cancellations",
+                  "Excess Mortality",
+                  "Fungi",
+                  "Gender",
+                  "Geospatial Models",
+                  "Global Health",
+                  "Graphics Visualization",
+                  "Health Heterogeneity",
+                  "Health System Capacity",
+                  "Homo sapiens",
+                  "Hospitalization",
+                  "Hospitalization Peak Size",
+                  "Hospitalization Peak Time",
+                  "Host",
+                  "Human Movement",
+                  "Immunology",
+                  "Incident Case Count",
+                  "Incident Death Count",
+                  "Incident Emergency Department Visit",
+                  "Incident Hospitalization",
+                  "Incident Infection Count",
+                  "Incident Outpatient Visit",
+                  "Incident Recovered Count",
+                  "Incident Vaccination",
+                  "Infection Case List",
+                  "Infection Count",
+                  "Infectious Disease",
+                  "Intent to Have a Child Vaccinated",
+                  "Intent to Have a Ward Vaccinated",
+                  "Intent to Vaccinate",
+                  "Intent to be Vaccinated",
+                  "Laboratory Testing Capacity",
+                  "Laboratory Testing Facility",
+                  "Land Cover / Land Use",
+                  "Mathematics",
+                  "Media",
+                  "Method Development",
+                  "Modeling",
+                  "Modeling Method",
+                  "Modeling Output",
+                  "Modeling Purpose",
+                  "Mortality",
+                  "Mosquitos",
+                  "Natural Disasters",
+                  "One Health",
+                  "Organism Strain",
+                  "Outbreak Science",
+                  "Outpatient Visit",
+                  "Parasite Ecology",
+                  "Pathogen",
+                  "Pathogen Evolution",
+                  "Phylodynamics",
+                  "Phylogenetics",
+                  "Plasmodium",
+                  "Policy Adherence",
+                  "Population Count",
+                  "Population Demographic",
+                  "Public Health",
+                  "Race",
+                  "Recovery Count",
+                  "Regulatory Complaints",
+                  "Research Topic",
+                  "Risk Factors",
+                  "School Closure",
+                  "Science Communication",
+                  "Sequence Collection",
+                  "Seroprevalence",
+                  "Sex",
+                  "Social Determinants of Health",
+                  "Social Media",
+                  "Socio-economic Impacts",
+                  "Substance-Related Disorder",
+                  "Surveillance",
+                  "Synthetic Populations",
+                  "Tests",
+                  "Ticks",
+                  "Time Series",
+                  "Transmission Pattern",
+                  "Treatment Facility",
+                  "Vaccination",
+                  "Vaccination Administration",
+                  "Vaccination Intent",
+                  "Vaccination Supplies",
+                  "Vaccine Hesitancy",
+                  "Viruses",
+                  "Wastewater",
+                  "Weather",
+                  "Wildlife Health Interventions"
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": "Prefer these MIDAS ontology terms: Age-Stratified, Air Quality, Antimicrobial Resistance, Bacteria, Bayesian Model, Behavior, Biostatistics, Case Count, Climate, Clinical Trial, Computer Sciences, Conspiracy Theories, Contact Rates, Control Strategy, Cumulative Case Count. Use free text only if none match."
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "intervention_types": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "enum": [
+                  "Control Strategy",
+                  "Cumulative Vaccination",
+                  "Drug Treatment",
+                  "Event Cancellations",
+                  "Incident Vaccination",
+                  "Laboratory Testing Capacity",
+                  "Laboratory Testing Facility",
+                  "Nirsevimab Vaccination",
+                  "Regulatory Complaints",
+                  "Risk Factors",
+                  "School Closure",
+                  "Treatment Facility",
+                  "Vaccination",
+                  "Vaccination Administration",
+                  "Vaccination Capacity",
+                  "Vaccination Intent",
+                  "Vaccination Supplies",
+                  "Wildlife Health Interventions"
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": "Prefer these MIDAS ontology terms: Control Strategy, Cumulative Vaccination, Drug Treatment, Event Cancellations, Incident Vaccination, Laboratory Testing Capacity, Laboratory Testing Facility, Nirsevimab Vaccination, Regulatory Complaints, Risk Factors, School Closure, Treatment Facility, Vaccination, Vaccination Administration, Vaccination Capacity. Use free text only if none match."
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "model_type": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "enum": [
+                  "Agent-based Models",
+                  "Bayesian Model",
+                  "Compartmental Models",
+                  "Decision Models",
+                  "Disease Transmission",
+                  "Dynamic Models",
+                  "Forecasting",
+                  "Geospatial Models",
+                  "Health Risk Assessment",
+                  "Intra-host Modeling",
+                  "Mathematical Model",
+                  "Modeling",
+                  "Modeling Method",
+                  "Modeling Output",
+                  "Modeling Purpose",
+                  "Modeling Studies",
+                  "Network Modeling",
+                  "Parameter Estimation",
+                  "Phylogenetic Analysis",
+                  "Phylogenetics",
+                  "Scenario Analysis",
+                  "Statistical Model",
+                  "Transmission Pattern",
+                  "Uncertainty Quantification"
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": "Prefer these MIDAS ontology terms: Agent-based Models, Bayesian Model, Compartmental Models, Decision Models, Disease Transmission, Dynamic Models, Forecasting, Geospatial Models, Health Risk Assessment, Intra-host Modeling, Mathematical Model, Modeling, Modeling Method, Modeling Output, Modeling Purpose. Use free text only if none match."
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "pathogen_name": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "disease_name": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "host_species": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "primary_population": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "population_setting_type": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "geographic_units": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "data_source": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "calibration_techniques": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "key_outcome_measures": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "study_dates_start": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    },
+    "study_dates_end": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "values",
+        "reasoning"
+      ]
+    }
+  },
+  "required": [
+    "model_determinism",
+    "pathogen_type",
+    "geographic_scope",
+    "historical_vs_hypothetical",
+    "study_goal_category",
+    "intervention_present",
+    "calibration_mentioned",
+    "code_available",
+    "data_used",
+    "intervention_types",
+    "model_type",
+    "pathogen_name",
+    "disease_name",
+    "host_species",
+    "primary_population",
+    "population_setting_type",
+    "geographic_units",
+    "data_source",
+    "calibration_techniques",
+    "key_outcome_measures",
+    "study_dates_start",
+    "study_dates_end"
+  ]
+}

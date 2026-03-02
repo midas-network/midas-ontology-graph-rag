@@ -1,246 +1,87 @@
-LLM Extraction Prompt v2 — Standardized Absent-Value Vocabulary
-
-=== Your Task ===
-Extract structured metadata from the title AND abstract about infectious disease modeling studies.
-
-CRITICAL EXTRACTION PRINCIPLES
-
-Extract from BOTH the title and abstract. The title often contains key information (data types, geographic units, disease names) that may not be repeated in the abstract body.
-
-Infer using domain knowledge. Do NOT limit yourself to only explicitly stated terms. Use standard biomedical and epidemiological knowledge to infer values that are clearly implied. Examples:
-
-If the disease is "COVID-19," infer pathogen "SARS-CoV-2."
-
-If the study analyzes "case data," infer key_outcome_measures include "cases" and likely "incidence."
-
-If the study uses real-world data from a specific time period, infer historical_vs_hypothetical = "historical."
-
-If the study mentions "wastewater surveillance," include "wastewater surveillance data" under data_used.
-
-If "climate" or "rainfall" data is used, list BOTH "climate data" and "rainfall data" as separate data_used entries.
-
-Be exhaustive with multi-value fields. For fields like data_used, geographic_units, primary_population, and key_outcome_measures, extract ALL applicable values — err on the side of including more rather than fewer.
-
-Extract all geographic units mentioned or strongly implied. Include countries, regions, states, provinces, cities, islands, and relevant subregions.
-
-Geographic scope should capture ALL applicable scales. If both sub-national and national apply, list BOTH.
-
-For key_outcome_measures, infer from what the model analyzes, not just what is explicitly listed as an "outcome."
-
-For calibration_techniques, treat any method used to relate model outputs to data as calibration (including particle filters, likelihood fitting, regression fitting, correlation, etc.). Do NOT count retrospective forecast evaluation metrics (e.g., weighted interval score, MAE, RMSE used to evaluate predictions after the fact) as calibration. Calibration means the model parameters were tuned or fitted to match observed data.
-
-For study_goal_category, map stated objectives to the closest category. "forecast", "predict", "nowcast", "near-term prediction" → forecast/nowcast.
-
-=== ABSENT-VALUE VOCABULARY (MANDATORY — USE EXACTLY THESE TERMS) ===
-
-You MUST use the following standardized terms when information is missing or absent. Do NOT invent alternatives like "unspecified", "unknown", "none", "N/A", or "no information."
-
-TERM: "not mentioned"
-MEANING: The field is relevant to this study type, but the abstract says nothing about it.
-USE FOR: Binary or categorical fields where the abstract is simply silent.
-FIELDS: intervention_present, code_available, calibration_mentioned
-EXAMPLE: The abstract describes a forecasting model but never discusses whether code is available → code_available = "not mentioned"
-
-TERM: "not specified"
-MEANING: The study likely has this information, but the abstract does not state it.
-USE FOR: Free-text fields where the study probably has a value but the abstract omits it.
-FIELDS: data_source, study_dates_start, study_dates_end, geographic_units, geographic_scope, calibration_techniques
-EXAMPLE: The abstract says "we used epidemiological data" but never names the source → data_source = "not specified"
-
-TERM: "not applicable"
-MEANING: The field does not apply to this study type at all.
-USE FOR: Fields that are structurally irrelevant to the study design.
-FIELDS: data_source (for theoretical studies), study_dates_start/end (for theoretical studies), model_determinism (for purely statistical/regression models)
-EXAMPLE: A theoretical compartmental model with no empirical data → data_source = "not applicable", study_dates_start = "not applicable", study_dates_end = "not applicable"
-EXAMPLE: A generalised linear regression model → model_determinism = "not applicable"
-
-TERM: "no"
-MEANING: The answer to a binary field is definitively negative based on the abstract content.
-USE FOR: Binary fields where the abstract provides enough context to determine the answer is no.
-FIELDS: calibration_mentioned, intervention_present
-EXAMPLE: A theoretical simulation study with no data fitting → calibration_mentioned = "no"
-EXAMPLE: A burden estimation study with no control measures discussed → intervention_present = "no"
-
-TERM: "yes"
-MEANING: The answer to a binary field is definitively positive.
-USE FOR: Binary fields where the abstract confirms the presence.
-FIELDS: calibration_mentioned, intervention_present
-EXAMPLE: The abstract says "parameters were estimated using MCMC" → calibration_mentioned = "yes"
-
-TERM: empty (leave value blank)
-MEANING: No values exist for this list field.
-USE FOR: List fields that have zero applicable entries.
-FIELDS: intervention_types (when no intervention), calibration_techniques (when no calibration)
-EXAMPLE: No interventions discussed → intervention_types = (leave blank)
-
-DECISION TREE FOR ABSENT VALUES:
-
-1. Is this field structurally irrelevant to the study type?
-   → "not applicable"
-
-2. Is this a binary yes/no field?
-   a. Does the abstract give enough context to determine yes or no?
-      → "yes" or "no"
-   b. Does the abstract say nothing about this topic?
-      → "not mentioned"
-
-3. Is this a free-text or list field?
-   a. Does the study likely have this info but the abstract omits it?
-      → "not specified"
-   b. Is there genuinely no information AND no reasonable inference?
-      → "not specified" (this is your last resort)
-
-NEVER USE: "unspecified", "unknown", "none", "N/A", "n/a", "not available", "no information", "not stated", "not reported", "not provided", "not given", "not described", "not discussed"
-
-=== CALIBRATION vs VALIDATION DISTINCTION ===
-
-CALIBRATION (calibration_mentioned = "yes"):
-Calibration means model parameters were tuned, fitted, or estimated to match observed data. Examples:
-- MCMC parameter estimation
-- Bayesian inference / posterior estimation
-- Least squares curve fitting (lsqcurvefit, etc.)
-- Maximum likelihood estimation
-- Particle filter / data assimilation
-- Neural network training on observed data
-- Any method that adjusts model parameters based on data
-
-VALIDATION / EVALUATION (calibration_mentioned = "no"):
-Retrospective evaluation of model outputs against observed data is NOT calibration. Examples:
-- Weighted interval score (WIS)
-- Mean absolute error (MAE) used to score forecasts
-- RMSE used to evaluate prediction accuracy
-- Prediction interval coverage
-- Relative error comparison
-These are accuracy METRICS, not parameter fitting methods.
-
-IMPORTANT: If the abstract describes BOTH calibration AND validation, set calibration_mentioned = "yes" and list only the calibration methods under calibration_techniques. Do NOT list validation metrics as calibration techniques.
-
-=== DEFINITION GUIDELINES ===
-
-Act as a formal ontologist working in the biomedical and geographic domains. Define each term with:
-
-Parent class (is-a)
-
-Differentia
-
-Key relationships (caused-by, transmitted-by, located-in, part-of, etc.)
-
-Definition (single sentence): "A [parent class] that [differentia]"
-
-Avoid encyclopedic descriptions.
-
-=== RULES (FORMAT IS STRICT) ===
-
-Every extracted value MUST have provenance, definition, and reasoning.
-
-Use exact quotes from title/abstract for provenance when explicit.
-
-For inferred values:
-
-provenance = the closest supporting quote
-
-reasoning MUST start with "[Inferred]" and explain why the inference is justified
-
-No markdown formatting in the output.
-
-Do NOT output JSON.
-
-MOST IMPORTANT FORMATTING RULE (THIS IS WHAT YOUR PARSER ENFORCES)
-
-When a field has multiple values, you MUST:
-
-Put ALL values in the single value: line as a comma-separated list.
-
-Provide metadata for EACH value using numbered keys:
-
-provenance1, definition1, reasoning1 correspond to the first value
-
-provenance2, definition2, reasoning2 correspond to the second value
-
-provenance3 ... etc.
-
-If you output multiple values but fail to number provenance/definition/reasoning, only the first value will be used and your output will be considered incorrect.
-
-Example of correct multi-value formatting:
-
-field: primary_population
-value: rural communities, small city
-provenance1: "<quote supporting rural communities>"
-definition1: "Parent class: ... | Differentia: ... | Key relationships: ... | Definition: ..."
-reasoning1: "<why rural communities is supported>"
-provenance2: "<quote supporting small city>"
-definition2: "Parent class: ... | Differentia: ... | Key relationships: ... | Definition: ..."
-reasoning2: "<why small city is supported>"
-
-Example of correct absent-value formatting:
-
-field: data_source
-value: not specified
-provenance: "we used epidemiological data"
-definition: "Indicates the data source was not named in the abstract"
-reasoning: "The abstract mentions data use but does not identify the provider or repository"
-
-field: study_dates_start
-value: not applicable
-provenance: "computational simulations on graph-based models"
-definition: "Indicates the field is structurally irrelevant to this theoretical study"
-reasoning: "This is a theoretical simulation study with no empirical time period"
-
-field: code_available
-value: not mentioned
-provenance: N/A
-definition: "Indicates the abstract does not address code availability"
-reasoning: "The abstract contains no discussion of code, software repositories, or data sharing"
-
-field: calibration_mentioned
-value: no
-provenance: "evaluated forecast predictions using weighted interval score"
-definition: "Indicates no model parameter fitting or calibration was described"
-reasoning: "The abstract describes forecast evaluation metrics (WIS, MAE) which are validation, not calibration"
-
-=== CALIBRATION CONSISTENCY RULE ===
-
-If you output ANY calibration_techniques value (e.g., particle filter, MCMC, least squares), you MUST set:
-
-calibration_mentioned: yes
-
-If no calibration technique is present or inferable:
-
-calibration_mentioned: no
-calibration_techniques: (leave blank)
-
-=== OUTPUT (KEEP YOUR EXISTING STRUCTURE EXACTLY) ===
-
-Return entries using your existing format:
-
-study_id: <string>
-
-field: <field_name>
-value: <one value OR comma-separated values>
-provenance1: <...>
-definition1: <...>
-reasoning1: <...>
-provenance2: <...> (ONLY if there is a 2nd value)
-definition2: <...>
-reasoning2: <...>
-...
-
-Repeat the field block for each field.
-
-=== FINAL CHECK BEFORE YOU ANSWER ===
-
-Did you extract from BOTH title and abstract?
-
-For every multi-value value: line, did you include provenance1/2/3..., definition1/2/3..., reasoning1/2/3...?
-
-Did you use ONLY the standardized absent-value terms? (not mentioned / not specified / not applicable / yes / no / blank)
-Did you avoid using "unspecified", "unknown", "none", "N/A", or any other non-standard term?
-
-If you included calibration_techniques, did you set calibration_mentioned = yes?
-Did you avoid listing validation metrics (WIS, MAE, RMSE) as calibration techniques?
-
-For theoretical/simulation studies with no empirical data:
-  - Did you use "not applicable" for data_source, study_dates_start, study_dates_end?
-  - Did you use "no data (theoretical)" or similar for data_used?
-
-Now perform the extraction.
+LLM Extraction Prompt v4 — Constrained JSON Mode (Schema + Controlled Vocabulary)
+
+TASK
+Extract structured metadata from the study TITLE and ABSTRACT.
+
+IMPORTANT CONTEXT
+- Output is schema-constrained JSON (the schema is the source of truth).
+- Use the controlled MIDAS vocabulary file for preferred terms where applicable.
+- Use the MIDAS synonym map to normalize common variants to preferred terms.
+
+PRIORITY ORDER (when deciding what to output)
+1) Constrained schema (required fields, JSON shape, enum values, exact enum spelling)
+2) Controlled MIDAS vocabulary (preferred terms)
+3) MIDAS synonym map (normalize into preferred terms)
+4) Title + abstract evidence
+5) These prompt instructions / field notes
+
+CRITICAL RULES
+- Use evidence from BOTH title and abstract.
+- Prefer explicit evidence over inference.
+- Do not use external knowledge except high-confidence normalization (e.g., disease/pathogen naming).
+- If the abstract/title does not support a specific value, use the appropriate schema-compatible absent value for that field.
+- Do not invent enum values. Use exact schema spellings only.
+- Do not invent controlled-vocabulary labels. Prefer MIDAS terms for controlled fields.
+
+CONTROLLED VOCABULARY FIELDS
+For these fields, prefer exact MIDAS ontology terms from the vocab list:
+- data_used
+- intervention_types
+- model_type
+
+If a candidate value is a synonym/variant:
+- normalize it using the synonym map to the preferred MIDAS term.
+
+If no MIDAS term matches:
+- free text is allowed for those fields, but keep it concise and canonical.
+
+EVIDENCE POLICY (STRICT)
+Allowed:
+- High-confidence normalization (disease/pathogen naming)
+- Minimal domain inference when strongly justified by explicit wording
+
+Not allowed:
+- Guessing code availability
+- Guessing calibration methods
+- Guessing data sources/providers
+- Adding likely populations/settings/geographies not supported by title/abstract
+
+If unsure:
+- choose the schema-compatible absent value for that field
+- or use [] for list fields with no supported values
+
+MULTI-VALUE RULES
+- Include multiple values only when distinctly supported.
+- Deduplicate near-duplicates (e.g., US/USA/United States -> one canonical form).
+- Avoid paraphrase duplicates if a controlled MIDAS term exists.
+
+REASONING FIELD RULES
+- Keep reasoning brief and evidence-based.
+- Explain the evidence or normalization choice.
+- Use "[Inferred]" only when a small, high-confidence inference was necessary.
+
+CALIBRATION VS VALIDATION (IMPORTANT)
+calibration_mentioned = yes ONLY for fitting / estimation / data assimilation methods.
+Examples that count as calibration techniques:
+- MCMC
+- maximum likelihood estimation
+- least squares
+- particle filter
+- data assimilation
+- Bayesian inference
+- ABC
+
+Do NOT treat evaluation metrics as calibration techniques:
+- WIS
+- MAE
+- RMSE
+- forecast accuracy summaries
+- coverage metrics
+
+FINAL MENTAL CHECK
+- Did I use exact schema enum spellings?
+- Did I prefer MIDAS controlled vocab for data_used/intervention_types/model_type?
+- Did I normalize synonyms to preferred MIDAS terms?
+- Did I avoid unsupported inference?
+- Did I use [] for empty list fields?
+- Did I use a schema-compatible absent value for enum/single-value fields when needed?

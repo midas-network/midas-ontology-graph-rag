@@ -1,0 +1,131 @@
+{
+  "model_determinism": {
+    "values": [
+      "not mentioned"
+    ],
+    "reasoning": "The title/abstract does not explicitly state whether the model is deterministic or stochastic."
+  },
+  "pathogen_type": {
+    "values": [
+      "virus"
+    ],
+    "reasoning": "[Inferred] mpox is caused by a virus."
+  },
+  "geographic_scope": {
+    "values": [
+      "national"
+    ],
+    "reasoning": "The study is framed at the U.S. national level."
+  },
+  "historical_vs_hypothetical": {
+    "values": [
+      "historical"
+    ],
+    "reasoning": "The study concerns an observed outbreak period."
+  },
+  "study_goal_category": {
+    "values": [
+      "forecast/nowcast"
+    ],
+    "reasoning": "The study explicitly focuses on nowcasting/forecasting."
+  },
+  "intervention_present": {
+    "values": [
+      "not mentioned"
+    ],
+    "reasoning": "No intervention evaluation is explicitly described in the example."
+  },
+  "calibration_mentioned": {
+    "values": [
+      "not mentioned"
+    ],
+    "reasoning": "No fitting or estimation method is explicitly described in the example."
+  },
+  "code_available": {
+    "values": [
+      "not mentioned"
+    ],
+    "reasoning": "No code repository or code availability statement is mentioned in the example."
+  },
+  "data_used": {
+    "values": [
+      "Case Count"
+    ],
+    "reasoning": "[Inferred] Case count data are a minimally supported data type for outbreak nowcasting/forecasting examples."
+  },
+  "intervention_types": {
+    "values": [],
+    "reasoning": "No intervention types are described in the example."
+  },
+  "model_type": {
+    "values": [
+      "Forecasting"
+    ],
+    "reasoning": "The study is framed as a forecasting analysis."
+  },
+  "pathogen_name": {
+    "values": [
+      "monkeypox virus",
+      "MPXV"
+    ],
+    "reasoning": "[Inferred] mpox refers to monkeypox virus (MPXV) in this context."
+  },
+  "disease_name": {
+    "values": [
+      "mpox"
+    ],
+    "reasoning": "The disease name is explicitly given as mpox."
+  },
+  "host_species": {
+    "values": [
+      "human"
+    ],
+    "reasoning": "The example concerns a human public health outbreak."
+  },
+  "primary_population": {
+    "values": [
+      "general population"
+    ],
+    "reasoning": "No narrower subgroup is identified in the example."
+  },
+  "population_setting_type": {
+    "values": [
+      "community"
+    ],
+    "reasoning": "The study is population/community-level rather than a single facility."
+  },
+  "geographic_units": {
+    "values": [
+      "United States"
+    ],
+    "reasoning": "The example names the United States."
+  },
+  "data_source": {
+    "values": [
+      "not specified"
+    ],
+    "reasoning": "No specific data provider or repository is named in the example."
+  },
+  "calibration_techniques": {
+    "values": [],
+    "reasoning": "No calibration techniques are explicitly described in the example."
+  },
+  "key_outcome_measures": {
+    "values": [
+      "cases"
+    ],
+    "reasoning": "[Inferred] Cases are a standard minimally committal outcome for outbreak nowcasting/forecasting."
+  },
+  "study_dates_start": {
+    "values": [
+      "2022"
+    ],
+    "reasoning": "The example references 2022 as the study period."
+  },
+  "study_dates_end": {
+    "values": [
+      "2022"
+    ],
+    "reasoning": "The example references 2022 as the study period."
+  }
+}

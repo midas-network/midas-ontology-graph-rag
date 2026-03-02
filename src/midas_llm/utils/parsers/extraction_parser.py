@@ -6,6 +6,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from json import JSONDecodeError
 
 from ..modeling_domains import identify_modeling_domains
 
@@ -56,6 +57,167 @@ ABSENT_VALUE_SYNONYMS = {
     "not stated": "not mentioned",
     "not reported": "not mentioned",
 }
+
+def _strip_code_fences(text: str) -> str:
+    """Strip markdown code fences if present."""
+    s = text.strip()
+    # ```json ... ```
+    fenced = re.match(r"^```(?:json)?\s*(.*?)\s*```$", s, re.DOTALL | re.IGNORECASE)
+    if fenced:
+        return fenced.group(1).strip()
+    return s
+
+
+def _extract_json_object_text(text: str) -> str | None:
+    """Best-effort extraction of the first top-level JSON object from text."""
+    s = _strip_code_fences(text)
+
+    # Fast path: whole string is JSON object
+    if s.startswith("{") and s.endswith("}"):
+        return s
+
+    # Best-effort balanced brace extraction
+    start = s.find("{")
+    if start == -1:
+        return None
+
+    depth = 0
+    in_string = False
+    escape = False
+    for i in range(start, len(s)):
+        ch = s[i]
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            continue
+
+        if ch == '"':
+            in_string = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return s[start:i + 1]
+
+    return None
+
+
+def _try_load_json_response(text: str) -> dict[str, Any] | None:
+    """Attempt to parse a JSON object from the response text."""
+    candidate = _extract_json_object_text(text)
+    if not candidate:
+        return None
+    try:
+        obj = json.loads(candidate)
+        return obj if isinstance(obj, dict) else None
+    except JSONDecodeError:
+        return None
+
+
+def _normalize_json_values(values: Any) -> list[str]:
+    """Normalize schema 'values' into a list[str]."""
+    if values is None:
+        return []
+
+    if isinstance(values, list):
+        raw_vals = values
+    else:
+        # tolerate non-list outputs from imperfect models
+        raw_vals = [values]
+
+    out: list[str] = []
+    for v in raw_vals:
+        if v is None:
+            continue
+        if isinstance(v, (dict, list)):
+            # preserve structure as a JSON string rather than crashing
+            v_str = json.dumps(v, ensure_ascii=False)
+        else:
+            v_str = str(v).strip()
+
+        if not v_str:
+            continue
+
+        out.append(normalize_absent_value(v_str))
+
+    return out
+
+def parse_llm_json_response(response_obj: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Parse schema-based JSON LLM output into internal extracted format.
+
+    Expected shape:
+      {
+        "field_name": {
+          "values": [...],
+          "reasoning": "..."
+        },
+        ...
+      }
+
+    Returns a dict compatible with existing downstream expectations, with
+    backward-compatible 'value' (comma-joined) and richer 'values' list.
+    """
+    extracted: dict[str, dict[str, Any]] = {}
+
+    for raw_field, payload in response_obj.items():
+        normalized_field = normalize_field_name(str(raw_field))
+
+        # Ignore unknown top-level keys (or keep them if you want)
+        if normalized_field not in KNOWN_SCHEMA_FIELDS:
+            # If you're ready to accept new fields from schema, remove this guard
+            continue
+
+        domains = identify_modeling_domains(normalized_field)
+
+        # Tolerate malformed payloads
+        if not isinstance(payload, dict):
+            values = _normalize_json_values(payload)
+            reasoning = None
+        else:
+            values = _normalize_json_values(payload.get("values"))
+            reasoning_raw = payload.get("reasoning")
+            reasoning = str(reasoning_raw).strip() if reasoning_raw is not None else None
+
+        # Backward compatible single-string value used by old logging/eval code
+        joined_value = ", ".join(values)
+
+        extracted[normalized_field] = {
+            "value": joined_value,        # backward compatibility
+            "values": values,             # new canonical list representation
+            "provenance": None,
+            "parent_class": None,
+            "differentia": None,
+            "key_relationships": None,
+            "definition": None,
+            "reasoning": reasoning,
+            "ontologies": [],
+            "domains": domains,
+            # Optional placeholders for old multi-valued metadata shape:
+            "provenances": {},
+            "parent_classes": {},
+            "differentias": {},
+            "key_relationships_all": {},
+            "definitions": {},
+            "reasonings": ({1: reasoning} if reasoning else {}),
+        }
+
+    return extracted
+
+def parse_llm_output(response_text: str) -> dict[str, dict[str, Any]]:
+    """Auto-detect JSON schema output vs legacy free-text output."""
+    # Try JSON first
+    json_obj = _try_load_json_response(response_text)
+    if json_obj is not None:
+        return parse_llm_json_response(json_obj)
+
+    # Fallback to legacy text parser
+    normalized = normalize_llm_format(response_text)
+    return parse_llm_response(normalized)
 
 def normalize_absent_value(value: str) -> str:
     return ABSENT_VALUE_SYNONYMS.get(value.strip().lower(), value)
@@ -595,50 +757,46 @@ def parse_attribute_block(attr: str, content: str) -> dict[str, Any]:
 def parse_and_display_extracted_data(
     response_content: str, *, logger: logging.Logger = LOGGER
 ):
-    # ── Step 0: normalize non-standard LLM output formats ──
-    normalized = normalize_llm_format(response_content)
-    if normalized != response_content:
-        logger.info(
-            "Detected non-standard LLM output format; "
-            "normalized before parsing"
-        )
+    # Detect JSON vs legacy text
+    parsed_json = _try_load_json_response(response_content)
+    if parsed_json is not None:
+        logger.info("Detected structured JSON LLM output; parsing as schema JSON")
+        extracted_data = parse_llm_json_response(parsed_json)
+    else:
+        normalized = normalize_llm_format(response_content)
+        if normalized != response_content:
+            logger.info(
+                "Detected non-standard LLM output format; normalized before parsing"
+            )
+        logger.info("LLM response:\n%s", response_content)
+        extracted_data = parse_llm_response(normalized)
 
-    logger.info("LLM response:\n%s", response_content)
-    extracted_data = parse_llm_response(normalized)
     logger.info("Extracted %d attributes", len(extracted_data))
     for attr, data in extracted_data.items():
-        logger.info("[%s]: %s", attr, data['value'])
-        if data.get('provenance'):
-            logger.info("   Provenance: %s", data['provenance'])
-        if data.get('definition'):
-            logger.info("   Definition: %s", data['definition'])
-        if data.get('reasoning'):
-            logger.info("   Reasoning: %s", data['reasoning'])
+        # Prefer values list if present
+        if "values" in data:
+            logger.info("[%s]: %s", attr, data.get("values", []))
+        else:
+            logger.info("[%s]: %s", attr, data.get("value"))
+
+        if data.get("provenance"):
+            logger.info("   Provenance: %s", data["provenance"])
+        if data.get("definition"):
+            logger.info("   Definition: %s", data["definition"])
+        if data.get("reasoning"):
+            logger.info("   Reasoning: %s", data["reasoning"])
+
     return extracted_data
 
 
 def create_response_json(
-    response_content: str,
-    model: str,
-    abstract_id: str | None = None,
-    evaluation: dict[str, Any] | None = None,
+        response_content: str,
+        model: str,
+        abstract_id: str | None = None,
+        evaluation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Create a JSON object from the LLM response.
-
-    Args:
-        response_content: The raw LLM response text
-        model: The model name used
-        abstract_id: Optional abstract identifier
-        evaluation: Optional evaluation results
-
-    Returns:
-        A dictionary with the response data ready for JSON serialization
-    """
-    # Parse the response to extract structured data
-    normalized = normalize_llm_format(response_content)
-
-
-    extracted = parse_llm_response(normalized)
+    """Create a JSON object from the LLM response."""
+    extracted = parse_llm_output(response_content)
 
     return {
         "content": response_content,
