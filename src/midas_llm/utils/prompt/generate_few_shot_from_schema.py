@@ -9,9 +9,9 @@ Goals:
 - Prevent prompt drift between schema/vocab and few-shot examples
 
 Repo assumptions (based on user's structure):
-- midas_schema.json                (repo root)
-- midas_prompt_vocab.txt           (repo root)
-- midas_synonyms.json              (repo root, optional)
+- resources/schemas/midas_schema.json
+- resources/vocab/midas_prompt_vocab.txt
+- resources/vocab/midas_synonyms.json      (optional)
 - resources/prompts/               (output location)
 """
 
@@ -28,14 +28,19 @@ from pathlib import Path
 
 def find_repo_root(start: Path) -> Path:
     """
-    Walk upward until we find the MIDAS repo root (identified by midas_schema.json).
+    Walk upward until we find the MIDAS repo root (identified by
+    resources/schemas/midas_schema.json).
     """
     cur = start.resolve()
     for candidate in [cur] + list(cur.parents):
+        if (candidate / "resources" / "schemas" / "midas_schema.json").exists():
+            return candidate
+        # Legacy fallback for older layouts.
         if (candidate / "midas_schema.json").exists():
             return candidate
     raise FileNotFoundError(
-        f"Could not locate repo root from {start}. Expected to find 'midas_schema.json' in a parent directory."
+        f"Could not locate repo root from {start}. Expected to find "
+        "'resources/schemas/midas_schema.json' in a parent directory."
     )
 
 
@@ -44,9 +49,9 @@ def find_repo_root(start: Path) -> Path:
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = find_repo_root(SCRIPT_DIR)
 
-SCHEMA_PATH = REPO_ROOT / "midas_schema.json"
-VOCAB_PATH = REPO_ROOT / "midas_prompt_vocab.txt"
-SYNONYMS_PATH = REPO_ROOT / "midas_synonyms.json"  # optional / non-blocking
+SCHEMA_PATH = REPO_ROOT / "resources/schemas/midas_schema.json"
+VOCAB_PATH = REPO_ROOT / "resources/vocab/midas_prompt_vocab.txt"
+SYNONYMS_PATH = REPO_ROOT / "resources/vocab/midas_synonyms.json"  # optional / non-blocking
 
 PROMPTS_DIR = REPO_ROOT / "resources" / "prompts"
 PROMPTS_DIR.mkdir(parents=True, exist_ok=True)

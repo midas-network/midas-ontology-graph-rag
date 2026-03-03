@@ -4,14 +4,18 @@ This directory contains gold standard test abstracts and evaluation tools for me
 
 ## Files
 
-- `test_abstracts.json` - Gold standard abstracts with expected extraction values
-- `results/` - Evaluation results from test runs
+- `results/` - Evaluation results from timestamped test runs
+- Canonical dataset path: `resources/gold_standard/datasets/current.json`
 
 ## Running Evaluation
 
 ```bash
-# From repo root
-python scripts/evaluate_gold_standard.py
+# Preferred entrypoint (after `pip install -e .`)
+midas-eval-gold --list-papers
+midas-eval-gold -n 1
+
+# Or development wrapper from repo root
+python evaluate_gold_standard.py
 ```
 
 ## Configuration
@@ -19,6 +23,7 @@ python scripts/evaluate_gold_standard.py
 The evaluation uses the same configuration as the main extraction:
 - Set `OLLAMA_MODELS` in `ollama.cfg` to test multiple models
 - Results are saved to `output/gold_standard/results/`
+- Optional schema validation: `--validate-constrained-json [--validation-schema-path <schema.json>]`
 
 ## Metrics
 
@@ -32,7 +37,7 @@ The evaluation calculates:
 
 ## Adding New Test Abstracts
 
-Edit `test_abstracts.json` to add new abstracts:
+Edit `resources/gold_standard/datasets/current.json` to add new abstracts:
 
 ```json
 {

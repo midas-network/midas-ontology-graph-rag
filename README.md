@@ -69,9 +69,9 @@ export OLLAMA_HOST="http://localhost:11434"
 export OLLAMA_MODEL="qwen2.5:72b"
 
 # Optional: Paths (defaults shown)
-export ONTOLOGY_PATH="data/ontologies"
-export OUTPUT_DIR="data/output/runs"
-export ABSTRACT_PATH="data/fred-abstract.txt"
+export ONTOLOGY_PATH="resources/ontologies"
+export OUTPUT_DIR="output/extract_concepts/runs"
+export ABSTRACT_PATH="resources/fred-abstract.txt"
 
 # Optional: Feature flags
 export ENABLE_ONTOLOGY_LINKING="false"
@@ -111,10 +111,28 @@ python extract_concepts.py
 
 ### Output
 
-Results are saved to `output/runs/` with timestamped filenames:
-- `YYYYMMDD_HHMMSS.json` - Structured extraction results
-- `YYYYMMDD_HHMMSS_extraction_report.html` - Human-readable report
-- `YYYYMMDD_HHMMSS.txt` - Console output log
+Results are saved to `output/extract_concepts/runs/<timestamp>/`.
+Common artifacts include:
+- `prompt.txt`
+- `<model>-response.txt`
+- `extraction_report.html` (if HTML reports enabled)
+- `extraction.json` (if JSON output enabled)
+
+### Evaluate Against Gold Standard
+
+```bash
+# Preferred CLI entrypoint (after pip install -e .)
+midas-eval-gold --list-papers
+midas-eval-gold -n 1
+
+# Explicit dataset path (canonical location)
+midas-eval-gold --gold-standard-path resources/gold_standard/datasets/current.json
+
+# Optional: validate constrained JSON output against schema
+midas-eval-gold --validate-constrained-json --validation-schema-path midas_schema.json
+```
+
+Gold evaluation artifacts are written to `output/gold_standard/results/<timestamp>/`.
 
 ## Project Structure
 
@@ -134,11 +152,15 @@ midas-llm/
 │       │   ├── parsers/             # Response parsing
 │       │   └── prompt/              # Prompt building
 │       └── scripts/
-│           └── download_ontologies.py
-├── data/
-│   ├── ontologies/                  # Downloaded ontologies (gitignored)
-│   ├── prompt_text/                 # Prompt templates
-│   └── output/                      # Run outputs (gitignored)
+│           ├── download_ontologies.py
+│           └── evaluate_gold_standard.py
+├── resources/
+│   ├── prompts/                     # Prompt templates
+│   ├── ontologies/                  # Ontology assets
+│   └── gold_standard/
+│       └── datasets/
+│           └── current.json         # Canonical gold standard dataset
+├── output/                          # Run outputs (gitignored)
 ├── pyproject.toml
 └── README.md
 ```

@@ -15,7 +15,7 @@ LOGGER = logging.getLogger("midas-llm")
 
 def generate_evaluation_text_report(
     results: dict[str, Any],
-    output_dir: str = "resources/gold_standard/results",
+    output_dir: str = "output/gold_standard/results",
     run_folder: str | None = None,
     logger: logging.Logger = LOGGER,
 ) -> str:

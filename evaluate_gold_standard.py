@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Convenience wrapper to run evaluate_gold_standard from repo root."""
+"""Convenience wrapper to run gold-standard evaluation from repo root.
+
+Preferred entrypoint after installation:
+    midas-eval-gold
+"""
 import sys
 from pathlib import Path
 
@@ -11,4 +15,3 @@ from midas_llm.scripts.evaluate_gold_standard import main
 
 if __name__ == "__main__":
     main()
-

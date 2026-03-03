@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Batch sender: read JSON fulltext files, build prompts, send to LLM, and save responses.
-Uses the prompt template at data/prompts/software_extract/example_prompt.txt by default.
+Uses the prompt template at resources/prompts/software_extract/example_prompt.txt by default.
 """
 from __future__ import annotations
 
@@ -177,4 +177,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

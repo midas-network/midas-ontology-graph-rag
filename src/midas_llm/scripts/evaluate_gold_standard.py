@@ -45,6 +45,11 @@ LOGGER = logging.getLogger("midas-llm")
 
 # Repo root for resolving paths
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+DEFAULT_GOLD_STANDARD_PATH = REPO_ROOT / "resources" / "gold_standard" / "datasets" / "current.json"
+LEGACY_GOLD_STANDARD_PATH = REPO_ROOT / "resources" / "test_abstracts.json"
+DEFAULT_ONTOLOGY_PATH = REPO_ROOT / "resources" / "ontologies" / "midas_data" / "midas-data.owl"
+DEFAULT_GOLD_OUTPUT_DIR = REPO_ROOT / "output" / "gold_standard" / "results"
+DEFAULT_VALIDATION_SCHEMA_PATH = REPO_ROOT / "midas_schema.json"
 
 # Compiled once, reused
 _ANNOTATION_PATTERN = re.compile(r'\s*\((inferred|not mentioned)\)')
@@ -168,18 +173,158 @@ def normalize_term(value: str, logger: logging.Logger = LOGGER) -> str:
 # Gold standard loading
 # ------------------------------------------------------------------
 
-def load_gold_standard(path: str | None = None) -> list[dict]:
+def load_gold_standard(path: str | Path | None = None) -> list[dict]:
     if path is None:
-        path = str(REPO_ROOT / "resources" / "test_abstracts.json")
-    with open(path, "r", encoding="utf-8") as f:
+        candidate = DEFAULT_GOLD_STANDARD_PATH
+        if not candidate.exists() and LEGACY_GOLD_STANDARD_PATH.exists():
+            LOGGER.warning(
+                "Using legacy gold standard path: %s (migrate to %s)",
+                LEGACY_GOLD_STANDARD_PATH,
+                DEFAULT_GOLD_STANDARD_PATH,
+            )
+            candidate = LEGACY_GOLD_STANDARD_PATH
+    else:
+        candidate = Path(path)
+    with open(candidate, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data.get("abstracts", [])
 
 
 # ── NEW: Constrained JSON response parser ────────────────────────────
 
+def _extract_allowed_values(values_items_schema: dict[str, Any]) -> tuple[set[str], bool]:
+    """Extract enum values and free-text allowance from a values.items schema."""
+    allowed: set[str] = set()
+    allows_free_text = False
+
+    if not isinstance(values_items_schema, dict):
+        return allowed, allows_free_text
+
+    enum_vals = values_items_schema.get("enum")
+    if isinstance(enum_vals, list):
+        allowed.update(str(v) for v in enum_vals if v is not None)
+
+    any_of = values_items_schema.get("anyOf")
+    if isinstance(any_of, list):
+        for option in any_of:
+            if not isinstance(option, dict):
+                continue
+            option_enum = option.get("enum")
+            if isinstance(option_enum, list):
+                allowed.update(str(v) for v in option_enum if v is not None)
+            if option.get("type") == "string":
+                allows_free_text = True
+
+    if values_items_schema.get("type") == "string":
+        allows_free_text = True
+
+    return allowed, allows_free_text
+
+
+def _validate_constrained_payload_lightweight(
+    payload: dict[str, Any],
+    schema: dict[str, Any],
+    logger: logging.Logger,
+) -> bool:
+    """Best-effort schema validation when jsonschema is unavailable."""
+    errors: list[str] = []
+    properties = schema.get("properties", {}) if isinstance(schema, dict) else {}
+    required = schema.get("required", []) if isinstance(schema, dict) else []
+
+    if not isinstance(payload, dict):
+        logger.error("Constrained payload must be a JSON object.")
+        return False
+
+    missing = [key for key in required if key not in payload]
+    for key in missing:
+        errors.append(f"Missing required top-level field: {key}")
+
+    for field_name, field_payload in payload.items():
+        field_schema = properties.get(field_name)
+        if field_schema is None:
+            errors.append(f"Unexpected field not in schema: {field_name}")
+            continue
+
+        if not isinstance(field_payload, dict):
+            errors.append(f"{field_name}: must be an object with values/reasoning")
+            continue
+
+        field_required = field_schema.get("required", [])
+        for req in field_required:
+            if req not in field_payload:
+                errors.append(f"{field_name}: missing required key '{req}'")
+
+        values = field_payload.get("values")
+        if not isinstance(values, list):
+            errors.append(f"{field_name}.values must be an array")
+            continue
+
+        for idx, val in enumerate(values):
+            if not isinstance(val, str):
+                errors.append(f"{field_name}.values[{idx}] must be a string")
+
+        reasoning = field_payload.get("reasoning")
+        if reasoning is not None and not isinstance(reasoning, str):
+            errors.append(f"{field_name}.reasoning must be a string")
+
+        values_items_schema = (
+            field_schema.get("properties", {})
+            .get("values", {})
+            .get("items", {})
+        )
+        allowed_values, allows_free_text = _extract_allowed_values(values_items_schema)
+        if allowed_values and not allows_free_text:
+            for val in values:
+                if isinstance(val, str) and val not in allowed_values:
+                    errors.append(
+                        f"{field_name}.values contains unsupported value '{val}'"
+                    )
+
+    if errors:
+        logger.error(
+            "Constrained JSON failed lightweight schema validation with %d issue(s).",
+            len(errors),
+        )
+        for msg in errors[:10]:
+            logger.error("  - %s", msg)
+        if len(errors) > 10:
+            logger.error("  ... and %d more", len(errors) - 10)
+        return False
+
+    logger.info("Constrained JSON passed lightweight schema validation.")
+    return True
+
+
+def validate_constrained_payload(
+    payload: dict[str, Any],
+    schema: dict[str, Any],
+    logger: logging.Logger = LOGGER,
+) -> bool:
+    """Validate constrained payload using jsonschema if available."""
+    try:
+        from jsonschema import validate
+        from jsonschema.exceptions import ValidationError
+    except ImportError:
+        logger.warning(
+            "jsonschema is not installed; using lightweight constrained validation."
+        )
+        return _validate_constrained_payload_lightweight(payload, schema, logger)
+
+    try:
+        validate(instance=payload, schema=schema)
+        logger.info("Constrained JSON passed JSON Schema validation.")
+        return True
+    except ValidationError as e:
+        logger.error("Constrained JSON failed schema validation: %s", e.message)
+        return False
+
+
 def parse_constrained_response(
-    content: str, *, logger: logging.Logger = LOGGER
+    content: str,
+    *,
+    validation_schema: dict[str, Any] | None = None,
+    validate_schema: bool = False,
+    logger: logging.Logger = LOGGER,
 ) -> dict[str, dict[str, Any]]:
     """Parse JSON response from constrained decoding into the dict
     format that evaluate_extraction() expects.
@@ -219,6 +364,16 @@ def parse_constrained_response(
     if not isinstance(parsed, dict):
         logger.error("Parsed JSON is not a dict: %s", type(parsed))
         return {}
+
+    if validate_schema:
+        if validation_schema is None:
+            logger.error(
+                "Schema validation was requested but no validation schema is available."
+            )
+            return {}
+        if not validate_constrained_payload(parsed, validation_schema, logger=logger):
+            logger.error("Dropping constrained response due to schema validation failure.")
+            return {}
 
     # Convert to evaluate_extraction format
     extracted = {}
@@ -588,6 +743,8 @@ def run_evaluation(
         embedding_model: str | None = None,
         run_folder: str | None = None,
         json_schema: dict[str, Any] | None = None,  # ── NEW
+        validate_constrained_json: bool = False,
+        validation_schema: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if embedding_model is None:
         embedding_model = config.embedding_model
@@ -664,7 +821,10 @@ def run_evaluation(
                 if response.constrained:
                     logger.info("Parsing constrained JSON response")
                     extracted = parse_constrained_response(
-                        response.content, logger=logger
+                        response.content,
+                        validation_schema=validation_schema,
+                        validate_schema=validate_constrained_json,
+                        logger=logger,
                     )
                 else:
                     if json_schema is not None:
@@ -856,9 +1016,18 @@ def main():
         description="Evaluate LLM extraction against gold standard"
     )
     parser.add_argument("-n", "--num-papers", type=int, default=1,
-                        help="Number of papers to evaluate (default: 10, use -1 for all)")
+                        help="Number of papers to evaluate (default: 1, use -1 for all)")
     parser.add_argument("--paper-id", type=str, default=None,
                         help="Evaluate a specific paper by ID")
+    parser.add_argument(
+        "--gold-standard-path",
+        type=str,
+        default=str(DEFAULT_GOLD_STANDARD_PATH),
+        help=(
+            "Path to gold standard JSON dataset "
+            f"(default: {DEFAULT_GOLD_STANDARD_PATH})"
+        ),
+    )
     parser.add_argument("--no-llm-eval", action="store_true",
                         help="Use string matching instead of LLM semantic evaluation")
     parser.add_argument("--no-vector-eval", action="store_true",
@@ -873,12 +1042,47 @@ def main():
                         help="List available paper IDs and exit")
     parser.add_argument("--validate-thresholds", action="store_true",
                         help="Run domain validation to find optimal thresholds and exit")
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=str(DEFAULT_GOLD_OUTPUT_DIR),
+        help=(
+            "Output root directory for timestamped evaluation runs "
+            f"(default: {DEFAULT_GOLD_OUTPUT_DIR})"
+        ),
+    )
 
     # ── NEW: Constrained decoding flags ──
-    parser.add_argument("--constrained", action="store_true", default=True,
-                        help="Enable constrained decoding with MIDAS ontology JSON schema")
-    parser.add_argument("--ontology-path", type=str, default="resources/ontologies/midas_data/midas-data.owl",
-                        help="Path to MIDAS OWL ontology file (default: resources/ontologies/midas-data.owl)")
+    parser.add_argument(
+        "--constrained",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable constrained decoding with MIDAS ontology JSON schema (default: enabled)",
+    )
+    parser.add_argument(
+        "--ontology-path",
+        type=str,
+        default=str(DEFAULT_ONTOLOGY_PATH),
+        help=f"Path to MIDAS OWL ontology file (default: {DEFAULT_ONTOLOGY_PATH})",
+    )
+    parser.add_argument(
+        "--validate-constrained-json",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Validate constrained JSON responses against schema "
+            "(default: disabled)"
+        ),
+    )
+    parser.add_argument(
+        "--validation-schema-path",
+        type=str,
+        default=None,
+        help=(
+            "Optional JSON schema file path used for constrained response "
+            f"validation (default fallback: {DEFAULT_VALIDATION_SCHEMA_PATH})"
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -927,7 +1131,14 @@ def main():
         return
 
     # Load gold standard
-    all_abstracts = load_gold_standard()
+    try:
+        all_abstracts = load_gold_standard(args.gold_standard_path)
+    except FileNotFoundError:
+        logger.error("Gold standard dataset not found: %s", args.gold_standard_path)
+        return
+    except json.JSONDecodeError as e:
+        logger.error("Invalid gold standard JSON at %s: %s", args.gold_standard_path, e)
+        return
 
     if args.list_papers:
         print("Available paper IDs:")
@@ -950,9 +1161,7 @@ def main():
         try:
             from midas_llm.utils.ontology.midas_vocabulary import MIDASVocabulary
 
-            owl_path = args.ontology_path or str(
-                REPO_ROOT / "resources" / "ontologies" / "midas-data.owl"
-            )
+            owl_path = args.ontology_path or str(DEFAULT_ONTOLOGY_PATH)
             logger.info("Loading MIDAS ontology from: %s", owl_path)
             vocab = MIDASVocabulary.from_owl(owl_path)
             json_schema = vocab.build_json_schema()
@@ -970,9 +1179,9 @@ def main():
 
         except FileNotFoundError:
             logger.error(
-                "Ontology file not found: %s — run without --constrained "
+                "Ontology file not found: %s — run with --no-constrained "
                 "or download with:\n"
-                "  curl -o resources/ontologies/midas-data.owl "
+                "  curl -o resources/ontologies/midas_data/midas-data.owl "
                 "https://raw.githubusercontent.com/midas-network/midas-data/"
                 "refs/heads/main/midas-data.owl",
                 owl_path,
@@ -989,6 +1198,55 @@ def main():
             return
     else:
         logger.info("Constrained decoding: DISABLED (use --constrained to enable)")
+
+    validation_schema = None
+    resolved_validation_schema_path = None
+    if args.validate_constrained_json:
+        if args.validation_schema_path:
+            candidate = Path(args.validation_schema_path)
+            if not candidate.exists():
+                logger.error("Validation schema file not found: %s", candidate)
+                return
+            try:
+                validation_schema = json.loads(candidate.read_text(encoding="utf-8"))
+                resolved_validation_schema_path = str(candidate)
+                logger.info(
+                    "Constrained response validation enabled using schema file: %s",
+                    candidate,
+                )
+            except json.JSONDecodeError as e:
+                logger.error("Invalid schema JSON at %s: %s", candidate, e)
+                return
+        elif json_schema is not None:
+            validation_schema = json_schema
+            logger.info(
+                "Constrained response validation enabled using runtime ontology schema."
+            )
+        else:
+            if DEFAULT_VALIDATION_SCHEMA_PATH.exists():
+                try:
+                    validation_schema = json.loads(
+                        DEFAULT_VALIDATION_SCHEMA_PATH.read_text(encoding="utf-8")
+                    )
+                    resolved_validation_schema_path = str(DEFAULT_VALIDATION_SCHEMA_PATH)
+                    logger.info(
+                        "Constrained response validation enabled using schema file: %s",
+                        DEFAULT_VALIDATION_SCHEMA_PATH,
+                    )
+                except json.JSONDecodeError as e:
+                    logger.error(
+                        "Invalid schema JSON at %s: %s",
+                        DEFAULT_VALIDATION_SCHEMA_PATH,
+                        e,
+                    )
+                    return
+            else:
+                logger.error(
+                    "Constrained response validation requested, but no schema found. "
+                    "Set --validation-schema-path or ensure %s exists.",
+                    DEFAULT_VALIDATION_SCHEMA_PATH,
+                )
+                return
 
     # Filter abstracts
     if args.paper_id:
@@ -1019,7 +1277,8 @@ def main():
         logger.info("LLM semantic matching: DISABLED")
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    run_folder = str(REPO_ROOT / "output" / "gold_standard" / "results" / timestamp)
+    run_root = Path(args.output_dir)
+    run_folder = str(run_root / timestamp)
     os.makedirs(run_folder, exist_ok=True)
     logger.info("Run folder: %s", run_folder)
 
@@ -1039,6 +1298,8 @@ def main():
         embedding_model=args.embedding_model,
         run_folder=run_folder,
         json_schema=json_schema,  # ── NEW: passed through
+        validate_constrained_json=args.validate_constrained_json,
+        validation_schema=validation_schema,
     )
 
     results["evaluation_config"] = {
@@ -1049,6 +1310,14 @@ def main():
         "embedding_model": args.embedding_model,
         "constrained": args.constrained,  # ── NEW
         "ontology_path": args.ontology_path,  # ── NEW
+        "gold_standard_path": args.gold_standard_path,
+        "output_dir": args.output_dir,
+        "validate_constrained_json": args.validate_constrained_json,
+        "validation_schema_path": (
+            args.validation_schema_path
+            or resolved_validation_schema_path
+            or ("<runtime_ontology_schema>" if validation_schema is json_schema and json_schema is not None else None)
+        ),
     }
 
     output_file = os.path.join(run_folder, "evaluation.json")
