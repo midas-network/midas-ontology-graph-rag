@@ -6,16 +6,11 @@ build-backend = "hatchling.build"
 name = "midas-llm"
 version = "0.1.0"
 description = "Extract structured metadata from infectious disease modeling abstracts"
-readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
     "httpx>=0.24.0",
-    "langchain-ollama>=0.1.0",
-    "langchain-core>=0.1.0",
-    "rdflib>=6.0.0",
-    "numpy>=1.24.0",
-    "requests>=2.28.0",
+    "pyyaml>=6.0.0",
 ]
 
 [project.optional-dependencies]
@@ -31,17 +26,10 @@ embeddings = [
 ]
 
 [project.scripts]
-midas-extract = "midas_llm.extract_concepts:cli"
-midas-download-ontologies = "ontology_dl.download_ontologies:main"
-midas-eval-gold = "midas_llm.scripts.evaluate_gold_standard:main"
-midas-generate-full-prompt = "midas_llm.scripts.generate_full_prompt:main"
-midas-send-fulltext-to-llm = "software_papers.scripts.send_fulltext_to_llm:main"
-midas-extract-software-papers = "software_papers.scripts.extract_software_papers:main"
-midas-download-software-papers-fulltext = "software_papers.scripts.download_software_papers_fulltext:main"
-midas-get-full-text-from-entrez = "software_papers.scripts.get_full_text_from_entrez:main"
+run_evaluation = "concept_extractor.workflows.run_evaluation:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/midas_llm", "src/software_papers", "src/ontology_dl"]
+packages = ["src/concept_extractor"]
 
 [tool.ruff]
 target-version = "py310"
@@ -50,7 +38,7 @@ select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
 ignore = ["E501"]
 
 [tool.ruff.isort]
-known-first-party = ["midas_llm", "software_papers", "ontology_dl"]
+known-first-party = ["concept_extractor"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -59,5 +47,4 @@ warn_unused_ignores = true
 disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
 addopts = "-ra -q"

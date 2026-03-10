@@ -1,9 +1,0 @@
-{
-  "paperID": 5010,
-  "pmcid": "PMC6349385",
-  "original_title": "Microsimulation Modeling for Health Decision Sciences Using R: A Tutorial.",
-  "title": "Microsimulation modeling for health decision sciences using R: a tutorial",
-  "abstract": "Microsimulation models are becoming increasingly common in the field of decision modeling for health. Since microsimulation models are more computationally demanding than traditional Markov cohort models, the use of computer programming languages in their development becomes more common. R is a programming language that has gained recognition within the field of decision modeling. It has the capacity to perform microsimulations more efficiently than software commonly used for decision modeling, incorporate statistical analyses within decision models, produce more transparent models and reproducible results. However, no clear guidance of implementation of microsimulation models in R exists. In this tutorial, we provide a step-by-step guide to build microsimulation models in R and illustrate the use of this guide on a simple, but transferable, hypothetical decision problem. We guide the reader through the necessary steps and provide generic R code that is flexible and can be adapted for other models. We also show how this code can be extended to address more complex model structures and provide an efficient microsimulation approach that relies on vectorization solutions.",
-  "body": "",
-  "xml_size": 7879
-}

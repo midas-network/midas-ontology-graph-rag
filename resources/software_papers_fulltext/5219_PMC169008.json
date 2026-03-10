@@ -1,9 +1,0 @@
-{
-  "paperID": 5219,
-  "pmcid": "PMC169008",
-  "original_title": "PSORT-B: Improving protein subcellular localization prediction for Gram-negative bacteria.",
-  "title": "PSORT-B: improving protein subcellular localization prediction for Gram-negative bacteria",
-  "abstract": "Automated prediction of bacterial protein subcellular localization is an important tool for genome annotation and drug discovery. PSORT has been one of the most widely used computational methods for such bacterial protein analysis; however, it has not been updated since it was introduced in 1991. In addition, neither PSORT nor any of the other computational methods available make predictions for all five of the localization sites characteristic of Gram-negative bacteria. Here we present PSORT-B, an updated version of PSORT for Gram-negative bacteria, which is available as a web-based application at http://www.psort.org. PSORT-B examines a given protein sequence for amino acid composition, similarity to proteins of known localization, presence of a signal peptide, transmembrane alpha-helices and motifs corresponding to specific localizations. A probabilistic method integrates these analyses, returning a list of five possible localization sites with associated probability scores. PSORT-B, designed to favor high precision (specificity) over high recall (sensitivity), attained an overall precision of 97% and recall of 75% in 5-fold cross-validation tests, using a dataset we developed of 1443 proteins of experimentally known localization. This dataset, the largest of its kind, is freely available, along with the PSORT-B source code (under GNU General Public License).",
-  "body": "",
-  "xml_size": 9307
-}

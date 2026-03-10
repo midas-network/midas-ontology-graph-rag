@@ -1,9 +1,0 @@
-{
-  "paperID": 5347,
-  "pmcid": "PMC3586808",
-  "original_title": "High-fidelity injection detectability experiments: a tool for evaluating syndromic surveillance systems.",
-  "title": "High-Fidelity Injection Detectability Experiments: a Tool for Evaluating Syndromic Surveillance Systems",
-  "abstract": "When public health surveillance systems are evaluated, CDC recommends that the expected sensitivity, specificity, and timeliness of surveillance systems be characterized for outbreaks of different sizes, etiologies, and geographic or demographic scopes. High-Fidelity Injection Detectability Experiments (HiFIDE) is a tool that health departments can use to compute these metrics for detection algorithms and surveillance data that they are using in their surveillance system. The objective of this study is to develop a tool that allows health departments to estimate the expected sensitivity, specificity, and timeliness of outbreak detection. HiFIDE extends existing semisynthetic injection methods by replacing geometrically shaped injects with injects derived from surveillance data collected during real outbreaks. These injects maintain the known relation between outbreak size and effect on surveillance data, which allows inferences to be made regarding the smallest outbreak that can be expected to be detectable. An example illustrates the use of HiFIDE to analyze detectability of a waterborne Cryptosporidium outbreak in Washington, DC. HiFIDE enables public health departments to perform system validations recommended by CDC. HiFIDE can be obtained for no charge for noncommercial use (http://www.hifide.org).",
-  "body": "",
-  "xml_size": 6989
-}

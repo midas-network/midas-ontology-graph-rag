@@ -1,9 +1,0 @@
-{
-  "paperID": 593,
-  "pmcid": "PMC3488134",
-  "original_title": "CEDER: accurate detection of differentially expressed genes by combining significance of exons using RNA-Seq.",
-  "title": "CEDER: Accurate detection of differentially expressed genes by combining significance of exons using RNA-Seq",
-  "abstract": "RNA-Seq is widely used in transcriptome studies, and the detection of differentially expressed genes (DEGs) between two classes of individuals, e.g. cases vs controls, using RNA-Seq is of fundamental importance. Many statistical methods for DEG detection based on RNA-Seq data have been developed and most of them are based on the read counts mapped to individual genes. On the other hand, genes are composed of exons and the distribution of reads for the different exons can be heterogeneous. We hypothesize that the detection accuracy of differentially expressed genes can be increased by analyzing individual exons within a gene and then combining the results of the exons. We therefore developed a novel program, termed CEDER, to accurately detect DGEs by combining the significance of the exons. CEDER first tests for differentially expressed exons yielding a p-value for each, and then gives a score indicating the potential for a gene to be differentially expressed by integrating the p-values of the exons in the gene. We showed that CEDER can significantly increase the accuracy of existing methods for detecting DEGs on two benchmark RNA-Seq datasets and simulated datasets.",
-  "body": "",
-  "xml_size": 7425
-}

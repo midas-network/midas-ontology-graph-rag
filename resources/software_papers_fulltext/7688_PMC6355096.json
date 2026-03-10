@@ -1,9 +1,0 @@
-{
-  "paperID": 7688,
-  "pmcid": "PMC6355096",
-  "original_title": "QUENTIN: reconstruction of disease transmissions from viral quasispecies genomic data.",
-  "title": "QUENTIN: reconstruction of disease transmissions from viral quasispecies\ngenomic data",
-  "abstract": "Genomic analysis has become one of the major tools for disease outbreak investigations.\nHowever, existing computational frameworks for inference of transmission history from\nviral genomic data often do not consider intra-host diversity of pathogens and heavily\nrely on additional epidemiological data, such as sampling times and exposure intervals.\nThis impedes genomic analysis of outbreaks of highly mutable viruses associated with\nchronic infections, such as human immunodeficiency virus and hepatitis C virus, whose\ntransmissions are often carried out through minor intra-host variants, while the\nadditional epidemiological information often is either unavailable or has a limited\nuse. The proposed framework QUasispecies Evolution, Network-based Transmission INference\n(QUENTIN) addresses the above challenges by evolutionary analysis of intra-host viral\npopulations sampled by deep sequencing and Bayesian inference using general properties\nof social networks relevant to infection dissemination. This method allows inference of\ntransmission direction even without the supporting case-specific epidemiological\ninformation, identify transmission clusters and reconstruct transmission history.\nQUENTIN was validated on experimental and simulated data, and applied to investigate HCV\ntransmission within a community of hosts with high-risk behavior. It is available at\nhttps://github.com/skumsp/QUENTIN. Supplementary data are\navailable at Bioinformatics online.",
-  "body": "",
-  "xml_size": 11957
-}

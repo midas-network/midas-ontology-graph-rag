@@ -1,9 +1,0 @@
-{
-  "paperID": 4781,
-  "pmcid": "PMC4812706",
-  "original_title": "Prediction, dynamics, and visualization of antigenic phenotypes of seasonal influenza viruses.",
-  "title": "Prediction, dynamics, and visualization of antigenic phenotypes of seasonal influenza viruses",
-  "abstract": "Humans mount an antibody-mediated immune response against influenza viruses that can be recalled. Nevertheless, individuals can suffer from recurrent influenza infections as viruses can change their antigenic properties by altering their surface glycoproteins. This antigenic evolution requires frequent update of seasonal influenza vaccines. To inform vaccine updates, laboratories that contribute to the World Health Organization Global Influenza Surveillance and Response System assess the antigenic phenotypes of circulating viruses. Based on the relationship of antigenic distance to genetic differences between viruses, we developed a model to interpret measured antigenic data and predict the properties of viruses that have not been characterized antigenically and explore the model’s value in predicting the future composition of influenza virus populations.",
-  "body": "",
-  "xml_size": 11232
-}

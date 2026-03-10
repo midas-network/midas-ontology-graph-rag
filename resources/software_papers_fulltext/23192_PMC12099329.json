@@ -1,9 +1,0 @@
-{
-  "paperID": 23192,
-  "pmcid": "PMC12099329",
-  "original_title": "OCTOPUS: Disk-based, Multiplatform, Mobile-friendly Metagenomics Classifier.",
-  "title": "OCTOPUS: Disk-based, Multiplatform, Mobile-friendly Metagenomics Classifier",
-  "abstract": "Portable genomic sequencers such as Oxford Nanopore’s MinION enable real-time applications in clinical and environmental health. However, there is a bottleneck in the downstream analytics when bioinformatics pipelines are unavailable, e.g., when cloud processing is unreachable due to absence of Internet connection, or only low-end computing devices can be carried on site. Here we present a platform-friendly software for portable metagenomic analysis of Nanopore data, the Oligomer-based Classifier of Taxonomic Operational and Pan-genome Units via Singletons (OCTOPUS). OCTOPUS is written in Java, reimplements several features of the popular Kraken2 and KrakenUniq software, with original components for improving metagenomics classification on incomplete/sampled reference databases, making it ideal for running on smartphones or tablets. OCTOPUS obtains sensitivity and precision comparable to Kraken2, while dramatically decreasing (4- to 16-fold) the false positive rate, and yielding high correlation on real-word data. OCTOPUS is available along with customized databases at https://github.com/DataIntellSystLab/OCTOPUS and https://github.com/Ruiz-HCI-Lab/OctopusMobile.",
-  "body": "",
-  "xml_size": 8509
-}

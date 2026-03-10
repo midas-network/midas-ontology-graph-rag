@@ -1,9 +1,0 @@
-{
-  "paperID": 14588,
-  "pmcid": "PMC6379124",
-  "original_title": "A simple automated method for continuous fieldwise measurement of microvascular hemodynamics.",
-  "title": "A simple automated method for continuous fieldwise measurement of microvascular hemodynamics",
-  "abstract": "Microvascular perfusion dynamics are vital to physiological function and are frequently dysregulated in injury and disease. Typically studies measure microvascular flow in a few selected vascular segments over limited time, failing to capture spatial and temporal variability. To quantify microvascular flow in a more complete and unbiased way we developed STAFF (Spatial Temporal Analysis of Fieldwise Flow), a macro for FIJI open-source image analysis software. Using high-speed microvascular flow movies, STAFF generates kymographs for every time interval for every vascular segment, calculates flow velocities from red blood cell shadow angles, and outputs the data as color-coded velocity map movies and spreadsheets. In untreated mice, analyses demonstrated profound variation even between adjacent sinusoids over seconds. In acetaminophen-treated mice we detected flow reduction localized to pericentral regions. STAFF is a powerful new tool capable of providing novel insights by enabling measurement of the complex spatiotemporal dynamics of microvascular flow.",
-  "body": "",
-  "xml_size": 9928
-}
