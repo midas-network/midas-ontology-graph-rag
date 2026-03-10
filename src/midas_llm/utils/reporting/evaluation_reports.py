@@ -13,6 +13,54 @@ from typing import Any
 LOGGER = logging.getLogger("midas-llm")
 
 
+def _vector_model_score_sort_key(entry: dict[str, Any], original_index: int) -> tuple[int, float, int, str, int]:
+    """Sort key for vector model score rows (highest similarity first)."""
+    score = entry.get("similarity_score")
+    numeric_score = float(score) if isinstance(score, (int, float)) and not isinstance(score, bool) else None
+
+    # Keep deterministic ordering when scores tie.
+    decision_rank = {
+        "MATCH": 0,
+        "AMBIGUOUS": 1,
+        "NO_MATCH": 2,
+        "UNAVAILABLE": 3,
+    }.get(str(entry.get("decision", "unknown")).upper(), 99)
+
+    return (
+        0 if numeric_score is not None else 1,
+        -(numeric_score if numeric_score is not None else 0.0),
+        decision_rank,
+        str(entry.get("model", "unknown")).lower(),
+        original_index,
+    )
+
+
+def _format_vector_model_scores(scores: Any) -> str:
+    """Format per-model vector similarity decisions for report display."""
+    if not isinstance(scores, list) or not scores:
+        return ""
+
+    valid_entries: list[tuple[int, dict[str, Any]]] = [
+        (idx, entry) for idx, entry in enumerate(scores) if isinstance(entry, dict)
+    ]
+    valid_entries.sort(key=lambda item: _vector_model_score_sort_key(item[1], item[0]))
+
+    parts: list[str] = []
+    for _, entry in valid_entries:
+        model = str(entry.get("model", "unknown"))
+        decision = str(entry.get("decision", "unknown"))
+        score = entry.get("similarity_score")
+        if isinstance(score, (int, float)) and not isinstance(score, bool):
+            part = f"{model}:{decision}:{score:.3f}"
+        else:
+            part = f"{model}:{decision}"
+        best_match = entry.get("best_match")
+        if best_match:
+            part = f"{part}:{best_match}"
+        parts.append(part)
+    return "; ".join(parts)
+
+
 def generate_evaluation_text_report(
     results: dict[str, Any],
     output_dir: str = "output/gold_standard/results",
@@ -59,7 +107,11 @@ def generate_evaluation_text_report(
         lines.append("")
         lines.append(f"  Vector Similarity:  {'ENABLED' if eval_config.get('use_vector_eval', False) else 'DISABLED'}")
         if eval_config.get("use_vector_eval", False):
-            lines.append(f"    Embedding Model:    {eval_config.get('embedding_model', 'unknown')}")
+            embedding_models = eval_config.get("embedding_models")
+            if isinstance(embedding_models, list) and embedding_models:
+                lines.append(f"    Embedding Models:   {', '.join(str(m) for m in embedding_models)}")
+            else:
+                lines.append(f"    Embedding Model:    {eval_config.get('embedding_model', 'unknown')}")
             lines.append(f"    Auto-match threshold: >= {eval_config.get('vector_high_threshold', 0.85):.2f}")
             lines.append(f"    Auto-reject threshold: <= {eval_config.get('vector_low_threshold', 0.50):.2f}")
         lines.append(f"  LLM Semantic Eval:  {'ENABLED' if eval_config.get('use_llm_eval', False) else 'DISABLED'}")
@@ -164,6 +216,12 @@ def generate_evaluation_text_report(
                         lines.append(f"      Match method:  {method}")
                         if similarity is not None:
                             lines.append(f"      Similarity:    {similarity:.3f}")
+                        vector_model = item.get("vector_selected_model")
+                        if vector_model:
+                            lines.append(f"      Vector model used: {vector_model}")
+                        vector_details = _format_vector_model_scores(item.get("vector_model_scores"))
+                        if vector_details:
+                            lines.append(f"      Vector details:   {vector_details}")
                         lines.append("")
             else:
                 lines.append("  (No hits)")
@@ -211,6 +269,12 @@ def generate_evaluation_text_report(
                         lines.append(f"      Expected values: [{expected_str}]")
                         if similarity is not None:
                             lines.append(f"      Best similarity: {similarity:.3f}")
+                        vector_model = item.get("vector_selected_model")
+                        if vector_model:
+                            lines.append(f"      Vector model used: {vector_model}")
+                        vector_details = _format_vector_model_scores(item.get("vector_model_scores"))
+                        if vector_details:
+                            lines.append(f"      Vector details:   {vector_details}")
                         lines.append(f"      Possible causes:")
                         lines.append(f"        - LLM may have hallucinated or misinterpreted")
                         lines.append(f"        - Value might be valid but missing from gold standard")
@@ -340,7 +404,11 @@ def generate_evaluation_html_report(
         html_parts.append("      <tbody>")
         html_parts.append("        <tr><th>Vector Similarity</th><td>" + ("ENABLED" if eval_config.get("use_vector_eval", False) else "DISABLED") + "</td></tr>")
         if eval_config.get("use_vector_eval", False):
-            html_parts.append("        <tr><th>Embedding Model</th><td>" + _html_escape(str(eval_config.get("embedding_model", "unknown"))) + "</td></tr>")
+            embedding_models = eval_config.get("embedding_models")
+            if isinstance(embedding_models, list) and embedding_models:
+                html_parts.append("        <tr><th>Embedding Models</th><td>" + _html_escape(", ".join(str(m) for m in embedding_models)) + "</td></tr>")
+            else:
+                html_parts.append("        <tr><th>Embedding Model</th><td>" + _html_escape(str(eval_config.get("embedding_model", "unknown"))) + "</td></tr>")
             html_parts.append("        <tr><th>Auto-match Threshold</th><td>&gt;= " + f"{eval_config.get('vector_high_threshold', 0.85):.2f}" + "</td></tr>")
             html_parts.append("        <tr><th>Auto-reject Threshold</th><td>&lt;= " + f"{eval_config.get('vector_low_threshold', 0.50):.2f}" + "</td></tr>")
         html_parts.append("        <tr><th>LLM Semantic Eval</th><td>" + ("ENABLED" if eval_config.get("use_llm_eval", False) else "DISABLED") + "</td></tr>")
@@ -382,7 +450,7 @@ def generate_evaluation_html_report(
             html_parts.append("    <div class='small'>No evaluation records for this model.</div>")
         else:
             html_parts.append("    <table>")
-            html_parts.append("      <thead><tr><th>Abstract</th><th>Attribute</th><th>Result</th><th>Extracted Value</th><th>Expected/Matched Value</th><th>Match Method</th><th>Similarity</th></tr></thead>")
+            html_parts.append("      <thead><tr><th>Abstract</th><th>Attribute</th><th>Result</th><th>Extracted Value</th><th>Expected/Matched Value</th><th>Match Method</th><th>Similarity</th><th>Vector Model Used</th><th>Vector Details</th></tr></thead>")
             html_parts.append("      <tbody>")
             for row in rows:
                 tag_class = "hit" if row["result"] == "Hit" else ("miss" if row["result"] == "Miss" else "fp")
@@ -396,6 +464,8 @@ def generate_evaluation_html_report(
                     + "<td>" + _html_escape(row.get("expected", "")) + "</td>"
                     + "<td>" + _html_escape(row.get("match_method", "")) + "</td>"
                     + "<td>" + similarity_display + "</td>"
+                    + "<td>" + _html_escape(row.get("vector_model", "")) + "</td>"
+                    + "<td>" + _html_escape(row.get("vector_details", "")) + "</td>"
                     + "</tr>"
                 )
             html_parts.append("      </tbody>")
@@ -445,6 +515,8 @@ def _collect_model_events(results: dict[str, Any]) -> dict[str, list[dict[str, A
                     "expected": hit.get("matched_expected", ""),
                     "match_method": hit.get("match_method", ""),
                     "similarity": hit.get("similarity_score"),
+                    "vector_model": hit.get("vector_selected_model", ""),
+                    "vector_details": _format_vector_model_scores(hit.get("vector_model_scores")),
                 })
 
             for miss in evaluation.get("misses", []):
@@ -456,6 +528,8 @@ def _collect_model_events(results: dict[str, Any]) -> dict[str, list[dict[str, A
                     "expected": miss.get("expected_value", ""),
                     "match_method": "",
                     "similarity": None,
+                    "vector_model": "",
+                    "vector_details": "",
                 })
 
             for fp in evaluation.get("false_positives", []):
@@ -469,6 +543,8 @@ def _collect_model_events(results: dict[str, Any]) -> dict[str, list[dict[str, A
                     "expected": expected_str,
                     "match_method": "",
                     "similarity": fp.get("similarity_score"),
+                    "vector_model": fp.get("vector_selected_model", ""),
+                    "vector_details": _format_vector_model_scores(fp.get("vector_model_scores")),
                 })
 
     for model in events:
@@ -573,7 +649,13 @@ def generate_abstract_evaluation_report(
         for hit in hits:
             score_str = f" [sim={hit['similarity_score']:.3f}]" if "similarity_score" in hit else ""
             method_str = f" ({hit['match_method']})" if "match_method" in hit else ""
-            lines.append(f"  {hit['attribute']}: LLM='{hit['extracted_value']}' -> matched gold='{hit['matched_expected']}'{method_str}{score_str}")
+            vector_model_str = f" [vector_model={hit['vector_selected_model']}]" if hit.get("vector_selected_model") else ""
+            vector_details = _format_vector_model_scores(hit.get("vector_model_scores"))
+            vector_details_str = f" [vector_details={vector_details}]" if vector_details else ""
+            lines.append(
+                f"  {hit['attribute']}: LLM='{hit['extracted_value']}' -> matched gold='{hit['matched_expected']}'"
+                f"{method_str}{score_str}{vector_model_str}{vector_details_str}"
+            )
 
     # Misses
     misses = evaluation.get("misses", [])
@@ -593,7 +675,13 @@ def generate_abstract_evaluation_report(
         for fp in false_positives:
             expected_vals = ", ".join(fp.get("expected_values", []))
             score_str = f" [best_sim={fp['similarity_score']:.3f}]" if "similarity_score" in fp else ""
-            lines.append(f"  ? {fp['attribute']}: LLM='{fp['extracted_value']}' not in gold=[{expected_vals}]{score_str}")
+            vector_model_str = f" [vector_model={fp['vector_selected_model']}]" if fp.get("vector_selected_model") else ""
+            vector_details = _format_vector_model_scores(fp.get("vector_model_scores"))
+            vector_details_str = f" [vector_details={vector_details}]" if vector_details else ""
+            lines.append(
+                f"  ? {fp['attribute']}: LLM='{fp['extracted_value']}' not in gold=[{expected_vals}]"
+                f"{score_str}{vector_model_str}{vector_details_str}"
+            )
 
     # Write to file
     os.makedirs(output_dir, exist_ok=True)

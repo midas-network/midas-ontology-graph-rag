@@ -8,7 +8,13 @@ REMINDERS — CONSTRAINED SCHEMA + CONTROLLED VOCAB MODE
   - exact enum spellings
 - Never invent enum values or paraphrase enum values.
 
-2) CONTROLLED VOCABULARY (MIDAS) — PREFERRED TERMS
+2) HARD OUTPUT CONTRACT (NON-NEGOTIABLE)
+- Output MUST be a JSON object.
+- The first character MUST be { and the last character MUST be }.
+- No leading text, no trailing text, no surrounding quotes, no markdown, no code fences.
+- Do not return JSON as a string.
+
+3) CONTROLLED VOCABULARY (MIDAS) — PREFERRED TERMS
 For these fields:
 - data_used
 - intervention_types
@@ -19,27 +25,28 @@ a) exact MIDAS preferred term from the vocab file
 b) synonym-map normalization to a preferred MIDAS term
 c) free text only if no MIDAS term matches
 
-3) EVIDENCE DISCIPLINE
+4) EVIDENCE DISCIPLINE
 - Use title + abstract only.
 - Prefer explicit evidence.
 - Avoid unsupported inference.
 - If uncertain, use schema-compatible absent value (for that field) or [] for list fields.
 
-4) CALIBRATION VS VALIDATION
+5) CALIBRATION VS VALIDATION
 Calibration means fitting/estimation/data assimilation.
 Do NOT list validation/evaluation metrics (WIS, MAE, RMSE, coverage, forecast accuracy summaries) as calibration techniques.
 
-5) MULTI-VALUE HYGIENE
+6) MULTI-VALUE HYGIENE
 - Include multiple values only when distinctly supported.
 - Deduplicate near-duplicates.
 - Prefer one canonical form (e.g., United States instead of US/USA duplicates).
 
-6) REASONING QUALITY
+7) REASONING QUALITY
 - Keep reasoning short, specific, and evidence-based.
 - Mention normalization if used.
 - Use "[Inferred]" only for small high-confidence inferences.
 
 FINAL CHECK BEFORE RESPONDING
+- Output starts with { and ends with } (no wrappers)?
 - Exact schema enum spellings?
 - Controlled MIDAS terms used where applicable?
 - Synonyms normalized to preferred terms?

@@ -16,27 +16,20 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from src.midas_llm.data.IdSynonyms import DISEASE_SYNONYMS
-from src.midas_llm.utils.parsers.extraction_parser import normalize_absent_value
-
 # Add src to path when running from repo root
 _src_path = Path(__file__).resolve().parent.parent.parent
 if str(_src_path) not in sys.path:
     sys.path.insert(0, str(_src_path))
 
+from midas_llm.utils.ontology.IdSynonyms import DISEASE_SYNONYMS
+from midas_llm.utils.parsers.extraction_parser import normalize_absent_value
 from midas_llm.utils.config import ExtractionConfig
 from midas_llm.utils.logging.logger import configure_logging
 from midas_llm.utils.llm.llm_client import send_to_llm
 from midas_llm.utils.llm.llm_utils import autodetect_llm_host
 from midas_llm.utils.prompt.builders import prepare_and_display_prompt, build_query
-from midas_llm.utils.parsers.extraction_parser import (
-    parse_and_display_extracted_data,
-    save_response_json,
-    normalize_llm_format,
-)
 from midas_llm.utils.reporting.evaluation_reports import (
     generate_evaluation_text_report,
-    generate_evaluation_html_report,
     generate_abstract_evaluation_report,
 )
 from midas_llm.utils.evaluation.vector_similarity import vector_match_tiered
@@ -82,6 +75,115 @@ Rules:
 - Do NOT include any text outside the JSON object.
 - Do NOT wrap the JSON in markdown code fences.
 """
+
+
+# ------------------------------------------------------------------
+# Output path helpers
+# ------------------------------------------------------------------
+
+def _sanitize_model_directory_name(model: str) -> str:
+    """Build a filesystem-safe directory name from a model identifier."""
+    model_leaf = model.strip().split("/")[-1]
+    sanitized = re.sub(r"[^A-Za-z0-9._-]+", "-", model_leaf).strip("._-")
+    return sanitized or "unknown-model"
+
+
+def _results_model_directory_name(config: ExtractionConfig) -> str:
+    """Choose a model directory name for grouping evaluation runs."""
+    models = config.active_llm_models if config.active_llm_models else [config.active_llm_model]
+    if not models:
+        return "unknown-model"
+    if len(models) == 1:
+        return _sanitize_model_directory_name(models[0])
+    return "multi-model"
+
+
+def _parse_embedding_models_arg(value: str) -> list[str]:
+    """Parse comma-separated embedding models from CLI."""
+    return [model.strip() for model in value.split(",") if model.strip()]
+
+
+def _vector_model_score_sort_key(entry: dict[str, Any], original_index: int) -> tuple[int, float, int, str, int]:
+    """Sort key for vector model score rows (highest similarity first)."""
+    score = entry.get("similarity_score")
+    numeric_score = float(score) if isinstance(score, (int, float)) and not isinstance(score, bool) else None
+
+    decision_rank = {
+        "MATCH": 0,
+        "AMBIGUOUS": 1,
+        "NO_MATCH": 2,
+        "UNAVAILABLE": 3,
+    }.get(str(entry.get("decision", "unknown")).upper(), 99)
+
+    return (
+        0 if numeric_score is not None else 1,
+        -(numeric_score if numeric_score is not None else 0.0),
+        decision_rank,
+        str(entry.get("model", "unknown")).lower(),
+        original_index,
+    )
+
+
+def _format_vector_model_scores(scores: Any) -> str:
+    """Format per-model vector similarity details for logs/reports."""
+    if not isinstance(scores, list) or not scores:
+        return ""
+
+    valid_entries: list[tuple[int, dict[str, Any]]] = [
+        (idx, entry) for idx, entry in enumerate(scores) if isinstance(entry, dict)
+    ]
+    valid_entries.sort(key=lambda item: _vector_model_score_sort_key(item[1], item[0]))
+
+    parts: list[str] = []
+    for _, entry in valid_entries:
+        model = str(entry.get("model", "unknown"))
+        decision = str(entry.get("decision", "unknown"))
+        score = entry.get("similarity_score")
+        if isinstance(score, (int, float)) and not isinstance(score, bool):
+            part = f"{model}:{decision}:{score:.3f}"
+        else:
+            part = f"{model}:{decision}"
+        best_match = entry.get("best_match")
+        if best_match:
+            part = f"{part}:{best_match}"
+        parts.append(part)
+    return "; ".join(parts)
+
+
+def _log_active_run_configuration(
+    *,
+    logger: logging.Logger,
+    config: ExtractionConfig,
+    args: argparse.Namespace,
+    use_vector_eval: bool,
+    use_llm_eval: bool,
+) -> None:
+    """Log only configuration entries that are actively used for this run."""
+    active_models = config.active_llm_models if config.active_llm_models else [config.active_llm_model]
+
+    logger.info("Active run configuration:")
+    logger.info("  llm_api_type: %s", config.llm_api_type)
+    logger.info("  active_llm_host: %s", config.active_llm_host)
+    logger.info("  active_llm_models: %s", active_models)
+    logger.info("  llm_timeout: %s", config.llm_timeout)
+    logger.info("  constrained_decoding: %s", args.constrained)
+    if args.constrained:
+        logger.info("  ontology_path: %s", args.ontology_path)
+    if config.llm_api_type == "openai_compatible":
+        logger.info(
+            "  openai_response_format: %s",
+            "json_schema" if args.openai_json_schema else "json_object",
+        )
+    logger.info("  validate_constrained_json: %s", args.validate_constrained_json)
+    if args.validate_constrained_json and args.validation_schema_path:
+        logger.info("  validation_schema_path: %s", args.validation_schema_path)
+    logger.info("  llm_semantic_matching: %s", use_llm_eval)
+    logger.info("  vector_similarity: %s", use_vector_eval)
+    if use_vector_eval:
+        logger.info("  embedding_models: %s", args.embedding_models)
+        logger.info("  vector_high_threshold: %.2f", args.vector_high_threshold)
+        logger.info("  vector_low_threshold: %.2f", args.vector_low_threshold)
+    logger.info("  generate_evaluation_report: %s", config.generate_evaluation_report)
 
 
 # ------------------------------------------------------------------
@@ -358,8 +460,8 @@ def parse_constrained_response(
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError as e:
-        logger.warning("JSON parse failed: %s — falling back to regex", e)
-        parsed = _regex_json_fallback(raw, logger)
+        logger.error("JSON parse failed for constrained response: %s", e)
+        return {}
 
     if not isinstance(parsed, dict):
         logger.error("Parsed JSON is not a dict: %s", type(parsed))
@@ -410,34 +512,13 @@ def parse_constrained_response(
             "domains": [],
         }
 
-    logger.info("Parsed %d fields from constrained JSON response", len(extracted))
+    logger.debug("Parsed %d fields from constrained JSON response", len(extracted))
     for attr, data in extracted.items():
-        logger.info("[%s]: %s", attr, data["value"])
+        logger.debug("[%s]: %s", attr, data["value"])
         if data.get("reasoning"):
-            logger.info("   Reasoning: %s", data["reasoning"])
+            logger.debug("   Reasoning: %s", data["reasoning"])
 
     return extracted
-
-
-def _regex_json_fallback(raw: str, logger: logging.Logger) -> dict:
-    """Last-resort extraction when JSON parsing fails."""
-    result = {}
-    pattern = re.compile(
-        r'"(\w+)"\s*:\s*\{[^}]*"values"\s*:\s*\[([^\]]*)\]',
-        re.DOTALL,
-    )
-    for match in pattern.finditer(raw):
-        field_name = match.group(1)
-        values = re.findall(r'"([^"]*)"', match.group(2))
-        result[field_name] = {"values": values}
-
-    if result:
-        logger.info("Regex fallback recovered %d fields", len(result))
-    else:
-        logger.error("Regex fallback also failed")
-    return result
-
-
 # ------------------------------------------------------------------
 # Matching functions
 # ------------------------------------------------------------------
@@ -562,12 +643,98 @@ def evaluate_extraction(
         use_vector_eval: bool = True,
         vector_high_threshold: float = 0.85,
         vector_low_threshold: float = 0.50,
-        embedding_model: str | None = None,
+        embedding_models: list[str] | None = None,
         config: Any = None,
         timeout_seconds: int = 30,
 ) -> dict[str, Any]:
-    if embedding_model is None:
-        embedding_model = ExtractionConfig().embedding_model
+    if embedding_models is None:
+        embedding_models = ExtractionConfig().embedding_models
+
+    if not embedding_models:
+        embedding_models = [ExtractionConfig().embedding_model]
+
+    if use_vector_eval:
+        logger.info(
+            "Vector similarity embedding models (%d): %s",
+            len(embedding_models),
+            ", ".join(embedding_models),
+        )
+
+    def vector_match_any_model(
+        extracted_value: str,
+        expected_values: list[str],
+    ) -> tuple[str, str | None, float, list[dict[str, Any]], str | None]:
+        """Return MATCH if any model crosses threshold; otherwise aggregate conservatively."""
+        per_model: list[dict[str, Any]] = []
+        per_model_details: list[dict[str, Any]] = []
+        for model_name in embedding_models:
+            decision, best_match, score = vector_match_tiered(
+                extracted_value,
+                expected_values,
+                high_threshold=vector_high_threshold,
+                low_threshold=vector_low_threshold,
+                model_name=model_name,
+            )
+            per_model.append(
+                {
+                    "model": model_name,
+                    "decision": decision,
+                    "best_match": best_match,
+                    "similarity_score_raw": score,
+                }
+            )
+            per_model_details.append(
+                {
+                    "model": model_name,
+                    "decision": decision,
+                    "best_match": best_match,
+                    "similarity_score": round(score, 4),
+                }
+            )
+
+        match_candidates = [r for r in per_model if r["decision"] == "MATCH"]
+        if match_candidates:
+            best = max(match_candidates, key=lambda r: r["similarity_score_raw"])
+            return (
+                best["decision"],
+                best["best_match"],
+                best["similarity_score_raw"],
+                per_model_details,
+                best["model"],
+            )
+
+        ambiguous_candidates = [r for r in per_model if r["decision"] == "AMBIGUOUS"]
+        if ambiguous_candidates:
+            best = max(ambiguous_candidates, key=lambda r: r["similarity_score_raw"])
+            return (
+                best["decision"],
+                best["best_match"],
+                best["similarity_score_raw"],
+                per_model_details,
+                best["model"],
+            )
+
+        available = [r for r in per_model if r["decision"] != "UNAVAILABLE"]
+        if available and all(r["decision"] == "NO_MATCH" for r in available):
+            best = max(available, key=lambda r: r["similarity_score_raw"])
+            if len(available) == len(per_model):
+                return (
+                    "NO_MATCH",
+                    None,
+                    best["similarity_score_raw"],
+                    per_model_details,
+                    best["model"],
+                )
+            # Some models unavailable: defer to LLM tier instead of hard reject.
+            return (
+                "AMBIGUOUS",
+                best["best_match"],
+                best["similarity_score_raw"],
+                per_model_details,
+                best["model"],
+            )
+
+        return ("UNAVAILABLE", None, 0.0, per_model_details, None)
 
     results = {
         "hits": [],
@@ -617,6 +784,8 @@ def evaluate_extraction(
             matched = False
             matched_val = None
             similarity_score = None
+            vector_model_scores: list[dict[str, Any]] = []
+            vector_selected_model: str | None = None
             match_method = None
 
             is_date_field = attr in ("study_dates_start", "study_dates_end")
@@ -628,11 +797,9 @@ def evaluate_extraction(
             decision = None
             if use_vector_eval and not is_date_field:
                 try:
-                    decision, best_match, similarity_score = vector_match_tiered(
-                        extracted_normalized, expected_values,
-                        high_threshold=vector_high_threshold,
-                        low_threshold=vector_low_threshold,
-                        model_name=embedding_model,
+                    decision, best_match, similarity_score, vector_model_scores, vector_selected_model = vector_match_any_model(
+                        extracted_normalized,
+                        expected_values,
                     )
                 except Exception as e:
                     logger.error("Vector match error for %s: %s", attr, e)
@@ -650,6 +817,36 @@ def evaluate_extraction(
                     results["vector_stats"]["ambiguous_to_llm"] += 1
                 else:
                     results["vector_stats"]["vector_unavailable"] += 1
+
+                if vector_model_scores:
+                    ranked_vector_scores = [
+                        (idx, entry)
+                        for idx, entry in enumerate(vector_model_scores)
+                        if isinstance(entry, dict)
+                    ]
+                    ranked_vector_scores.sort(
+                        key=lambda item: _vector_model_score_sort_key(item[1], item[0])
+                    )
+                    per_model_summary = "; ".join(
+                        (
+                            f"{entry['model']}:{entry['decision']}:"
+                            f"{entry['similarity_score']:.4f}"
+                            + (
+                                f":{entry['best_match']}"
+                                if entry.get("best_match")
+                                else ""
+                            )
+                        )
+                        for _, entry in ranked_vector_scores
+                    )
+                    logger.info(
+                        "Vector similarity decision | attr=%s value=%s result=%s best_score=%.4f details=[%s]",
+                        attr,
+                        extracted_normalized,
+                        decision or "UNAVAILABLE",
+                        similarity_score or 0.0,
+                        per_model_summary,
+                    )
 
             # Tier 2: LLM semantic evaluation
             if not matched and matched_val is None and use_llm_eval:
@@ -684,6 +881,10 @@ def evaluate_extraction(
                 }
                 if similarity_score is not None:
                     hit_record["similarity_score"] = round(similarity_score, 4)
+                if vector_model_scores:
+                    hit_record["vector_model_scores"] = vector_model_scores
+                if vector_selected_model:
+                    hit_record["vector_selected_model"] = vector_selected_model
                 results["hits"].append(hit_record)
                 if matched_val:
                     matched_expected[attr].add(matched_val)
@@ -695,6 +896,10 @@ def evaluate_extraction(
                 }
                 if similarity_score is not None:
                     fp_record["similarity_score"] = round(similarity_score, 4)
+                if vector_model_scores:
+                    fp_record["vector_model_scores"] = vector_model_scores
+                if vector_selected_model:
+                    fp_record["vector_selected_model"] = vector_selected_model
                 results["false_positives"].append(fp_record)
 
     # Check for misses
@@ -740,14 +945,15 @@ def run_evaluation(
         use_vector_eval: bool = True,
         vector_high_threshold: float = 0.85,
         vector_low_threshold: float = 0.50,
-        embedding_model: str | None = None,
+        embedding_models: list[str] | None = None,
         run_folder: str | None = None,
         json_schema: dict[str, Any] | None = None,  # ── NEW
+        openai_allow_json_schema: bool = False,
         validate_constrained_json: bool = False,
         validation_schema: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    if embedding_model is None:
-        embedding_model = config.embedding_model
+    if embedding_models is None:
+        embedding_models = config.embedding_models
 
     all_results = []
     models = config.active_llm_models if config.active_llm_models else [config.active_llm_model]
@@ -759,7 +965,7 @@ def run_evaluation(
             len(json_schema.get("properties", {})),
         )
     else:
-        logger.info("Constrained decoding: DISABLED (free-text mode)")
+        logger.info("Constrained decoding: DISABLED")
 
     for abstract_data in abstracts:
         abstract_id = abstract_data["id"]
@@ -815,25 +1021,54 @@ def run_evaluation(
                     logger=logger,
                     api_type=config.llm_api_type,
                     json_schema=json_schema,  # None → unconstrained
+                    allow_json_schema=openai_allow_json_schema,
+                )
+                timing = {
+                    "request_duration_s": response.request_duration_s,
+                    "total_duration_s": response.total_duration_s,
+                    "load_duration_s": response.load_duration_s,
+                    "prompt_eval_duration_s": response.prompt_eval_duration_s,
+                    "eval_duration_s": response.eval_duration_s,
+                    "prompt_tokens": response.prompt_tokens,
+                    "completion_tokens": response.completion_tokens,
+                    "reasoning_tokens": response.reasoning_tokens,
+                }
+                logger.info(
+                    "LLM timing | request=%.2fs backend_total=%s prompt_eval=%s eval=%s",
+                    timing["request_duration_s"] or 0.0,
+                    (
+                        f"{timing['total_duration_s']:.2f}s"
+                        if isinstance(timing["total_duration_s"], (int, float))
+                        else "n/a"
+                    ),
+                    (
+                        f"{timing['prompt_eval_duration_s']:.2f}s"
+                        if isinstance(timing["prompt_eval_duration_s"], (int, float))
+                        else "n/a"
+                    ),
+                    (
+                        f"{timing['eval_duration_s']:.2f}s"
+                        if isinstance(timing["eval_duration_s"], (int, float))
+                        else "n/a"
+                    ),
                 )
 
-                # ── NEW: Branch on constrained vs unconstrained ──
                 if response.constrained:
                     logger.info("Parsing constrained JSON response")
-                    extracted = parse_constrained_response(
-                        response.content,
-                        validation_schema=validation_schema,
-                        validate_schema=validate_constrained_json,
-                        logger=logger,
-                    )
                 else:
-                    if json_schema is not None:
-                        logger.warning(
-                            "Constrained decoding was requested but server "
-                            "fell back to unconstrained — using text parser"
-                        )
-                    extracted = parse_and_display_extracted_data(
-                        response.content, logger=logger
+                    logger.warning(
+                        "Response was not marked constrained; attempting strict JSON parse."
+                    )
+                extracted = parse_constrained_response(
+                    response.content,
+                    validation_schema=validation_schema,
+                    validate_schema=validate_constrained_json,
+                    logger=logger,
+                )
+                if not extracted:
+                    raise ValueError(
+                        "Failed to parse constrained JSON response. "
+                        "Free-text responses are unsupported."
                     )
 
                 logger.info("Evaluating extraction with semantic matching...")
@@ -844,7 +1079,7 @@ def run_evaluation(
                     use_vector_eval=use_vector_eval,
                     vector_high_threshold=vector_high_threshold,
                     vector_low_threshold=vector_low_threshold,
-                    embedding_model=embedding_model,
+                    embedding_models=embedding_models,
                     config=config,
                     timeout_seconds=config.llm_timeout,
                 )
@@ -862,19 +1097,15 @@ def run_evaluation(
                         "model": model,
                         "constrained": response.constrained,
                         "response_length": len(response.content),
+                        "timing": timing,
                     }, indent=2), encoding="utf-8")
-
-                    if not response.constrained:
-                        normalized = normalize_llm_format(response.content)
-                        normalized_file = abstract_dir / f"{safe_model_name}_response_normalized.txt"
-                        normalized_file.write_text(normalized, encoding="utf-8")
-
 
                 abstract_results["models"][model] = {
                     "extracted": extracted,
                     "evaluation": evaluation,
                     "raw_response": response.content[:2000],
                     "constrained": response.constrained,  # ── NEW
+                    "timing": timing,
                 }
 
                 # Log legend
@@ -914,9 +1145,21 @@ def run_evaluation(
                     for hit in evaluation["hits"]:
                         score_str = f" [sim={hit['similarity_score']:.3f}]" if "similarity_score" in hit else ""
                         method_str = f" ({hit['match_method']})" if "match_method" in hit else ""
-                        logger.info("    + %s: LLM='%s' -> matched gold='%s'%s%s",
+                        vector_model_str = (
+                            f" [vector_model={hit['vector_selected_model']}]"
+                            if hit.get("vector_selected_model")
+                            else ""
+                        )
+                        vector_details = _format_vector_model_scores(hit.get("vector_model_scores"))
+                        vector_details_str = (
+                            f" [vector_details={vector_details}]"
+                            if vector_details
+                            else ""
+                        )
+                        logger.info("    + %s: LLM='%s' -> matched gold='%s'%s%s%s%s",
                                     hit["attribute"], hit["extracted_value"],
-                                    hit["matched_expected"], method_str, score_str)
+                                    hit["matched_expected"], method_str, score_str,
+                                    vector_model_str, vector_details_str)
 
                 if evaluation["misses"]:
                     logger.info("  MISSES (gold standard value NOT extracted by LLM):")
@@ -928,9 +1171,21 @@ def run_evaluation(
                     logger.info("  FALSE POSITIVES (LLM extracted value NOT in gold standard):")
                     for fp in evaluation["false_positives"]:
                         score_str = f" [best_sim={fp['similarity_score']:.3f}]" if "similarity_score" in fp else ""
-                        logger.info("    ? %s: LLM='%s' not in gold=%s%s",
+                        vector_model_str = (
+                            f" [vector_model={fp['vector_selected_model']}]"
+                            if fp.get("vector_selected_model")
+                            else ""
+                        )
+                        vector_details = _format_vector_model_scores(fp.get("vector_model_scores"))
+                        vector_details_str = (
+                            f" [vector_details={vector_details}]"
+                            if vector_details
+                            else ""
+                        )
+                        logger.info("    ? %s: LLM='%s' not in gold=%s%s%s%s",
                                     fp["attribute"], fp["extracted_value"],
-                                    fp["expected_values"], score_str)
+                                    fp["expected_values"], score_str,
+                                    vector_model_str, vector_details_str)
 
             except Exception as e:
                 logger.error("Model %s failed: %s", model, e)
@@ -960,6 +1215,18 @@ def run_evaluation(
 # Summary
 # ------------------------------------------------------------------
 
+def _add_optional_float(accumulator: dict[str, Any], key: str, value: Any) -> None:
+    if isinstance(value, (int, float)):
+        accumulator[key] += float(value)
+        accumulator[f"{key}_count"] += 1
+
+
+def _fmt_seconds(value: float | None) -> str:
+    if value is None:
+        return "n/a"
+    return f"{value:.2f}s"
+
+
 def print_summary(results: dict, logger: logging.Logger) -> None:
     logger.info("")
     logger.info("=" * 60)
@@ -980,6 +1247,19 @@ def print_summary(results: dict, logger: logging.Logger) -> None:
                     "total_false_positives": 0,
                     "total_expected": 0,
                     "abstracts_evaluated": 0,
+                    "request_duration_s": 0.0,
+                    "request_duration_s_count": 0,
+                    "total_duration_s": 0.0,
+                    "total_duration_s_count": 0,
+                    "load_duration_s": 0.0,
+                    "load_duration_s_count": 0,
+                    "prompt_eval_duration_s": 0.0,
+                    "prompt_eval_duration_s_count": 0,
+                    "eval_duration_s": 0.0,
+                    "eval_duration_s_count": 0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "reasoning_tokens": 0,
                 }
 
             scores = model_result["evaluation"]["scores"]
@@ -988,6 +1268,30 @@ def print_summary(results: dict, logger: logging.Logger) -> None:
             model_scores[model]["total_false_positives"] += scores["total_false_positives"]
             model_scores[model]["total_expected"] += scores["total_expected"]
             model_scores[model]["abstracts_evaluated"] += 1
+            timing = model_result.get("timing", {})
+            if isinstance(timing, dict):
+                _add_optional_float(
+                    model_scores[model], "request_duration_s", timing.get("request_duration_s")
+                )
+                _add_optional_float(
+                    model_scores[model], "total_duration_s", timing.get("total_duration_s")
+                )
+                _add_optional_float(
+                    model_scores[model], "load_duration_s", timing.get("load_duration_s")
+                )
+                _add_optional_float(
+                    model_scores[model], "prompt_eval_duration_s",
+                    timing.get("prompt_eval_duration_s"),
+                )
+                _add_optional_float(
+                    model_scores[model], "eval_duration_s", timing.get("eval_duration_s")
+                )
+                if isinstance(timing.get("prompt_tokens"), int):
+                    model_scores[model]["prompt_tokens"] += timing["prompt_tokens"]
+                if isinstance(timing.get("completion_tokens"), int):
+                    model_scores[model]["completion_tokens"] += timing["completion_tokens"]
+                if isinstance(timing.get("reasoning_tokens"), int):
+                    model_scores[model]["reasoning_tokens"] += timing["reasoning_tokens"]
 
     for model, scores in model_scores.items():
         total = scores["total_hits"] + scores["total_false_positives"]
@@ -1006,6 +1310,85 @@ def print_summary(results: dict, logger: logging.Logger) -> None:
         logger.info("  Precision: %.2f%%", precision * 100)
         logger.info("  F1 Score: %.2f%%", f1 * 100)
 
+        avg_request = (
+            scores["request_duration_s"] / scores["request_duration_s_count"]
+            if scores["request_duration_s_count"] > 0 else None
+        )
+        avg_total = (
+            scores["total_duration_s"] / scores["total_duration_s_count"]
+            if scores["total_duration_s_count"] > 0 else None
+        )
+        avg_prompt_eval = (
+            scores["prompt_eval_duration_s"] / scores["prompt_eval_duration_s_count"]
+            if scores["prompt_eval_duration_s_count"] > 0 else None
+        )
+        avg_eval = (
+            scores["eval_duration_s"] / scores["eval_duration_s_count"]
+            if scores["eval_duration_s_count"] > 0 else None
+        )
+        avg_load = (
+            scores["load_duration_s"] / scores["load_duration_s_count"]
+            if scores["load_duration_s_count"] > 0 else None
+        )
+        total_request = (
+            scores["request_duration_s"]
+            if scores["request_duration_s_count"] > 0 else None
+        )
+        total_backend = (
+            scores["total_duration_s"]
+            if scores["total_duration_s_count"] > 0 else None
+        )
+        total_prompt_eval = (
+            scores["prompt_eval_duration_s"]
+            if scores["prompt_eval_duration_s_count"] > 0 else None
+        )
+        total_eval = (
+            scores["eval_duration_s"]
+            if scores["eval_duration_s_count"] > 0 else None
+        )
+        total_load = (
+            scores["load_duration_s"]
+            if scores["load_duration_s_count"] > 0 else None
+        )
+
+        logger.info("  Timing:")
+        logger.info(
+            "    Request round-trip: total=%s avg=%s over %d call(s)",
+            _fmt_seconds(total_request),
+            _fmt_seconds(avg_request),
+            scores["request_duration_s_count"],
+        )
+        logger.info(
+            "    Backend total: total=%s avg=%s over %d call(s)",
+            _fmt_seconds(total_backend),
+            _fmt_seconds(avg_total),
+            scores["total_duration_s_count"],
+        )
+        logger.info(
+            "    Prompt eval (input processing): total=%s avg=%s over %d call(s)",
+            _fmt_seconds(total_prompt_eval),
+            _fmt_seconds(avg_prompt_eval),
+            scores["prompt_eval_duration_s_count"],
+        )
+        logger.info(
+            "    Eval/generation (\"thinking\"): total=%s avg=%s over %d call(s)",
+            _fmt_seconds(total_eval),
+            _fmt_seconds(avg_eval),
+            scores["eval_duration_s_count"],
+        )
+        logger.info(
+            "    Model load: total=%s avg=%s over %d call(s)",
+            _fmt_seconds(total_load),
+            _fmt_seconds(avg_load),
+            scores["load_duration_s_count"],
+        )
+        logger.info(
+            "    Tokens: prompt=%d completion=%d reasoning=%d",
+            scores["prompt_tokens"],
+            scores["completion_tokens"],
+            scores["reasoning_tokens"],
+        )
+
 
 # ------------------------------------------------------------------
 # CLI entry point
@@ -1015,7 +1398,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Evaluate LLM extraction against gold standard"
     )
-    parser.add_argument("-n", "--num-papers", type=int, default=1,
+    parser.add_argument("-n", "--num-papers", type=int, default=20,
                         help="Number of papers to evaluate (default: 1, use -1 for all)")
     parser.add_argument("--paper-id", type=str, default=None,
                         help="Evaluate a specific paper by ID")
@@ -1036,8 +1419,21 @@ def main():
                         help="Vector similarity threshold for auto-match (default: 0.85)")
     parser.add_argument("--vector-low-threshold", type=float, default=0.50,
                         help="Vector similarity threshold for auto-reject (default: 0.50)")
-    parser.add_argument("--embedding-model", type=str, default=None,
-                        help="HuggingFace embedding model for vector similarity")
+    parser.add_argument(
+        "--embedding-models",
+        type=str,
+        default=None,
+        help=(
+            "Comma-separated HuggingFace embedding models for vector similarity "
+            "(default: use config embedding_models array)"
+        ),
+    )
+    parser.add_argument(
+        "--embedding-model",
+        type=str,
+        default=None,
+        help="Deprecated alias for a single embedding model.",
+    )
     parser.add_argument("--list-papers", action="store_true",
                         help="List available paper IDs and exit")
     parser.add_argument("--validate-thresholds", action="store_true",
@@ -1083,20 +1479,35 @@ def main():
             f"validation (default fallback: {DEFAULT_VALIDATION_SCHEMA_PATH})"
         ),
     )
+    parser.add_argument(
+        "--openai-json-schema",
+        action="store_true",
+        default=False,
+        help=(
+            "For openai_compatible API type, attempt response_format=json_schema. "
+            "Default is json_object mode."
+        ),
+    )
 
     args = parser.parse_args()
 
     config = ExtractionConfig()
     logger = configure_logging(debug=config.debug)
 
-    if args.embedding_model is None:
-        args.embedding_model = config.embedding_model
+    if args.embedding_models:
+        args.embedding_models = _parse_embedding_models_arg(args.embedding_models)
+    elif args.embedding_model:
+        args.embedding_models = _parse_embedding_models_arg(args.embedding_model)
+    else:
+        args.embedding_models = config.embedding_models
 
     # Handle --validate-thresholds
     if args.validate_thresholds:
         from midas_llm.utils.evaluation.vector_similarity import run_domain_validation
+        validation_model = args.embedding_models[0]
         logger.info("Running threshold validation with domain-specific test pairs...")
-        validation_results = run_domain_validation(model_name=args.embedding_model, logger=logger)
+        logger.info("Threshold validation model: %s", validation_model)
+        validation_results = run_domain_validation(model_name=validation_model, logger=logger)
 
         if "error" in validation_results:
             logger.error("Validation failed: %s", validation_results["error"])
@@ -1130,6 +1541,35 @@ def main():
                   f"predicted={'MATCH' if pair['predicted_match'] else 'NO_MATCH'}")
         return
 
+    # Log resolved path-related options used for this run
+    gold_standard_path = Path(args.gold_standard_path)
+    output_root_path = Path(args.output_dir)
+    logger.info("Resolved run paths/options:")
+    logger.info("  repo_root: %s", REPO_ROOT)
+    logger.info(
+        "  gold_standard_path: %s%s",
+        gold_standard_path,
+        " (default)" if gold_standard_path == DEFAULT_GOLD_STANDARD_PATH
+        else (" (legacy)" if gold_standard_path == LEGACY_GOLD_STANDARD_PATH else " (override)"),
+    )
+    logger.info(
+        "  output_dir: %s%s",
+        output_root_path,
+        " (default)" if output_root_path == DEFAULT_GOLD_OUTPUT_DIR else " (override)",
+    )
+    if args.constrained:
+        ontology_path = Path(args.ontology_path)
+        logger.info(
+            "  ontology_path: %s%s",
+            ontology_path,
+            " (default)" if ontology_path == DEFAULT_ONTOLOGY_PATH else " (override)",
+        )
+    if args.validate_constrained_json:
+        if args.validation_schema_path:
+            logger.info("  validation_schema_path: %s (override)", Path(args.validation_schema_path))
+        else:
+            logger.info("  validation_schema_path: <runtime ontology schema>")
+
     # Load gold standard
     try:
         all_abstracts = load_gold_standard(args.gold_standard_path)
@@ -1148,12 +1588,25 @@ def main():
 
     logger.info("Starting gold standard evaluation...")
 
-    detected_host = autodetect_llm_host(config.active_llm_host, logger=logger)
+    detected_host = autodetect_llm_host(
+        config.active_llm_host,
+        api_type=config.llm_api_type,
+        logger=logger,
+    )
     if detected_host:
-        config.llm_host = detected_host
+        config.active_llm_host = detected_host
+
+    use_llm_eval = not args.no_llm_eval
+    use_vector_eval = not args.no_vector_eval
 
     if config.show_config:
-        config.log_config(logger)
+        _log_active_run_configuration(
+            logger=logger,
+            config=config,
+            args=args,
+            use_vector_eval=use_vector_eval,
+            use_llm_eval=use_llm_eval,
+        )
 
     # ── NEW: Load MIDAS ontology for constrained decoding ──
     json_schema = None
@@ -1197,7 +1650,11 @@ def main():
             logger.error("Failed to load MIDAS ontology: %s", e)
             return
     else:
-        logger.info("Constrained decoding: DISABLED (use --constrained to enable)")
+        logger.error(
+            "Free-text parsing is disabled. Run with --constrained "
+            "(or remove --no-constrained)."
+        )
+        return
 
     validation_schema = None
     resolved_validation_schema_path = None
@@ -1261,11 +1718,11 @@ def main():
 
     logger.info("Evaluating %d of %d gold standard abstracts", len(abstracts), len(all_abstracts))
 
-    use_llm_eval = not args.no_llm_eval
-    use_vector_eval = not args.no_vector_eval
-
     if use_vector_eval:
-        logger.info("Vector similarity evaluation: ENABLED (model=%s)", args.embedding_model)
+        logger.info(
+            "Vector similarity evaluation: ENABLED (models=%s)",
+            ", ".join(args.embedding_models),
+        )
         logger.info("  Auto-match threshold: >= %.2f", args.vector_high_threshold)
         logger.info("  Auto-reject threshold: <= %.2f", args.vector_low_threshold)
     else:
@@ -1275,9 +1732,15 @@ def main():
         logger.info("LLM semantic matching: ENABLED")
     else:
         logger.info("LLM semantic matching: DISABLED")
+    if config.llm_api_type == "openai_compatible":
+        logger.info(
+            "OpenAI response_format mode: %s",
+            "json_schema" if args.openai_json_schema else "json_object",
+        )
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    run_root = Path(args.output_dir)
+    model_dir = _results_model_directory_name(config)
+    run_root = Path(args.output_dir) / model_dir
     run_folder = str(run_root / timestamp)
     os.makedirs(run_folder, exist_ok=True)
     logger.info("Run folder: %s", run_folder)
@@ -1295,9 +1758,10 @@ def main():
         use_vector_eval=use_vector_eval,
         vector_high_threshold=args.vector_high_threshold,
         vector_low_threshold=args.vector_low_threshold,
-        embedding_model=args.embedding_model,
+        embedding_models=args.embedding_models,
         run_folder=run_folder,
         json_schema=json_schema,  # ── NEW: passed through
+        openai_allow_json_schema=args.openai_json_schema,
         validate_constrained_json=args.validate_constrained_json,
         validation_schema=validation_schema,
     )
@@ -1307,12 +1771,14 @@ def main():
         "use_llm_eval": use_llm_eval,
         "vector_high_threshold": args.vector_high_threshold,
         "vector_low_threshold": args.vector_low_threshold,
-        "embedding_model": args.embedding_model,
+        "embedding_models": args.embedding_models,
+        "embedding_model": args.embedding_models[0] if args.embedding_models else None,  # backward-compatible key
         "constrained": args.constrained,  # ── NEW
         "ontology_path": args.ontology_path,  # ── NEW
         "gold_standard_path": args.gold_standard_path,
         "output_dir": args.output_dir,
         "validate_constrained_json": args.validate_constrained_json,
+        "openai_json_schema": args.openai_json_schema,
         "validation_schema_path": (
             args.validation_schema_path
             or resolved_validation_schema_path
@@ -1329,11 +1795,8 @@ def main():
         report_file = generate_evaluation_text_report(
             results, run_folder=run_folder, logger=logger,
         )
-        html_report_file = generate_evaluation_html_report(
-            results, run_folder=run_folder, logger=logger,
-        )
+
         logger.info("Human-readable evaluation report: %s", report_file)
-        logger.info("HTML evaluation report: %s", html_report_file)
 
     print_summary(results, logger)
 

@@ -10,21 +10,34 @@ import numpy as np
 from .ontology_lookup import lookup_in_all_ontologies
 from ..config import ExtractionConfig
 
-try:
-    from sentence_transformers import SentenceTransformer
-    _EMBED_MODEL: SentenceTransformer | None = None
-    _EMBED_MODEL_NAME: str | None = None
-except Exception:
-    SentenceTransformer = None  # type: ignore
-    _EMBED_MODEL = None
-    _EMBED_MODEL_NAME = None
+SentenceTransformer: Any | None = None
+_SENTENCE_TRANSFORMERS_AVAILABLE: bool | None = None
+_EMBED_MODEL: Any | None = None
+_EMBED_MODEL_NAME: str | None = None
+_EMBED_MODEL_FAILED_NAMES: set[str] = set()
 
 LOGGER = logging.getLogger("midas-llm")
 
 
-def _get_embedder(model_name: str | None = None) -> SentenceTransformer | None:
-    global _EMBED_MODEL, _EMBED_MODEL_NAME
-    if SentenceTransformer is None:
+def _get_embedder(model_name: str | None = None) -> Any | None:
+    global SentenceTransformer, _SENTENCE_TRANSFORMERS_AVAILABLE
+    global _EMBED_MODEL, _EMBED_MODEL_NAME, _EMBED_MODEL_FAILED_NAMES
+
+    if _SENTENCE_TRANSFORMERS_AVAILABLE is None:
+        try:
+            from sentence_transformers import SentenceTransformer as _SentenceTransformer
+            SentenceTransformer = _SentenceTransformer
+            _SENTENCE_TRANSFORMERS_AVAILABLE = True
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning(
+                "sentence-transformers unavailable in ontology linker: %s. "
+                "Falling back to difflib.",
+                exc,
+            )
+            _SENTENCE_TRANSFORMERS_AVAILABLE = False
+            SentenceTransformer = None
+
+    if not _SENTENCE_TRANSFORMERS_AVAILABLE or SentenceTransformer is None:
         return None
 
     # Use config default if no model_name provided
@@ -33,15 +46,29 @@ def _get_embedder(model_name: str | None = None) -> SentenceTransformer | None:
         model_name = config.embedding_model
 
     # Prepend "sentence-transformers/" if not already present
-    if model_name and not model_name.startswith("sentence-transformers/"):
+    if model_name and "/" not in model_name and not model_name.startswith("sentence-transformers/"):
         model_name = f"sentence-transformers/{model_name}"
+
+    if model_name in _EMBED_MODEL_FAILED_NAMES:
+        return None
 
     # Reload model if model name changed
     if _EMBED_MODEL is None or _EMBED_MODEL_NAME != model_name:
         try:
-            _EMBED_MODEL = SentenceTransformer(model_name)
+            _EMBED_MODEL = SentenceTransformer(
+                model_name,
+                model_kwargs={"use_safetensors": True},
+            )
             _EMBED_MODEL_NAME = model_name
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.error(
+                "Failed to load sentence-transformer '%s' with safetensors: %s. "
+                "Caching this failure for the current process.",
+                model_name,
+                exc,
+            )
+            if model_name:
+                _EMBED_MODEL_FAILED_NAMES.add(model_name)
             _EMBED_MODEL = None
             _EMBED_MODEL_NAME = None
     return _EMBED_MODEL

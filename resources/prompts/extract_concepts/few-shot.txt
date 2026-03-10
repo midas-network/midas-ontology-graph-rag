@@ -10,6 +10,7 @@ NOTE:
 - The schema is the source of truth for required fields and enum values.
 - For controlled fields (data_used, intervention_types, model_type), prefer MIDAS ontology terms from the provided vocab file.
 - Normalize variants using the provided synonym map.
+- Assistant output must start with { and end with } with no surrounding quotes or markdown fences.
 
 Title:
 Nowcasting and forecasting the 2022 U.S. mpox outbreak: Support for public health decision making and lessons learned

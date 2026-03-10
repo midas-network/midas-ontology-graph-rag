@@ -54,6 +54,27 @@ def _parse_model_list(value: str) -> list[str]:
     return [m.strip() for m in value.split(",") if m.strip()]
 
 
+DEFAULT_EMBEDDING_MODELS = [
+    "BAAI/bge-m3",
+    "FremyCompany/BioLORD-2023-C",
+    "sentence-transformers/all-MiniLM-L6-v2",
+    "cambridgeltl/SapBERT-from-PubMedBERT-fulltext",
+]
+
+
+def _default_embedding_models() -> list[str]:
+    """Resolve embedding model list from env with backward-compatible fallbacks."""
+    multi = _parse_model_list(os.getenv("EMBEDDING_MODELS", ""))
+    if multi:
+        return multi
+
+    legacy = _parse_model_list(os.getenv("EMBEDDING_MODEL", ""))
+    if legacy:
+        return legacy
+
+    return list(DEFAULT_EMBEDDING_MODELS)
+
+
 @dataclass
 class ExtractionConfig:
     """Application configuration with env var overrides."""
@@ -87,9 +108,14 @@ class ExtractionConfig:
 
     # LLM settings - NIM / OpenAI-compatible
     nim_models: list[str] = field(default_factory=lambda: _parse_model_list(
+        #os.getenv("NIM_MODELS", "nvidia/llama-3.1-nemotron-70b-instruct")
         #os.getenv("NIM_MODELS", "nvidia/llama-3.3-nemotron-super-49b-v1")
         #os.getenv("NIM_MODELS", "meta/llama-3.1-8b-instruct")
-        os.getenv("NIM_MODELS", "deepseek-ai/deepseek-r1-distill-llama-70b")
+        #os.getenv("NIM_MODELS", "deepseek-ai/deepseek-r1-distill-llama-70b")
+        #os.getenv("NIM_MODELS", "qwen/qwen-2.5-7b-instruct")
+        #os.getenv("NIM_MODELS", "meta/llama-3.1-8b-instruct")
+        #os.getenv("NIM_MODELS", "mistral-nemo-12b-instruct")
+        os.getenv("NIM_MODELS", "nvidia/llama-3.1-nemotron-nano-8b-v1")
     ))
     nim_host: str = field(default_factory=lambda: os.getenv("NIM_HOST", "http://localhost:8000"))
 
@@ -104,9 +130,12 @@ class ExtractionConfig:
     generate_evaluation_report: bool = field(default_factory=lambda: _env_bool("GENERATE_EVALUATION_REPORT", True))
 
     # Embeddings / Sentence Transformers
-    embedding_model: str = field(default_factory=lambda: os.getenv(
-        "EMBEDDING_MODEL","FremyCompany/BioLORD-2023-C"
-    ))
+    embedding_models: list[str] = field(default_factory=_default_embedding_models)
+
+    #cambridgeltl/SapBERT-from-PubMedBERT-fulltext
+    #FremyCompany/BioLORD-2023-C
+    #BAAI/bge-m3
+    
 
     def __post_init__(self) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -116,6 +145,8 @@ class ExtractionConfig:
             self.ollama_host = f"http://{self.ollama_host}"
         if not self.nim_host.startswith(("http://", "https://")):
             self.nim_host = f"http://{self.nim_host}"
+        if not self.embedding_models:
+            self.embedding_models = list(DEFAULT_EMBEDDING_MODELS)
 
     @property
     def active_llm_model(self) -> str:
@@ -142,19 +173,36 @@ class ExtractionConfig:
             return self.nim_host
         return self.ollama_host
 
+    @property
+    def embedding_model(self) -> str:
+        """Backward-compatible single-model accessor."""
+        return self.embedding_models[0]
+
     def log_config(self, logger: logging.Logger | None = None) -> None:
         """Log all configuration options in a nicely formatted table."""
         logger = logger or LOGGER
-        max_name = max(len(f.name) for f in fields(self))
+        llm_provider_prefix = "nim_" if self.llm_api_type == "openai_compatible" else "ollama_"
+        hidden_provider_prefix = "ollama_" if self.llm_api_type == "openai_compatible" else "nim_"
+        visible_field_names = [
+            f.name for f in fields(self)
+            if not f.name.startswith(hidden_provider_prefix)
+        ]
+
+        max_name = max(len(name) for name in visible_field_names)
         header = f"{'Option':<{max_name}}  Value"
         sep = "-" * len(header)
         logger.info("Configuration:")
         logger.info(sep)
         logger.info(header)
         logger.info(sep)
-        for f in fields(self):
-            value = getattr(self, f.name)
-            logger.info(f"{f.name:<{max_name}}  {value}")
+        for field_name in visible_field_names:
+            value = getattr(self, field_name)
+            logger.info(f"{field_name:<{max_name}}  {value}")
+        logger.info(sep)
+        logger.info(
+            "LLM provider-specific options shown for active provider: %s",
+            llm_provider_prefix.rstrip("_"),
+        )
         # Also log computed properties
         logger.info(sep)
         logger.info("Active LLM settings:")

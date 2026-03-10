@@ -15,8 +15,8 @@ from typing import Any
 LOGGER = logging.getLogger("midas-llm")
 
 # Lazy-loaded singleton for the embedding model
-_embedding_model = None
-_embedding_model_name: str | None = None
+_embedding_models: dict[str, Any] = {}
+_embedding_model_load_failures: dict[str, str] = {}
 _sentence_transformers_available: bool | None = None
 
 
@@ -46,24 +46,37 @@ def _get_embedding_model(model_name: str = "all-MiniLM-L6-v2"):
     Returns:
         SentenceTransformer model instance, or None if not available.
     """
-    global _embedding_model, _embedding_model_name
+    global _embedding_models, _embedding_model_load_failures
 
     if not _check_sentence_transformers_available():
         return None
 
-    # Load model if not cached or if model name changed
-    if _embedding_model is None or _embedding_model_name != model_name:
+    # Short-circuit known failures to avoid repeated heavyweight load attempts.
+    if model_name in _embedding_model_load_failures:
+        return None
+
+    # Load model if not cached
+    if model_name not in _embedding_models:
         try:
             from sentence_transformers import SentenceTransformer
             LOGGER.info("Loading sentence embedding model: %s", model_name)
-            _embedding_model = SentenceTransformer(model_name)
-            _embedding_model_name = model_name
+            _embedding_models[model_name] = SentenceTransformer(
+                model_name,
+                model_kwargs={"use_safetensors": True},
+            )
             LOGGER.info("Sentence embedding model loaded successfully")
         except Exception as e:
-            LOGGER.error("Failed to load embedding model '%s': %s", model_name, e)
+            _embedding_model_load_failures[model_name] = str(e)
+            LOGGER.error(
+                "Failed to load embedding model '%s': %s. "
+                "Caching this failure for the current process; "
+                "subsequent calls will not retry this model.",
+                model_name,
+                e,
+            )
             return None
 
-    return _embedding_model
+    return _embedding_models[model_name]
 
 
 def compute_similarity(

@@ -3,6 +3,7 @@ from __future__ import annotations
 """Package entrypoint for concept extraction."""
 
 import argparse
+import json
 import logging
 import sys
 from datetime import datetime
@@ -120,6 +121,28 @@ def main() -> None:
         print(prompt)
         return
 
+    repo_root = Path(__file__).resolve().parents[2]
+    schema_candidates = [
+        repo_root / "resources" / "schemas" / "midas_schema.json",
+        repo_root / "midas_schema.json",
+    ]
+    constrained_schema = None
+    for schema_path in schema_candidates:
+        if schema_path.is_file():
+            try:
+                constrained_schema = json.loads(schema_path.read_text(encoding="utf-8"))
+                logger.info("Using constrained schema: %s", schema_path)
+                break
+            except json.JSONDecodeError as e:
+                logger.error("Invalid constrained schema JSON at %s: %s", schema_path, e)
+                return
+    if constrained_schema is None:
+        logger.error(
+            "Constrained schema not found. Expected one of: %s",
+            ", ".join(str(p) for p in schema_candidates),
+        )
+        return
+
     if config.enable_ontology_linking:
         executor, background_tasks = start_background_ontology_loading()
     else:
@@ -142,6 +165,7 @@ def main() -> None:
                 llm_host=config.active_llm_host,
                 timeout_seconds=config.llm_timeout,
                 api_type=config.llm_api_type,
+                json_schema=constrained_schema,
             )
 
             extracted_data = parse_and_display_extracted_data(response.content, logger=logger)
@@ -216,4 +240,3 @@ def main() -> None:
 def cli() -> None:
     """CLI entrypoint."""
     main()
-

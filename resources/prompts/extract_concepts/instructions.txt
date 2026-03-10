@@ -23,6 +23,12 @@ CRITICAL RULES
 - Do not invent enum values. Use exact schema spellings only.
 - Do not invent controlled-vocabulary labels. Prefer MIDAS terms for controlled fields.
 
+HARD OUTPUT CONTRACT (NON-NEGOTIABLE)
+- Output MUST be a JSON object.
+- The first character MUST be { and the last character MUST be }.
+- No leading text, no trailing text, no surrounding quotes, no markdown, no code fences.
+- Do not return JSON as a string.
+
 CONTROLLED VOCABULARY FIELDS
 For these fields, prefer exact MIDAS ontology terms from the vocab list:
 - data_used

@@ -46,6 +46,35 @@ def candidate_ollama_hosts(initial_host: str | None = None) -> List[str]:
     return candidates
 
 
+def candidate_openai_compatible_hosts(initial_host: str | None = None) -> List[str]:
+    """Build an ordered list of candidate OpenAI-compatible hosts/ports to probe."""
+    candidates: List[str] = []
+    seen: set[str] = set()
+
+    env_host = (
+        os.getenv("NIM_HOST")
+        or os.getenv("OPENAI_API_BASE")
+        or os.getenv("OPENAI_BASE_URL")
+    )
+    env_port = os.getenv("NIM_PORT")
+    hostname = socket.gethostname()
+    fqdn = socket.getfqdn()
+
+    for host in (initial_host, env_host):
+        _append_candidate(candidates, seen, host)  # prefer explicit inputs
+
+    # Respect custom port if provided, default to 8000 for many local OpenAI-compatible servers.
+    ports = [env_port] if env_port else []
+    if "8000" not in ports:
+        ports.append("8000")
+
+    for port in ports:
+        for base in ("localhost", "127.0.0.1", hostname, fqdn):
+            _append_candidate(candidates, seen, f"{base}:{port}")
+
+    return candidates
+
+
 def probe_llm_host(
         host: str,
         api_type: str = "ollama",
@@ -84,7 +113,10 @@ def autodetect_llm_host(
         logger: logging.Logger = LOGGER
 ) -> str | None:
     """Probe likely hosts and return the first reachable one."""
-    candidates = candidate_ollama_hosts(initial_host)
+    if api_type == "openai_compatible":
+        candidates = candidate_openai_compatible_hosts(initial_host)
+    else:
+        candidates = candidate_ollama_hosts(initial_host)
     for host in candidates:
         ok, _ = probe_llm_host(host, api_type=api_type, timeout=timeout, logger=logger)
         if ok:

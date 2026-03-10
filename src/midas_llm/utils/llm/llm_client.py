@@ -1,12 +1,14 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Any, Tuple
+from typing import Any, Literal, Tuple
 from enum import Enum
 import time
 import logging
 import httpx
 
 LOGGER = logging.getLogger("midas-llm")
+OpenAIResponseFormatMode = Literal["json_schema", "json_object", "none"]
+_OPENAI_RESPONSE_FORMAT_MODE_BY_HOST: dict[str, OpenAIResponseFormatMode] = {}
 
 
 class APIType(Enum):
@@ -20,6 +22,67 @@ class LLMResponse:
     model: str
     done: bool = True
     constrained: bool = False  # True if response used constrained decoding
+    request_duration_s: float | None = None
+    total_duration_s: float | None = None
+    load_duration_s: float | None = None
+    prompt_eval_duration_s: float | None = None
+    eval_duration_s: float | None = None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    reasoning_tokens: int | None = None
+    usage: dict[str, Any] | None = None
+
+
+def _ns_to_seconds(value: Any) -> float | None:
+    """Convert provider nanosecond duration fields to seconds."""
+    if isinstance(value, (int, float)):
+        return float(value) / 1_000_000_000.0
+    return None
+
+
+def _response_format_error(text: str) -> bool:
+    """Detect OpenAI-compatible errors about unsupported response_format."""
+    lowered = text.lower()
+    hints = ("response_format", "json_schema", "json_object")
+    return any(hint in lowered for hint in hints)
+
+
+def _set_openai_response_format_mode(
+    host: str,
+    mode: OpenAIResponseFormatMode,
+    *,
+    logger: logging.Logger,
+    reason: str,
+) -> None:
+    """Cache the best-known response_format mode for this host."""
+    host_key = host.rstrip("/")
+    previous = _OPENAI_RESPONSE_FORMAT_MODE_BY_HOST.get(host_key)
+    _OPENAI_RESPONSE_FORMAT_MODE_BY_HOST[host_key] = mode
+    if previous != mode:
+        logger.warning(
+            "OpenAI-compatible host %s response_format mode set to %s (%s)",
+            host_key, mode, reason,
+        )
+
+
+def _set_openai_response_format(
+    payload: dict[str, Any],
+    mode: OpenAIResponseFormatMode,
+    json_schema: dict[str, Any],
+) -> None:
+    if mode == "json_schema":
+        payload["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "midas_extraction",
+                "strict": True,
+                "schema": json_schema,
+            },
+        }
+    elif mode == "json_object":
+        payload["response_format"] = {"type": "json_object"}
+    else:
+        payload.pop("response_format", None)
 
 
 def send_to_llm(
@@ -29,6 +92,7 @@ def send_to_llm(
         timeout_seconds: int = 300000,
         api_type: APIType | str = APIType.OLLAMA,
         json_schema: dict[str, Any] | None = None,
+        allow_json_schema: bool = False,
         logger: logging.Logger = LOGGER,
 ) -> LLMResponse:
     """Send prompt to LLM and return response.
@@ -41,9 +105,13 @@ def send_to_llm(
         api_type: 'ollama' or 'openai_compatible'.
         json_schema: Optional JSON schema for constrained decoding.
             When provided:
-              - NIM/OpenAI-compatible: uses response_format.json_schema
+              - NIM/OpenAI-compatible: uses response_format.json_object by default
+                (or response_format.json_schema if allow_json_schema=True)
               - Ollama: uses the format parameter
             When None: unconstrained text generation (existing behavior).
+        allow_json_schema: For OpenAI-compatible APIs, only attempt
+            response_format.type="json_schema" when True. Default False
+            uses response_format.type="json_object".
         logger: Logger instance.
 
     Returns:
@@ -63,7 +131,7 @@ def send_to_llm(
     if api_type == APIType.OPENAI_COMPATIBLE:
         return _send_openai_compatible(
             prompt, llm_model, llm_host, timeout_seconds,
-            json_schema=json_schema, logger=logger,
+            json_schema=json_schema, allow_json_schema=allow_json_schema, logger=logger,
         )
     else:
         return _send_ollama(
@@ -74,12 +142,13 @@ def send_to_llm(
 
 def _send_openai_compatible(
     prompt, llm_model, host, timeout_seconds,
-    *, json_schema=None, logger=LOGGER,
+    *, json_schema=None, allow_json_schema=False, logger=LOGGER,
 ):
     """Send to OpenAI-compatible API (vLLM, NVIDIA NIM, LiteLLM, etc.).
 
-    If json_schema is provided, enables constrained decoding via
-    response_format. NIM and vLLM both support this parameter.
+    If json_schema is provided, uses response_format with fallback-aware mode
+    selection. By default this starts with json_object; json_schema is only
+    attempted when allow_json_schema=True.
     """
     url = f"{host}/v1/chat/completions"
 
@@ -90,18 +159,24 @@ def _send_openai_compatible(
         "max_tokens": 16384,
     }
 
-    # ── Constrained decoding via JSON schema ──
+    response_mode: OpenAIResponseFormatMode = "none"
+
+    # ── Constrained decoding via JSON schema/json_object (fallback-aware) ──
     if json_schema is not None:
-        payload["response_format"] = {
-            "type": "json_schema",
-            "json_schema": {
-                "name": "midas_extraction",
-                "strict": True,
-                "schema": json_schema,
-            },
-        }
+        host_key = host.rstrip("/")
+        cached_mode = _OPENAI_RESPONSE_FORMAT_MODE_BY_HOST.get(host_key)
+        if allow_json_schema:
+            response_mode = cached_mode or "json_schema"
+        else:
+            if cached_mode == "none":
+                response_mode = "none"
+            else:
+                response_mode = "json_object"
+        _set_openai_response_format(payload, response_mode, json_schema)
         logger.info(
-            "Constrained decoding ENABLED (json_schema with %d properties)",
+            "Constrained decoding requested (mode=%s, json_schema_enabled=%s, %d schema properties)",
+            response_mode,
+            allow_json_schema,
             len(json_schema.get("properties", {})),
         )
 
@@ -112,28 +187,52 @@ def _send_openai_compatible(
         with httpx.Client(timeout=timeout_seconds) as client:
             resp = client.post(url, json=payload)
 
-            # If NIM rejects json_schema, fall back to json_object
-            if resp.status_code == 400 and json_schema is not None:
+            # If host rejects json_schema, cache and fall back to json_object.
+            if (
+                resp.status_code == 400
+                and json_schema is not None
+                and allow_json_schema
+                and response_mode == "json_schema"
+            ):
                 error_text = resp.text[:500]
-                if "json_schema" in error_text.lower() or "response_format" in error_text.lower():
+                if _response_format_error(error_text):
                     logger.warning(
                         "Server rejected json_schema format, "
                         "falling back to json_object mode: %s",
                         error_text[:200],
                     )
-                    payload["response_format"] = {"type": "json_object"}
+                    response_mode = "json_object"
+                    _set_openai_response_format_mode(
+                        host,
+                        response_mode,
+                        logger=logger,
+                        reason="json_schema rejected by server",
+                    )
+                    _set_openai_response_format(payload, response_mode, json_schema)
                     resp = client.post(url, json=payload)
 
-            # If json_object also fails, fall back to unconstrained
-            if resp.status_code == 400 and json_schema is not None:
+            # If host also rejects json_object, cache and fall back to unconstrained.
+            if (
+                resp.status_code == 400
+                and json_schema is not None
+                and response_mode == "json_object"
+            ):
                 error_text = resp.text[:500]
-                logger.warning(
-                    "Server rejected json_object format, "
-                    "falling back to unconstrained: %s",
-                    error_text[:200],
-                )
-                payload.pop("response_format", None)
-                resp = client.post(url, json=payload)
+                if _response_format_error(error_text):
+                    logger.warning(
+                        "Server rejected json_object format, "
+                        "falling back to unconstrained: %s",
+                        error_text[:200],
+                    )
+                    response_mode = "none"
+                    _set_openai_response_format_mode(
+                        host,
+                        response_mode,
+                        logger=logger,
+                        reason="json_object rejected by server",
+                    )
+                    _set_openai_response_format(payload, response_mode, json_schema)
+                    resp = client.post(url, json=payload)
 
             resp.raise_for_status()
             data = resp.json()
@@ -158,15 +257,22 @@ def _send_openai_compatible(
     # Detect whether constrained decoding was actually used
     used_constrained = (
         json_schema is not None
-        and "response_format" in payload
+        and response_mode != "none"
     )
 
-    usage = data.get("usage", {})
+    usage_raw = data.get("usage", {})
+    usage = usage_raw if isinstance(usage_raw, dict) else {}
+    prompt_tokens = usage.get("prompt_tokens")
+    completion_tokens = usage.get("completion_tokens")
+    reasoning_tokens = None
+    completion_details = usage.get("completion_tokens_details")
+    if isinstance(completion_details, dict):
+        reasoning_tokens = completion_details.get("reasoning_tokens")
     logger.debug(
         "Response in %.2fs (%d chars, %d prompt tokens, %d output tokens, constrained=%s)",
         llm_elapsed, len(content),
-        usage.get("prompt_tokens", 0),
-        usage.get("completion_tokens", 0),
+        prompt_tokens or 0,
+        completion_tokens or 0,
         used_constrained,
     )
 
@@ -175,6 +281,11 @@ def _send_openai_compatible(
         model=llm_model,
         done=True,
         constrained=used_constrained,
+        request_duration_s=llm_elapsed,
+        prompt_tokens=prompt_tokens if isinstance(prompt_tokens, int) else None,
+        completion_tokens=completion_tokens if isinstance(completion_tokens, int) else None,
+        reasoning_tokens=reasoning_tokens if isinstance(reasoning_tokens, int) else None,
+        usage=usage if usage else None,
     )
 
 
@@ -269,11 +380,26 @@ def _send_ollama(
         llm_elapsed, len(content), used_constrained,
     )
 
+    usage = {
+        "prompt_tokens": data.get("prompt_eval_count"),
+        "completion_tokens": data.get("eval_count"),
+    }
+
     return LLMResponse(
         content=content,
         model=llm_model,
         done=data.get("done", True),
         constrained=used_constrained,
+        request_duration_s=llm_elapsed,
+        total_duration_s=_ns_to_seconds(data.get("total_duration")),
+        load_duration_s=_ns_to_seconds(data.get("load_duration")),
+        prompt_eval_duration_s=_ns_to_seconds(data.get("prompt_eval_duration")),
+        eval_duration_s=_ns_to_seconds(data.get("eval_duration")),
+        prompt_tokens=data.get("prompt_eval_count")
+        if isinstance(data.get("prompt_eval_count"), int) else None,
+        completion_tokens=data.get("eval_count")
+        if isinstance(data.get("eval_count"), int) else None,
+        usage=usage,
     )
 
 

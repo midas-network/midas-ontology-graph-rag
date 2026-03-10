@@ -7,8 +7,6 @@ import shutil
 from datetime import datetime
 from typing import Any
 
-from ..html_reports import generate_html_report
-
 LOGGER = logging.getLogger("midas-llm")
 
 

@@ -26,12 +26,13 @@ dev = [
     "mypy>=1.0.0",
 ]
 embeddings = [
-    "sentence-transformers>=2.2.0",
+    "sentence-transformers>=3.0.0",
+    "safetensors>=0.4.0",
 ]
 
 [project.scripts]
 midas-extract = "midas_llm.extract_concepts:cli"
-midas-download-ontologies = "midas_llm.scripts.download_ontologies:main"
+midas-download-ontologies = "ontology_dl.download_ontologies:main"
 midas-eval-gold = "midas_llm.scripts.evaluate_gold_standard:main"
 midas-generate-full-prompt = "midas_llm.scripts.generate_full_prompt:main"
 midas-send-fulltext-to-llm = "software_papers.scripts.send_fulltext_to_llm:main"
@@ -40,7 +41,7 @@ midas-download-software-papers-fulltext = "software_papers.scripts.download_soft
 midas-get-full-text-from-entrez = "software_papers.scripts.get_full_text_from_entrez:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/midas_llm", "src/software_papers"]
+packages = ["src/midas_llm", "src/software_papers", "src/ontology_dl"]
 
 [tool.ruff]
 target-version = "py310"
@@ -49,7 +50,7 @@ select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
 ignore = ["E501"]
 
 [tool.ruff.isort]
-known-first-party = ["midas_llm", "software_papers"]
+known-first-party = ["midas_llm", "software_papers", "ontology_dl"]
 
 [tool.mypy]
 python_version = "3.10"

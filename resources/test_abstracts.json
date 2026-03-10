@@ -1,14 +1,18 @@
 {
-  "version": "3.2-constrained",
-  "created": "2026-02-25",
-  "parent_version": "3.1-fixed",
-  "description": "Gold standard transformed to constrained schema format. All expected fields now use {values, reasoning}. Legacy {value, tier} entries were flattened into values arrays and tier/provenance intent was preserved in reasoning text. Enum normalization applied (e.g., county-level -> sub-national).",
+  "version": "3.3-expanded",
+  "created": "2026-03-02",
+  "parent_version": "3.2-constrained",
+  "description": "Expanded gold standard with 20 abstracts (1 original + 19 new). All entries use constrained {values, reasoning} format. New entries cover COVID-19, influenza, RSV, dengue, Ebola, cholera, malaria, and multi-pathogen studies across Bayesian, statistical, compartmental, agent-based, and phylodynamic model types. Includes deliberate edge cases for calibration vs. validation, code availability, multi-pathogen, wastewater data, and intervention evaluation.",
   "changelog": [
     "v3.2: Converted every expected field to object format {values, reasoning}",
     "v3.2: Flattened legacy [{value, tier}] structures to string arrays in values",
     "v3.2: Preserved explicit/inferred signals in reasoning strings",
     "v3.2: Normalized geographic_scope 'county-level' to 'sub-national' for schema conformance",
-    "v3.2: Wrapped legacy scalar statuses (yes/no/not mentioned/not specified/not applicable) into values arrays"
+    "v3.2: Wrapped legacy scalar statuses (yes/no/not mentioned/not specified/not applicable) into values arrays",
+    "v3.3: Added 19 new gold-standard abstracts covering diverse pathogens and model types",
+    "v3.3: Edge cases included for calibration/validation confusion, code availability, multi-pathogen, wastewater data",
+    "v3.3: All new entries conform to MIDAS preferred vocabulary and synonym normalization",
+    "v3.3: Abstracts sourced from PubMed/journal sites and verified against DOIs"
   ],
   "abstracts": [
     {
@@ -151,6 +155,2735 @@
             "not specified"
           ],
           "reasoning": "End date is not explicitly stated in the abstract."
+        }
+      }
+    },
+    {
+      "id": "bayesian_covid_rt_multicountry",
+      "title": "A Bayesian approach for monitoring epidemics in presence of undetected cases",
+      "journal": "Chaos, Solitons & Fractals, 2020",
+      "abstract": "One of the key indicators used in tracking the evolution of an infectious disease is the reproduction number. This quantity is usually computed using the reported number of cases, but ignoring that many more individuals may be infected (e.g. asymptomatic carriers). We develop a Bayesian procedure to quantify the impact of undetected infectious cases on the determination of the effective reproduction number. Our approach is stochastic, data-driven and not relying on any compartmental model. It is applied to the COVID-19 outbreak in eight different countries and all Italian regions, showing that the effect of undetected cases leads to estimates of the effective reproduction numbers larger than those obtained only with the reported cases by factors ranging from two to ten.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "Explicitly described as stochastic and data-driven."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] SARS-CoV-2 is a virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "national",
+            "sub-national"
+          ],
+          "reasoning": "Applied to eight countries (national) and all Italian regions (sub-national)."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Analyzes the observed COVID-19 outbreak."
+        },
+        "study_goal_category": {
+          "values": [
+            "parameter estimation"
+          ],
+          "reasoning": "Explicitly estimates the effective reproduction number."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated in the abstract."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Bayesian inference procedure is used to estimate parameters."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Case Count"
+          ],
+          "reasoning": "Uses reported number of cases explicitly."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Bayesian Model",
+            "Statistical Model",
+            "Parameter Estimation"
+          ],
+          "reasoning": "Bayesian procedure is explicit. Statistical (non-compartmental) approach. Parameter estimation of Rt."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "[Inferred] COVID-19 is caused by SARS-CoV-2."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health outbreak context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Population-level analysis across countries."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Community-level outbreak analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "Italy",
+            "multiple countries"
+          ],
+          "reasoning": "Eight countries and all Italian regions are explicitly named."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data provider is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [
+            "Bayesian inference"
+          ],
+          "reasoning": "Bayesian procedure for parameter estimation is explicitly described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "effective reproduction number"
+          ],
+          "reasoning": "Explicitly stated as the key outcome."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific start date is given in the abstract."
+        },
+        "study_dates_end": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific end date is given in the abstract."
+        }
+      }
+    },
+    {
+      "id": "ihme_seir_covid_us_scenarios",
+      "title": "Modeling COVID-19 scenarios for the United States",
+      "journal": "Nature Medicine, 2021",
+      "abstract": "We use COVID-19 case and mortality data from 1 February 2020 to 21 September 2020 and a deterministic SEIR (susceptible, exposed, infectious and recovered) compartmental framework to model possible trajectories of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) infections and the effects of non-pharmaceutical interventions in the United States at the state level from 22 September 2020 through 28 February 2021. Using this SEIR model, and projections of critical driving covariates (pneumonia seasonality, mobility, testing rates and mask use per capita), we assessed scenarios of social distancing mandates and levels of mask use. Projections of current non-pharmaceutical intervention strategies by state—with social distancing mandates reinstated when a threshold of 8 deaths per million population is exceeded (reference scenario)—suggest that, cumulatively, 511,373 (469,578–578,347) lives could be lost to COVID-19 across the United States by 28 February 2021. We find that achieving universal mask use (95% mask use in public) could be sufficient to ameliorate the worst effects of epidemic resurgences in many states. Universal mask use could save an additional 129,574 (85,284–170,867) lives from September 22, 2020 through the end of February 2021, or an additional 95,814 (60,731–133,077) lives assuming a lesser adoption of mask wearing (85%), when compared to the reference scenario.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "deterministic"
+          ],
+          "reasoning": "Explicitly described as a deterministic SEIR framework."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "SARS-CoV-2 is explicitly named as the pathogen."
+        },
+        "geographic_scope": {
+          "values": [
+            "national",
+            "sub-national"
+          ],
+          "reasoning": "United States national level with state-level projections."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "hypothetical"
+          ],
+          "reasoning": "Projects future scenarios (September 2020 through February 2021)."
+        },
+        "study_goal_category": {
+          "values": [
+            "scenario analysis"
+          ],
+          "reasoning": "Explicitly assesses scenarios of social distancing mandates and mask use."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Evaluates non-pharmaceutical interventions (social distancing, mask use)."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is described in the abstract."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Mortality",
+            "Human Movement",
+            "Surveillance"
+          ],
+          "reasoning": "Case data, mortality data, mobility covariates, and testing rates are explicitly mentioned. [Normalized] Mapped to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Control Strategy"
+          ],
+          "reasoning": "Social distancing mandates and mask use are non-pharmaceutical control strategies. [Normalized] to MIDAS preferred term."
+        },
+        "model_type": {
+          "values": [
+            "Compartmental Models",
+            "Scenario Analysis"
+          ],
+          "reasoning": "SEIR compartmental framework is explicit. Scenario analysis is the study purpose."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] State-level population projections."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Population-level community analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "United States"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data repository or provider is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described in the abstract."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "deaths",
+            "infections"
+          ],
+          "reasoning": "Cumulative lives lost and infection trajectories are explicitly projected."
+        },
+        "study_dates_start": {
+          "values": [
+            "2020-02-01"
+          ],
+          "reasoning": "Explicitly states data from 1 February 2020."
+        },
+        "study_dates_end": {
+          "values": [
+            "2021-02-28"
+          ],
+          "reasoning": "Projections through 28 February 2021 are explicitly stated."
+        }
+      }
+    },
+    {
+      "id": "covid_timeseries_arima_multicountry",
+      "title": "Prediction and analysis of COVID-19 daily new cases and cumulative cases: times series forecasting and machine learning models",
+      "journal": "BMC Infectious Diseases, 2022",
+      "abstract": "Background: COVID-19 poses a severe threat to global human health, especially the USA, Brazil, and India cases continue to increase dynamically, which has a far-reaching impact on people's health, social activities, and the local economic situation. Methods: The study proposed the ARIMA, SARIMA and Prophet models to predict daily new cases and cumulative confirmed cases in the USA, Brazil and India over the next 30 days based on the COVID-19 new confirmed cases and cumulative confirmed cases data set (May 1, 2020, and November 30, 2021) published by the official WHO, Three models were implemented in the R 4.1.1 software with forecast and prophet package. The performance of different models was evaluated by using root mean square error (RMSE), mean absolute error (MAE) and mean absolute percentage error (MAPE). Results: Through the fitting and prediction of daily new case data, we reveal that the Prophet model has more advantages in the prediction of the COVID-19 of the USA, which could compose data components and capture periodic characteristics when the data changes significantly, while SARIMA is more likely to appear over-fitting in the USA. And the SARIMA model captured a seven-day period hidden in daily COVID-19 new cases from 3 countries. While in the prediction of new cumulative cases, the ARIMA model has a better ability to fit and predict the data with a positive growth trend in different countries (Brazil and India). Conclusions: This study can shed light on understanding the outbreak trends and give an insight into the epidemiological control of these regions. Further, the prediction of the Prophet model showed sufficient accuracy in the daily COVID-19 new cases of the USA.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "deterministic"
+          ],
+          "reasoning": "[Inferred] ARIMA/SARIMA/Prophet are deterministic time series models."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] SARS-CoV-2 is a virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "national"
+          ],
+          "reasoning": "Country-level predictions for USA, Brazil, and India."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Uses observed data (May 2020 to November 2021) for fitting and prediction."
+        },
+        "study_goal_category": {
+          "values": [
+            "forecast/nowcast"
+          ],
+          "reasoning": "Explicitly predicts daily new cases and cumulative cases."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "Model fitting is mentioned but no calibration method (MCMC, MLE, etc.) is named. Evaluation uses RMSE/MAE/MAPE which are validation metrics."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Cumulative Case Count",
+            "Incident Case Count",
+            "Time Series"
+          ],
+          "reasoning": "Daily new cases and cumulative confirmed cases are explicit. Time series data is the modeling framework. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Forecasting",
+            "Statistical Model"
+          ],
+          "reasoning": "ARIMA/SARIMA/Prophet are statistical time series forecasting models. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "[Inferred] COVID-19 is caused by SARS-CoV-2."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Country-level population data."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Population-level analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "United States",
+            "Brazil",
+            "India"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "WHO"
+          ],
+          "reasoning": "Explicitly states data published by the official WHO."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is named. RMSE/MAE/MAPE are evaluation metrics, not calibration."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "cases",
+            "RMSE",
+            "MAE",
+            "MAPE"
+          ],
+          "reasoning": "Daily new cases and cumulative cases are predicted. RMSE, MAE, MAPE are explicit evaluation metrics."
+        },
+        "study_dates_start": {
+          "values": [
+            "2020-05-01"
+          ],
+          "reasoning": "Explicitly states May 1, 2020."
+        },
+        "study_dates_end": {
+          "values": [
+            "2021-11-30"
+          ],
+          "reasoning": "Explicitly states November 30, 2021."
+        }
+      }
+    },
+    {
+      "id": "covid_npi_evaluation_global",
+      "title": "Estimating worldwide effects of non-pharmaceutical interventions on COVID-19 incidence and population mobility patterns using a multiple-event study",
+      "journal": "Scientific Reports, 2021",
+      "abstract": "Various non-pharmaceutical interventions were adopted by countries worldwide in the fight against the COVID-19 pandemic with adverse socioeconomic side effects, which raises the question about their differential effectiveness. We estimate the average dynamic effect of each intervention on the incidence of COVID-19 and on people's whereabouts by developing a statistical model that accounts for the contemporaneous adoption of multiple interventions. Using daily data from 175 countries, we show that, even after controlling for other concurrent lockdown policies, cancelling public events, imposing restrictions on private gatherings and closing schools and workplaces had significant effects on reducing COVID-19 infections. Restrictions on internal movement and public transport had no effects because the aforementioned policies, imposed earlier on average, had already de facto reduced human mobility. International travel restrictions, although imposed early, had a short-lived effect failing to prevent the epidemic from turning into a pandemic because they were less stringent. We interpret the impact of each intervention on containing the pandemic using a conceptual framework which relies on their effects on human mobility behaviors in a manner consistent with time-use and epidemiological factors.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state whether the model is deterministic or stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] SARS-CoV-2 is a virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "175 countries worldwide is explicitly stated."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Analyzes observed effects of actually implemented NPIs."
+        },
+        "study_goal_category": {
+          "values": [
+            "intervention evaluation"
+          ],
+          "reasoning": "Explicitly estimates the effect of each intervention on COVID-19 incidence."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Evaluates multiple non-pharmaceutical interventions explicitly."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is described."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Human Movement"
+          ],
+          "reasoning": "Daily incidence data and population mobility patterns are explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Event Cancellations",
+            "School Closure",
+            "Control Strategy"
+          ],
+          "reasoning": "Cancelling public events, closing schools/workplaces, gathering restrictions, and travel restrictions are explicitly evaluated. [Normalized] to MIDAS preferred terms."
+        },
+        "model_type": {
+          "values": [
+            "Statistical Model"
+          ],
+          "reasoning": "Explicitly develops a statistical model."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "[Inferred] COVID-19 is caused by SARS-CoV-2."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Country-level population analysis."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Population-level community analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "175 countries"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data source is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "incidence",
+            "mobility"
+          ],
+          "reasoning": "COVID-19 incidence and population mobility patterns are explicitly evaluated."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific start date is given in the abstract."
+        },
+        "study_dates_end": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific end date is given in the abstract."
+        }
+      }
+    },
+    {
+      "id": "covid_wastewater_prevalence_germany",
+      "title": "Estimating the COVID-19 prevalence from wastewater",
+      "journal": "Scientific Reports, 2024",
+      "abstract": "Wastewater based epidemiology has become a widely used tool for monitoring trends of concentrations of different pathogens, most notably and widespread of SARS-CoV-2. Therefore, in 2022, also in Rhineland–Palatinate, the Ministry of Science and Health has included 16 wastewater treatment sites in a surveillance program providing biweekly samples. However, the mere viral load data is subject to strong fluctuations and has limited value for political deciders on its own. Therefore, the state of Rhineland–Palatinate has commissioned the University Medical Center at Johannes Gutenberg University Mainz to conduct a representative cohort study called SentiSurv, in which an increasing number of up to 12,000 participants have been using sensitive antigen self-tests once or twice a week to test themselves for SARS-CoV-2 and report their status. This puts the state of Rhineland–Palatinate in the fortunate position of having time series of both, the viral load in wastewater and the prevalence of SARS-CoV-2 in the population. Our main contribution is a calibration study based on the data from 2023-01-08 until 2023-10-01 where we identified a scaling factor (0.208 ± 0.031) and a delay (5.07 ± 2.30 days) between the virus load in wastewater, normalized by the pepper mild mottle virus (PMMoV), and the prevalence recorded in the SentiSurv study. The relation is established by fitting an epidemiological model to both time series. We show how that can be used to estimate the prevalence when the cohort data is no longer available and how to use it as a forecasting instrument several weeks ahead of time. We show that the calibration and forecasting quality and the resulting factors depend strongly on how wastewater samples are normalized.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state whether the model is deterministic or stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "SARS-CoV-2 is explicitly named."
+        },
+        "geographic_scope": {
+          "values": [
+            "sub-national"
+          ],
+          "reasoning": "Rhineland-Palatinate is a state within Germany."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Uses observed data from January to October 2023."
+        },
+        "study_goal_category": {
+          "values": [
+            "parameter estimation"
+          ],
+          "reasoning": "Calibration study identifying a scaling factor and delay parameter."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Explicitly described as a calibration study with model fitting."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Wastewater",
+            "Surveillance",
+            "Time Series",
+            "Tests"
+          ],
+          "reasoning": "Wastewater viral load data, surveillance cohort data, time series of both, and antigen self-tests are explicitly described. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Statistical Model",
+            "Parameter Estimation",
+            "Forecasting"
+          ],
+          "reasoning": "Epidemiological model fitting for parameter estimation. Also used for forecasting. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated in title."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health surveillance context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "Representative cohort study of up to 12,000 participants from the general population."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Community-level wastewater and cohort surveillance."
+        },
+        "geographic_units": {
+          "values": [
+            "Rhineland-Palatinate, Germany"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "SentiSurv"
+          ],
+          "reasoning": "SentiSurv cohort study is explicitly named as the prevalence data source."
+        },
+        "calibration_techniques": {
+          "values": [
+            "model fitting"
+          ],
+          "reasoning": "Fitting an epidemiological model to both time series is explicitly described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "prevalence",
+            "scaling factor",
+            "delay"
+          ],
+          "reasoning": "SARS-CoV-2 prevalence, scaling factor, and delay between wastewater and prevalence are explicit outcomes."
+        },
+        "study_dates_start": {
+          "values": [
+            "2023-01-08"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "study_dates_end": {
+          "values": [
+            "2023-10-01"
+          ],
+          "reasoning": "Explicitly stated."
+        }
+      }
+    },
+    {
+      "id": "flusight_ensemble_forecasting_us",
+      "title": "Evaluation of FluSight influenza forecasting in the 2021–22 and 2022–23 seasons with a new target laboratory-confirmed influenza hospitalizations",
+      "journal": "Nature Communications, 2024",
+      "abstract": "Accurate forecasts can enable more effective public health responses during seasonal influenza epidemics. For the 2021–22 and 2022–23 influenza seasons, 26 forecasting teams provided national and jurisdiction-specific probabilistic predictions of weekly confirmed influenza hospital admissions for one-to-four weeks ahead. Forecast skill is evaluated using the Weighted Interval Score (WIS), relative WIS, and coverage. Six out of 23 models outperform the baseline model across forecast weeks and locations in 2021–22 and 12 out of 18 models in 2022–23. Averaging across all forecast targets, the FluSight ensemble is the 2nd most accurate model measured by WIS in 2021–22 and the 5th most accurate in the 2022–23 season. Forecast skill and 95% coverage for the FluSight ensemble and most component models degrade over longer forecast horizons. In this work we demonstrate that while the FluSight ensemble was a robust predictor, even ensembles face challenges during periods of rapid change.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "[Inferred] Probabilistic predictions with interval scores indicate stochastic forecasting."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] Influenza is caused by influenza virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "national",
+            "sub-national"
+          ],
+          "reasoning": "National and jurisdiction-specific predictions are explicitly stated."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Evaluates forecasts from the 2021-22 and 2022-23 seasons."
+        },
+        "study_goal_category": {
+          "values": [
+            "forecast/nowcast"
+          ],
+          "reasoning": "Explicitly evaluates influenza forecasting."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "WIS, relative WIS, and coverage are evaluation/validation metrics, not calibration."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Hospitalization",
+            "Surveillance"
+          ],
+          "reasoning": "Laboratory-confirmed influenza hospital admissions are explicitly used. Surveillance context is explicit. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Forecasting",
+            "Ensemble Specification"
+          ],
+          "reasoning": "Ensemble forecasting is the explicit study purpose. [Normalized] to MIDAS preferred terms. Note: Ensemble Specification is a MIDAS data_used term used here as it best captures the ensemble methodology."
+        },
+        "pathogen_name": {
+          "values": [
+            "influenza virus"
+          ],
+          "reasoning": "[Inferred] Influenza is caused by influenza virus."
+        },
+        "disease_name": {
+          "values": [
+            "influenza"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Population-level forecasting."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Population-level analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "United States"
+          ],
+          "reasoning": "[Inferred] FluSight is a US CDC forecasting initiative."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data repository is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is named. WIS and coverage are evaluation metrics."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "hospitalizations",
+            "weighted interval score",
+            "coverage"
+          ],
+          "reasoning": "Influenza hospital admissions are the forecast target. WIS, relative WIS, and coverage are explicit evaluation metrics."
+        },
+        "study_dates_start": {
+          "values": [
+            "2021"
+          ],
+          "reasoning": "2021-22 season is explicitly referenced."
+        },
+        "study_dates_end": {
+          "values": [
+            "2023"
+          ],
+          "reasoning": "2022-23 season is explicitly referenced."
+        }
+      }
+    },
+    {
+      "id": "bayesian_frequentist_flu_ve_us",
+      "title": "Differences between Frequentist and Bayesian inference in routine surveillance for influenza vaccine effectiveness: a test-negative case-control study",
+      "journal": "BMC Public Health, 2021",
+      "abstract": "Background: Routine influenza vaccine effectiveness (VE) surveillance networks use frequentist methods to estimate VE. With data from more than a decade of VE surveillance from diverse global populations now available, using Bayesian methods to explicitly account for this knowledge may be beneficial. This study explores differences between Bayesian vs. frequentist inference in multiple seasons with varying VE. Methods: We used data from the United States Influenza Vaccine Effectiveness (US Flu VE) Network. Ambulatory care patients with acute respiratory illness were enrolled during seasons of varying observed VE based on traditional frequentist methods. We estimated VE against A(H1N1)pdm in 2015/16, dominated by A(H1N1)pdm; against A(H3N2) in 2017/18, dominated by A(H3N2); and compared VE for live attenuated influenza vaccine (LAIV) vs. inactivated influenza vaccine (IIV) among children aged 2–17 years in 2013/14, also dominated by A(H1N1)pdm. VE was estimated using both frequentist and Bayesian methods using the test-negative design. For the Bayesian estimates, prior VE distributions were based on data from all published test-negative studies of the same influenza type/subtype available prior to the season of interest. Results: Across the three seasons, 16,342 subjects were included in the analyses. For 2015/16, frequentist and Bayesian VE estimates were essentially identical (41% each). For 2017/18, frequentist and Bayesian estimates of VE against A(H3N2) viruses were also nearly identical (26% vs. 23%, respectively), even though the presence of apparent antigenic match could potentially have pulled Bayesian estimates upward. Precision of estimates was similar between methods in both seasons. Frequentist and Bayesian estimates diverged for children in 2013/14. Under the frequentist approach, LAIV effectiveness was 62 percentage points lower than IIV, while LAIV was only 27 percentage points lower than IIV under the Bayesian approach. Conclusion: Bayesian estimates of influenza VE can differ from frequentist estimates to a clinically meaningful degree when VE diverges substantially from previous seasons.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state model determinism."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] Influenza is caused by influenza virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "national"
+          ],
+          "reasoning": "US Flu VE Network covers national-level data."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Analyzes observed VE data from 2013/14, 2015/16, and 2017/18 seasons."
+        },
+        "study_goal_category": {
+          "values": [
+            "parameter estimation"
+          ],
+          "reasoning": "Estimates vaccine effectiveness parameters using two methods."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Evaluates influenza vaccination effectiveness (LAIV vs. IIV)."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Bayesian inference with prior distributions is used for parameter estimation."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Surveillance",
+            "Vaccination"
+          ],
+          "reasoning": "VE surveillance network data and vaccination status data are explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Vaccination"
+          ],
+          "reasoning": "Influenza vaccination (LAIV and IIV) is explicitly evaluated. [Normalized] to MIDAS preferred term."
+        },
+        "model_type": {
+          "values": [
+            "Bayesian Model",
+            "Statistical Model",
+            "Parameter Estimation"
+          ],
+          "reasoning": "Bayesian and frequentist statistical methods are explicitly compared. Parameter estimation of VE. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "influenza virus A(H1N1)pdm",
+            "influenza virus A(H3N2)"
+          ],
+          "reasoning": "Both subtypes are explicitly named."
+        },
+        "disease_name": {
+          "values": [
+            "influenza"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "Ambulatory care patients are explicitly described."
+        },
+        "primary_population": {
+          "values": [
+            "general population",
+            "children"
+          ],
+          "reasoning": "General ambulatory care patients plus children aged 2-17 years are explicitly described."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "Ambulatory care (outpatient) surveillance network."
+        },
+        "geographic_units": {
+          "values": [
+            "United States"
+          ],
+          "reasoning": "US Flu VE Network is explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "US Flu VE Network"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "calibration_techniques": {
+          "values": [
+            "Bayesian inference"
+          ],
+          "reasoning": "Bayesian inference with informative prior distributions is explicitly described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "vaccine effectiveness"
+          ],
+          "reasoning": "Vaccine effectiveness estimates are the explicit primary outcome."
+        },
+        "study_dates_start": {
+          "values": [
+            "2013"
+          ],
+          "reasoning": "Earliest season analyzed is 2013/14."
+        },
+        "study_dates_end": {
+          "values": [
+            "2018"
+          ],
+          "reasoning": "Latest season analyzed is 2017/18."
+        }
+      }
+    },
+    {
+      "id": "rsv_adult_vaccination_us",
+      "title": "Modeling Respiratory Syncytial Virus Adult Vaccination in the United States With a Dynamic Transmission Model",
+      "journal": "Clinical Infectious Diseases, 2023",
+      "abstract": "Background: Respiratory syncytial virus (RSV) is shown to cause substantial morbidity, hospitalization, and mortality in infants and older adults. Population-level modeling of RSV allows to estimate the full burden of disease and the potential epidemiological impact of novel prophylactics. Methods: We modeled the RSV epidemiology in the United States across all ages using a deterministic compartmental transmission model. Population-level symptomatic RSV acute respiratory tract infection (ARI) cases were projected across different natural history scenarios with and without vaccination of adults aged ≥60 years. The impact of vaccine efficacy against ARIs, infectiousness and vaccine coverage on ARI incidence were assessed. The impact on medical attendance, hospitalization, complications, death, and other outcomes was also derived. Results: Without a vaccine, we project 17.5–22.6 million symptomatic RSV ARI cases annually in adults aged ≥18 years in the US, with 3.6–4.8 million/year occurring in adults aged ≥60 years. Modeling indicates that up to 2.0 million symptomatic RSV-ARI cases could be prevented annually in ≥60-year-olds with a hypothetical vaccine (70% vaccine efficacy against symptomatic ARI and 60% vaccine coverage) and that up to 0.69 million/year could be prevented in the nonvaccinated population, assuming 50% vaccine impact on infectiousness. Conclusions: The model provides estimated burden of RSV in the US across all age groups, with substantial burden projected specifically in older adults. Vaccination of adults aged ≥60 years could significantly reduce the burden of disease in this population, with additional indirect effect in adults aged <60 years due to reduced transmissibility.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "deterministic"
+          ],
+          "reasoning": "Explicitly described as a deterministic compartmental transmission model."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "Respiratory syncytial virus is explicitly named."
+        },
+        "geographic_scope": {
+          "values": [
+            "national"
+          ],
+          "reasoning": "United States is explicitly stated."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "hypothetical"
+          ],
+          "reasoning": "Projects hypothetical vaccine scenarios, not observed outcomes."
+        },
+        "study_goal_category": {
+          "values": [
+            "intervention evaluation"
+          ],
+          "reasoning": "Evaluates the impact of hypothetical adult RSV vaccination."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Vaccination of adults aged >=60 years is explicitly evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is described in the abstract."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Hospitalization",
+            "Mortality",
+            "Population Demographic"
+          ],
+          "reasoning": "ARI cases, hospitalizations, deaths, and age-structured population data are explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Vaccination"
+          ],
+          "reasoning": "Adult vaccination is explicitly evaluated. [Normalized] to MIDAS preferred term."
+        },
+        "model_type": {
+          "values": [
+            "Compartmental Models",
+            "Disease Transmission",
+            "Dynamic Models"
+          ],
+          "reasoning": "Deterministic compartmental transmission model is explicit. Dynamic transmission model in title. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "respiratory syncytial virus"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "disease_name": {
+          "values": [
+            "RSV infection"
+          ],
+          "reasoning": "RSV acute respiratory tract infection is explicitly described."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "Human population modeling is explicit."
+        },
+        "primary_population": {
+          "values": [
+            "older adults"
+          ],
+          "reasoning": "Adults aged >=60 years are the primary vaccination target population."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Population-level community analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "United States"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data source is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "cases",
+            "hospitalizations",
+            "deaths"
+          ],
+          "reasoning": "Symptomatic ARI cases, hospitalizations, complications, and deaths are explicitly projected."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific study dates are given in the abstract."
+        },
+        "study_dates_end": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific study dates are given in the abstract."
+        }
+      }
+    },
+    {
+      "id": "seir_flu_covid_burden_austin",
+      "title": "Projecting the Combined Health Care Burden of Seasonal Influenza and COVID-19 in the 2020–2021 Season",
+      "journal": "MDM Policy & Practice, 2022",
+      "abstract": "Background. In mid-2020, there was significant concern that the overlapping 2020–2021 influenza season and COVID-19 pandemic would overwhelm already stressed health care systems in the Northern Hemisphere, particularly if influenza immunization rates were low. Methods. Using a mathematical susceptible-exposed-infected-recovered (SEIR) compartmental model incorporating the age-specific viral transmission rates and disease severity of Austin, Texas, a large metropolitan region, we projected the incidence and health care burden for both COVID-19 and influenza across observed levels of SARS-CoV-2 transmission and influenza immunization rates for the 2020–2021 season. We then retrospectively compared scenario projections made in August 2020 with observed trends through June 2021. Results. Across all scenarios, we projected that the COVID-19 burden would dwarf that of influenza. In all but our lowest transmission scenarios, intensive care units were overwhelmed by COVID-19 patients, with the levels of influenza immunization having little impact on health care capacity needs. Consistent with our projections, sustained nonpharmaceutical interventions (NPIs) in Austin prevented COVID-19 from overwhelming health care systems and almost completely suppressed influenza during the 2020–2021 respiratory virus season. Limitations. The model assumed no cross-immunity between SARS-CoV-2 and influenza, which might reduce the burden or slow the transmission of 1 or both viruses. Conclusion. Before the widespread rollout of the SARS-CoV-2 vaccine, COVID-19 was projected to cause an order of magnitude more hospitalizations than seasonal influenza because of its higher transmissibility and severity. Consistent with predictions assuming strong NPIs, COVID-19 strained but did not overwhelm local health care systems in Austin, while the influenza burden was negligible.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state whether the SEIR model is deterministic or stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] Both SARS-CoV-2 and influenza are viruses."
+        },
+        "geographic_scope": {
+          "values": [
+            "sub-national"
+          ],
+          "reasoning": "Austin, Texas metropolitan region is explicitly stated."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "both"
+          ],
+          "reasoning": "Prospective scenario projections made in August 2020, then retrospectively compared with observed trends through June 2021."
+        },
+        "study_goal_category": {
+          "values": [
+            "scenario analysis"
+          ],
+          "reasoning": "Projects healthcare burden under different transmission and immunization scenarios."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Influenza immunization rates and NPIs are evaluated as interventions."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is described in the abstract."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Hospitalization",
+            "Vaccination",
+            "Health System Capacity"
+          ],
+          "reasoning": "Incidence data, healthcare burden (hospitalizations/ICU), immunization rates, and health system capacity are explicitly described. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Vaccination",
+            "Control Strategy"
+          ],
+          "reasoning": "Influenza immunization and NPIs are explicitly evaluated. [Normalized] to MIDAS preferred terms."
+        },
+        "model_type": {
+          "values": [
+            "Compartmental Models",
+            "Scenario Analysis",
+            "Mathematical Model"
+          ],
+          "reasoning": "SEIR compartmental model is explicit. Mathematical model is explicit. Scenario analysis is the study design. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2",
+            "influenza virus"
+          ],
+          "reasoning": "Both pathogens are explicitly named."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19",
+            "influenza"
+          ],
+          "reasoning": "Both diseases are explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Metropolitan population-level analysis."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Community-level metropolitan analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "Austin, Texas"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data source is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "hospitalizations",
+            "incidence",
+            "ICU capacity"
+          ],
+          "reasoning": "Healthcare burden including hospitalizations and ICU capacity are explicitly projected."
+        },
+        "study_dates_start": {
+          "values": [
+            "2020"
+          ],
+          "reasoning": "Projections made in August 2020 for the 2020-2021 season."
+        },
+        "study_dates_end": {
+          "values": [
+            "2021"
+          ],
+          "reasoning": "Observed trends through June 2021 are explicitly stated."
+        }
+      }
+    },
+    {
+      "id": "flu_rsv_interaction_vietnam",
+      "title": "Evidence for influenza and RSV interaction from 10 years of enhanced surveillance in Nha Trang, Vietnam, a modelling study",
+      "journal": "PLOS Computational Biology, 2022",
+      "abstract": "Influenza and Respiratory Syncytial Virus (RSV) interact within their host posing the concern for impacts on heterologous viruses following vaccination. We aimed to estimate the population level impact of their interaction. We developed a dynamic age-stratified two-pathogen mathematical model that includes pathogen interaction through competition for infection and enhanced severity of dual infections. We used parallel tempering to fit its parameters to 11 years of enhanced hospital-based surveillance for acute respiratory illnesses (ARI) in children under 5 years old in Nha Trang, Vietnam. The data supported either a 41% (95%CrI: 36–54) reduction in susceptibility following infection and for 10.0 days (95%CrI 7.1–12.8) thereafter, or no change in susceptibility following infection. We estimate that co-infection increased the probability for an infection in <2y old children to be reported 7.2 fold (95%CrI 5.0–11.4); or 16.6 fold (95%CrI 14.5–18.4) in the moderate or low interaction scenarios. Absence of either pathogen was not to the detriment of the other. We find stronger evidence for severity enhancing than for acquisition limiting interaction. In this setting vaccination against either pathogen is unlikely to have a major detrimental effect on the burden of disease caused by the other.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state deterministic or stochastic, though credible intervals suggest a stochastic or Bayesian approach."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] Both influenza and RSV are viruses."
+        },
+        "geographic_scope": {
+          "values": [
+            "sub-national"
+          ],
+          "reasoning": "Nha Trang, Vietnam is a city-level study."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Uses 11 years of observed surveillance data."
+        },
+        "study_goal_category": {
+          "values": [
+            "parameter estimation"
+          ],
+          "reasoning": "Estimates parameters of pathogen interaction from surveillance data."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Vaccination is discussed hypothetically but not evaluated as an intervention in the study."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Parallel tempering is used to fit model parameters, which is a calibration technique."
+        },
+        "code_available": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Code is available at https://github.com/NaomiWaterlow/NhaTrang_flu_rsv_interaction (noted in paper)."
+        },
+        "data_used": {
+          "values": [
+            "Surveillance",
+            "Hospitalization",
+            "Age-Stratified"
+          ],
+          "reasoning": "Hospital-based surveillance for ARI in children under 5, with age-stratification explicit. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention is directly evaluated in the study."
+        },
+        "model_type": {
+          "values": [
+            "Dynamic Models",
+            "Mathematical Model",
+            "Disease Transmission",
+            "Parameter Estimation"
+          ],
+          "reasoning": "Dynamic age-stratified two-pathogen mathematical model is explicit. Transmission dynamics and parameter estimation are the study purpose. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "influenza virus",
+            "respiratory syncytial virus"
+          ],
+          "reasoning": "Both pathogens are explicitly named."
+        },
+        "disease_name": {
+          "values": [
+            "influenza",
+            "RSV infection"
+          ],
+          "reasoning": "Both diseases are explicitly described in the context of acute respiratory illness."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "Children under 5 years old are explicitly described."
+        },
+        "primary_population": {
+          "values": [
+            "children"
+          ],
+          "reasoning": "Children under 5 years old are explicitly stated."
+        },
+        "population_setting_type": {
+          "values": [
+            "hospital"
+          ],
+          "reasoning": "Hospital-based surveillance is explicitly stated."
+        },
+        "geographic_units": {
+          "values": [
+            "Nha Trang, Vietnam"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data repository is named, though hospital-based surveillance is described."
+        },
+        "calibration_techniques": {
+          "values": [
+            "parallel tempering"
+          ],
+          "reasoning": "Parallel tempering is explicitly named as the fitting method."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "susceptibility reduction",
+            "co-infection severity",
+            "incidence"
+          ],
+          "reasoning": "Reduction in susceptibility, co-infection reporting probability, and ARI incidence are explicit outcomes."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "11 years of data but specific start date not stated in abstract."
+        },
+        "study_dates_end": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "Specific end date not stated in abstract."
+        }
+      }
+    },
+    {
+      "id": "bayesian_dengue_forecasting_yogyakarta",
+      "title": "Predicting the dengue cluster outbreak dynamics in Yogyakarta, Indonesia: a modelling study",
+      "journal": "The Lancet Regional Health – Southeast Asia, 2023",
+      "abstract": "Background: Human mobility and climate conditions are recognised key drivers of dengue transmission, but their combined and individual role in the local spatiotemporal clustering of dengue cases is not well understood. This study investigated the effects of human mobility and weather conditions on dengue risk in an urban area in Yogyakarta, Indonesia. Methods: We established a Bayesian spatiotemporal model for neighbourhood outbreak prediction and evaluated the performances of two different approaches for constructing an adjacency matrix: one based on geographical proximity and the other based on human mobility patterns. We used population, weather conditions, and past dengue cases as predictors using a flexible distributed lag approach. The human mobility data were estimated based on proxies from social media. Unseen data from February 2017 to January 2020 were used to estimate the one-month ahead prediction accuracy of the model. Findings: When human mobility proxies were included in the spatial covariance structure, the model fit improved in terms of the log score (from 1.748 to 1.561) and the mean absolute error (from 0.676 to 0.522) based on the validation data. Additionally, showed only few observations outside the credible interval of predictions (1.48%) and weather conditions were not found to contribute additionally to the clustering of cases at this scale. Interpretation: The study shows that it is possible to make highly accurate predictions of the within-city cluster dynamics of dengue using mobility proxies from social media combined with disease surveillance data. These insights are important for proactive and timely outbreak management of dengue. Funding: Swedish Research Council Formas, Umeå Centre for Global Health Research, Swedish Council for Working Life and Social Research, Swedish research council VINNOVA and Alexander von Humboldt Foundation (Germany).",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "[Inferred] Bayesian spatiotemporal model with credible intervals indicates stochastic framework."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] Dengue is caused by dengue virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "sub-national"
+          ],
+          "reasoning": "Yogyakarta, Indonesia is a city-level study."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Uses observed data with validation on unseen data from February 2017 to January 2020."
+        },
+        "study_goal_category": {
+          "values": [
+            "forecast/nowcast"
+          ],
+          "reasoning": "One-month ahead prediction is explicitly described."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "Model fit is evaluated via log score and MAE (validation metrics), but no calibration technique (MCMC, MLE, etc.) is named."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Human Movement",
+            "Weather",
+            "Social Media",
+            "Population Count",
+            "Surveillance"
+          ],
+          "reasoning": "Dengue cases, human mobility from social media, weather conditions, and population data are explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Bayesian Model",
+            "Geospatial Models",
+            "Forecasting"
+          ],
+          "reasoning": "Bayesian spatiotemporal model is explicit. Geospatial component and forecasting purpose. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "dengue virus"
+          ],
+          "reasoning": "[Inferred] Dengue is caused by dengue virus."
+        },
+        "disease_name": {
+          "values": [
+            "dengue"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Urban population-level analysis."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Urban community-level analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "Yogyakarta, Indonesia"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data repository is named."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is explicitly named. Log score and MAE are validation metrics."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "cases",
+            "log score",
+            "mean absolute error"
+          ],
+          "reasoning": "Dengue cases are the prediction target. Log score and MAE are explicit evaluation metrics."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "Training data start date is not stated; validation period starts February 2017."
+        },
+        "study_dates_end": {
+          "values": [
+            "2020-01"
+          ],
+          "reasoning": "Validation data ends January 2020."
+        }
+      }
+    },
+    {
+      "id": "ebola_drc_statistical_analysis",
+      "title": "Analysis of individual-level data from 2018–2020 Ebola outbreak in Democratic Republic of the Congo",
+      "journal": "Scientific Reports, 2022",
+      "abstract": "The 2018–2020 Ebola virus disease epidemic in Democratic Republic of the Congo (DRC) resulted in 3481 cases (probable and confirmed) and 2299 deaths. In this paper, we use a novel statistical method to analyze the individual-level incidence and hospitalization data on DRC Ebola victims. Our analysis suggests that an increase in the rate of quarantine and isolation that has shortened the infectiousness period by approximately one day during the epidemic's third and final wave was likely responsible for the eventual containment of the outbreak. The analysis further reveals that the total effective population size or the average number of individuals at risk for the disease exposure in three epidemic waves over the period of 24 months was around 16,000—a much smaller number than previously estimated and likely an evidence of at least partial protection of the population at risk through ring vaccination and contact tracing as well as adherence to strict quarantine and isolation policies.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state whether the method is deterministic or stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] Ebola virus disease is caused by Ebola virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "national"
+          ],
+          "reasoning": "Democratic Republic of the Congo national-level epidemic."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Analyzes the observed 2018-2020 Ebola epidemic."
+        },
+        "study_goal_category": {
+          "values": [
+            "transmission dynamics"
+          ],
+          "reasoning": "Analyzes transmission dynamics including infectiousness period and effective population size."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Ring vaccination, contact tracing, quarantine, and isolation are explicitly discussed as contributing to containment."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is named in the abstract."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Hospitalization",
+            "Mortality"
+          ],
+          "reasoning": "Individual-level incidence data, hospitalization data, cases, and deaths are explicitly stated. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Vaccination",
+            "Control Strategy"
+          ],
+          "reasoning": "Ring vaccination and quarantine/isolation/contact tracing are explicitly mentioned. [Normalized] to MIDAS preferred terms."
+        },
+        "model_type": {
+          "values": [
+            "Statistical Model"
+          ],
+          "reasoning": "Novel statistical method is explicitly described."
+        },
+        "pathogen_name": {
+          "values": [
+            "Ebola virus"
+          ],
+          "reasoning": "[Inferred] Ebola virus disease is caused by Ebola virus."
+        },
+        "disease_name": {
+          "values": [
+            "Ebola virus disease"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "Human victims are explicitly described."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Population at risk in the DRC epidemic."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Community-level epidemic analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "Democratic Republic of the Congo"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data source is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "cases",
+            "deaths",
+            "infectiousness period",
+            "effective population size"
+          ],
+          "reasoning": "Cases, deaths, shortened infectiousness period, and effective population size are explicitly analyzed."
+        },
+        "study_dates_start": {
+          "values": [
+            "2018"
+          ],
+          "reasoning": "Explicitly references 2018-2020 epidemic."
+        },
+        "study_dates_end": {
+          "values": [
+            "2020"
+          ],
+          "reasoning": "Explicitly references 2018-2020 epidemic."
+        }
+      }
+    },
+    {
+      "id": "cholera_haiti_dynamic_models",
+      "title": "Informing policy via dynamic models: Cholera in Haiti",
+      "journal": "PLOS Computational Biology, 2024",
+      "abstract": "Public health decisions must be made about when and how to implement interventions to control an infectious disease epidemic. These decisions should be informed by data on the epidemic as well as current understanding about the transmission dynamics. Such decisions can be posed as statistical questions about scientifically motivated dynamic models. Thus, we encounter the methodological task of building credible, data-informed decisions based on stochastic, partially observed, nonlinear dynamic models. This necessitates addressing the tradeoff between biological fidelity and model simplicity, and the reality of misspecification for models at all levels of complexity. We assess current methodological approaches to these issues via a case study of the 2010-2019 cholera epidemic in Haiti. We consider three dynamic models developed by expert teams to advise on vaccination policies. We evaluate previous methods used for fitting these models, and we demonstrate modified data analysis strategies leading to improved statistical fit. Specifically, we present approaches for diagnosing model misspecification and the consequent development of improved models. Additionally, we demonstrate the utility of recent advances in likelihood maximization for high-dimensional nonlinear dynamic models, enabling likelihood-based inference for spatiotemporal incidence data using this class of models. Our workflow is reproducible and extendable, facilitating future investigations of this disease system.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "Explicitly described as stochastic, partially observed, nonlinear dynamic models."
+        },
+        "pathogen_type": {
+          "values": [
+            "bacteria"
+          ],
+          "reasoning": "[Inferred] Cholera is caused by Vibrio cholerae, a bacterium."
+        },
+        "geographic_scope": {
+          "values": [
+            "national"
+          ],
+          "reasoning": "Haiti national-level epidemic is the case study."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Analyzes the observed 2010-2019 cholera epidemic."
+        },
+        "study_goal_category": {
+          "values": [
+            "method development"
+          ],
+          "reasoning": "Demonstrates improved methodological approaches for fitting dynamic models."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Vaccination policies are explicitly discussed as the policy context."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Likelihood maximization and model fitting methods are explicitly described."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Workflow is described as reproducible but no code repository is explicitly named in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Surveillance"
+          ],
+          "reasoning": "Spatiotemporal incidence data is explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Vaccination"
+          ],
+          "reasoning": "Vaccination policies are explicitly mentioned. [Normalized] to MIDAS preferred term."
+        },
+        "model_type": {
+          "values": [
+            "Dynamic Models",
+            "Statistical Model",
+            "Disease Transmission"
+          ],
+          "reasoning": "Stochastic nonlinear dynamic models and likelihood-based statistical inference are explicit. Transmission dynamics context. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "Vibrio cholerae"
+          ],
+          "reasoning": "[Inferred] Cholera is caused by Vibrio cholerae."
+        },
+        "disease_name": {
+          "values": [
+            "cholera"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Public health epidemic context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] National-level epidemic analysis."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Community-level epidemic analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "Haiti"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data source is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [
+            "maximum likelihood estimation"
+          ],
+          "reasoning": "Likelihood maximization is explicitly described as the calibration method."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "incidence",
+            "model fit"
+          ],
+          "reasoning": "Spatiotemporal incidence data and improved statistical fit are explicit outcomes."
+        },
+        "study_dates_start": {
+          "values": [
+            "2010"
+          ],
+          "reasoning": "Explicitly references 2010-2019 epidemic."
+        },
+        "study_dates_end": {
+          "values": [
+            "2019"
+          ],
+          "reasoning": "Explicitly references 2010-2019 epidemic."
+        }
+      }
+    },
+    {
+      "id": "malaria_abm_deep_learning_calibration",
+      "title": "Multitask deep learning for the emulation and calibration of an agent-based malaria transmission model",
+      "journal": "PLOS Computational Biology, 2025",
+      "abstract": "Agent-based models of malaria transmission are useful tools for understanding disease dynamics and planning interventions, but they can be computationally intensive to calibrate. We present a multitask deep learning approach for emulating and calibrating a complex agent-based model of malaria transmission. Our neural network emulator was trained on a large suite of simulations from the EMOD malaria model, an agent-based model of malaria transmission dynamics, capturing relationships between immunological parameters and epidemiological outcomes such as age-stratified incidence and prevalence across eight sub-Saharan African study sites. We then use the trained emulator in conjunction with parameter estimation techniques to calibrate the underlying model to reference data. Taken together, this analysis shows the potential of machine learning-guided emulator design for complex scientific processes and their comparison to field data.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "[Inferred] Agent-based models are inherently stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "parasite"
+          ],
+          "reasoning": "[Inferred] Malaria is caused by Plasmodium parasites."
+        },
+        "geographic_scope": {
+          "values": [
+            "sub-national"
+          ],
+          "reasoning": "Eight sub-Saharan African study sites are explicitly stated."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Calibrates to reference field data from study sites."
+        },
+        "study_goal_category": {
+          "values": [
+            "method development"
+          ],
+          "reasoning": "Develops a deep learning emulation and calibration approach."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Interventions are mentioned generally but not evaluated in this study."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Calibration is explicitly the main focus of the study."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Case Count",
+            "Age-Stratified",
+            "Surveillance"
+          ],
+          "reasoning": "Age-stratified incidence and prevalence data across study sites are explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No specific intervention is evaluated."
+        },
+        "model_type": {
+          "values": [
+            "Agent-based Models",
+            "Disease Transmission",
+            "Parameter Estimation"
+          ],
+          "reasoning": "Agent-based model (EMOD) is explicit. Malaria transmission dynamics. Parameter estimation via calibration. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "Plasmodium"
+          ],
+          "reasoning": "[Inferred] Malaria is caused by Plasmodium parasites. [Normalized] to MIDAS preferred term."
+        },
+        "disease_name": {
+          "values": [
+            "malaria"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Human malaria transmission context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Population-level analysis across study sites."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Community-level field data."
+        },
+        "geographic_units": {
+          "values": [
+            "sub-Saharan Africa"
+          ],
+          "reasoning": "Eight sub-Saharan African study sites explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data repository is named."
+        },
+        "calibration_techniques": {
+          "values": [
+            "parameter estimation"
+          ],
+          "reasoning": "Parameter estimation techniques in conjunction with neural network emulator are explicitly described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "incidence",
+            "prevalence"
+          ],
+          "reasoning": "Age-stratified incidence and prevalence are explicitly stated as outcomes."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific study dates are given in the abstract."
+        },
+        "study_dates_end": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific study dates are given in the abstract."
+        }
+      }
+    },
+    {
+      "id": "mosquito_borne_climate_projection_global",
+      "title": "Projecting the risk of mosquito-borne diseases in a warmer and more populated world: a multi-model, multi-scenario intercomparison modelling study",
+      "journal": "The Lancet Planetary Health, 2021",
+      "abstract": "Background: Mosquito-borne diseases are expanding their range, and re-emerging in areas where they had subsided for decades. The extent to which climate change influences the transmission suitability and population at risk of mosquito-borne diseases across different altitudes and population densities has not been investigated. The aim of this study was to quantify the extent to which climate change will influence the length of the transmission season and estimate the population at risk of mosquito-borne diseases in the future, given different population densities across an altitudinal gradient. Methods: Using a multi-model multi-scenario framework, we estimated changes in the length of the transmission season and global population at risk of malaria and dengue for different altitudes and population densities for the period 1951–99. We generated projections from six mosquito-borne disease models, driven by four global circulation models, using four representative concentration pathways, and three shared socioeconomic pathways. Findings: We show that malaria suitability will increase by 1.6 additional months (mean 0.5, SE 0.03) in tropical highlands in the African region, the Eastern Mediterranean region, and the region of the Americas. Dengue suitability will increase in lowlands in the Western Pacific region and the Eastern Mediterranean region by 4.0 additional months (mean 1.7, SE 0.2). Increases in the climatic suitability of both diseases will be greater in rural areas than in urban areas. The epidemic belt for both diseases will expand towards temperate areas. The population at risk of both diseases might increase by up to 4.7 additional billion people by 2070 relative to 1970–99, particularly in lowlands and urban areas. Interpretation: Rising global mean temperature will increase the climatic suitability of both diseases particularly in already endemic areas. The predicted expansion towards higher altitudes and temperate regions suggests that outbreaks can occur in areas where people might be immunologically naive and public health systems unprepared. The population at risk of malaria and dengue will be higher in densely populated urban areas in the WHO African region, South-East Asia region, and the region of the Americas. Reducing greenhouse gas emissions could avert millions of new infections. Funding: Swedish Research Council Formas, Umeå Centre for Global Health Research, Horizon 2020.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state whether the models are deterministic or stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "parasite",
+            "virus"
+          ],
+          "reasoning": "[Inferred] Malaria is caused by Plasmodium parasites; dengue is caused by dengue virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "Global population at risk is explicitly projected."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "hypothetical"
+          ],
+          "reasoning": "Projects future scenarios under climate change pathways through 2070."
+        },
+        "study_goal_category": {
+          "values": [
+            "scenario analysis"
+          ],
+          "reasoning": "Multi-model multi-scenario projections under climate pathways."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No specific public health intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is described."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Climate",
+            "Population Count",
+            "Disease Vector"
+          ],
+          "reasoning": "Climate projections (global circulation models, RCPs), population density data, and mosquito-borne disease models are explicitly used. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No specific intervention types are evaluated."
+        },
+        "model_type": {
+          "values": [
+            "Scenario Analysis",
+            "Disease Transmission",
+            "Modeling"
+          ],
+          "reasoning": "Multi-model multi-scenario framework for disease transmission. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "Plasmodium",
+            "dengue virus"
+          ],
+          "reasoning": "[Inferred] Malaria is caused by Plasmodium; dengue by dengue virus."
+        },
+        "disease_name": {
+          "values": [
+            "malaria",
+            "dengue"
+          ],
+          "reasoning": "Both diseases are explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Global population at risk context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Global population projections."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Population-level global analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "Global projections are explicitly stated."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data repository is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "transmission season length",
+            "population at risk"
+          ],
+          "reasoning": "Length of transmission season and population at risk are explicitly projected."
+        },
+        "study_dates_start": {
+          "values": [
+            "1951"
+          ],
+          "reasoning": "Period 1951-99 is explicitly referenced for baseline."
+        },
+        "study_dates_end": {
+          "values": [
+            "2070"
+          ],
+          "reasoning": "Projections through 2070 are explicitly stated."
+        }
+      }
+    },
+    {
+      "id": "sarscov2_phylodynamic_threshold",
+      "title": "Temporal signal and the phylodynamic threshold of SARS-CoV-2",
+      "journal": "Virus Evolution, 2020",
+      "abstract": "The ongoing SARS-CoV-2 outbreak marks the first time that large amounts of genome sequence data have been generated and made publicly available in near real time. Early analyses of these data revealed low sequence variation, a finding that is consistent with a recently emerging outbreak, but which raises the question of whether such data are sufficiently informative for phylogenetic inferences of evolutionary rates and time scales. The phylodynamic threshold is a key concept that refers to the point in time at which sufficient molecular evolutionary change has accumulated in available genome samples to obtain robust phylodynamic estimates. For example, before the phylodynamic threshold is reached, genomic variation is so low that even large amounts of genome sequences may be insufficient to estimate the virus's evolutionary rate and the time scale of an outbreak. We collected genome sequences of SARS-CoV-2 from public databases at eight different points in time and conducted a range of tests of temporal signal to determine if and when the phylodynamic threshold was reached, and the range of inferences that could be reliably drawn from these data. Our results indicate that by 2 February 2020, estimates of evolutionary rates and time scales had become possible. Analyses of subsequent data sets, that included between 47 and 122 genomes, converged at an evolutionary rate of about 1.1 × 10⁻³ subs/site/year and a time of origin of around late November 2019. Our study provides guidelines to assess the phylodynamic threshold and demonstrates that establishing this threshold constitutes a fundamental step for understanding the power and limitations of early data in outbreak genome surveillance.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state model determinism."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "SARS-CoV-2 virus is explicitly named."
+        },
+        "geographic_scope": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "[Inferred] Genome sequences collected from public databases globally."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "historical"
+          ],
+          "reasoning": "Analyzes observed genome sequence data from the early SARS-CoV-2 outbreak."
+        },
+        "study_goal_category": {
+          "values": [
+            "parameter estimation"
+          ],
+          "reasoning": "Estimates evolutionary rate and time of origin."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method (MCMC, MLE, etc.) is explicitly named in the abstract."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Sequence Collection"
+          ],
+          "reasoning": "Genome sequences from public databases are explicitly used. [Normalized] to MIDAS preferred term."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Phylodynamics",
+            "Phylogenetics",
+            "Parameter Estimation"
+          ],
+          "reasoning": "Phylodynamic analysis and phylogenetic inference are explicit. Estimates evolutionary rate parameters. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "[Inferred] SARS-CoV-2 causes COVID-19."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Human outbreak context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Global outbreak analysis."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Global outbreak surveillance."
+        },
+        "geographic_units": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "[Inferred] Public databases contain global genome data."
+        },
+        "data_source": {
+          "values": [
+            "public databases"
+          ],
+          "reasoning": "Public databases are explicitly stated as the genome sequence source."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is explicitly named in the abstract."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "evolutionary rate",
+            "time of origin"
+          ],
+          "reasoning": "Evolutionary rate and time of origin are explicitly estimated."
+        },
+        "study_dates_start": {
+          "values": [
+            "2019-11"
+          ],
+          "reasoning": "Time of origin estimated around late November 2019."
+        },
+        "study_dates_end": {
+          "values": [
+            "2020"
+          ],
+          "reasoning": "Data collected at eight points during the ongoing 2020 outbreak."
+        }
+      }
+    },
+    {
+      "id": "calibration_verification_abm_disease",
+      "title": "Calibration verification for stochastic agent-based disease spread models",
+      "journal": "PLoS ONE, 2024",
+      "abstract": "Accurate disease spread modeling is crucial for identifying the severity of outbreaks and planning effective mitigation efforts. To be reliable when applied to new outbreaks, model calibration techniques must be robust. However, current methods frequently forgo calibration verification (a stand-alone process evaluating the calibration procedure) and instead use overall model validation (a process comparing calibrated model results to data) to check calibration processes, which may conceal errors in calibration. In this work, we develop a stochastic agent-based disease spread model to act as a testing environment as we test two calibration methods using simulation-based calibration, which is a synthetic data calibration verification method. The first calibration method is a Bayesian inference approach using an empirically-constructed likelihood and Markov chain Monte Carlo (MCMC) sampling, while the second method is a likelihood-free approach using approximate Bayesian computation (ABC). Simulation-based calibration suggests that there are challenges with the empirical likelihood calculation used in the first calibration method in this context. These issues are alleviated in the ABC approach. Despite these challenges, we note that the first calibration method performs well in a synthetic data model validation test similar to those common in disease spread modeling literature. We conclude that stand-alone calibration verification using synthetic data may benefit epidemiological researchers in identifying model calibration challenges that may be difficult to identify with other commonly used model validation techniques.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "Explicitly described as a stochastic agent-based model."
+        },
+        "pathogen_type": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific pathogen is named; generic disease spread model."
+        },
+        "geographic_scope": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No geographic scope is described; methodological study."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "hypothetical"
+          ],
+          "reasoning": "Uses synthetic data for calibration verification, not real outbreak data."
+        },
+        "study_goal_category": {
+          "values": [
+            "method development"
+          ],
+          "reasoning": "Develops and evaluates calibration verification methodology."
+        },
+        "intervention_present": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "No intervention is evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Calibration is the explicit focus. MCMC and ABC are explicitly named."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed in the abstract."
+        },
+        "data_used": {
+          "values": [
+            "Modeling Output"
+          ],
+          "reasoning": "Synthetic/simulated data is used. [Normalized] to MIDAS preferred term."
+        },
+        "intervention_types": {
+          "values": [],
+          "reasoning": "No intervention types are described."
+        },
+        "model_type": {
+          "values": [
+            "Agent-based Models",
+            "Bayesian Model",
+            "Disease Transmission"
+          ],
+          "reasoning": "Stochastic agent-based model is explicit. Bayesian MCMC and ABC methods are explicit. Disease spread model. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific pathogen is named."
+        },
+        "disease_name": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "Generic disease spread; no specific disease is named."
+        },
+        "host_species": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific host species is named."
+        },
+        "primary_population": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific population is described."
+        },
+        "population_setting_type": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific setting is described."
+        },
+        "geographic_units": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No geographic units are described."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "Synthetic data is used; no external data source."
+        },
+        "calibration_techniques": {
+          "values": [
+            "MCMC",
+            "ABC"
+          ],
+          "reasoning": "Markov chain Monte Carlo and approximate Bayesian computation are explicitly named."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "calibration accuracy"
+          ],
+          "reasoning": "Calibration verification accuracy is the explicit outcome."
+        },
+        "study_dates_start": {
+          "values": [
+            "not applicable"
+          ],
+          "reasoning": "Synthetic data study with no real-world time period."
+        },
+        "study_dates_end": {
+          "values": [
+            "not applicable"
+          ],
+          "reasoning": "Synthetic data study with no real-world time period."
+        }
+      }
+    },
+    {
+      "id": "covasim_abm_covid_multicountry",
+      "title": "Covasim: An agent-based model of COVID-19 dynamics and interventions",
+      "journal": "PLOS Computational Biology, 2021",
+      "abstract": "The COVID-19 pandemic has created an urgent need for models that can project epidemic trends, explore intervention scenarios, and estimate resource needs. Here we describe the methodology of Covasim (COVID-19 Agent-based Simulator), an open-source model developed to help address these questions. Covasim includes country-specific demographic information on age structure and population size; realistic transmission networks in different social layers, including households, schools, workplaces, long-term care facilities, and communities; age-specific disease outcomes; and intrahost viral dynamics, including viral-load-based transmissibility. Covasim also supports an extensive set of interventions, including non-pharmaceutical interventions, such as physical distancing and protective equipment; pharmaceutical interventions, including vaccination; and testing interventions, such as symptomatic and asymptomatic testing, isolation, contact tracing, and quarantine. These interventions can incorporate the effects of delays, loss-to-follow-up, micro-targeting, and other factors. Implemented in pure Python, Covasim has been designed with equal emphasis on performance, ease of use, and flexibility: realistic and highly customized scenarios can be run on a standard laptop in under a minute. In collaboration with local health agencies and policymakers, Covasim has already been applied to examine epidemic dynamics and inform policy decisions in more than a dozen countries in Africa, Asia-Pacific, Europe, and North America.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "stochastic"
+          ],
+          "reasoning": "[Inferred] Agent-based models are inherently stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "[Inferred] SARS-CoV-2 is a virus."
+        },
+        "geographic_scope": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "Applied in more than a dozen countries across Africa, Asia-Pacific, Europe, and North America."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "both"
+          ],
+          "reasoning": "Describes a tool used for both analyzing epidemic dynamics (historical) and exploring intervention scenarios (hypothetical)."
+        },
+        "study_goal_category": {
+          "values": [
+            "method development"
+          ],
+          "reasoning": "Describes the methodology of a new agent-based simulation tool."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Extensive set of interventions including NPIs, vaccination, and testing are explicitly supported."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "No calibration or fitting method is described in the abstract."
+        },
+        "code_available": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Described as an open-source model."
+        },
+        "data_used": {
+          "values": [
+            "Population Demographic",
+            "Contact Rates",
+            "Disease Transmission"
+          ],
+          "reasoning": "Country-specific demographics (age structure, population size), transmission networks in social layers, and disease outcomes are explicitly described. [Normalized] to MIDAS preferred terms."
+        },
+        "intervention_types": {
+          "values": [
+            "Control Strategy",
+            "Vaccination"
+          ],
+          "reasoning": "Physical distancing, protective equipment, vaccination, testing, isolation, contact tracing, and quarantine are explicitly listed. [Normalized] to MIDAS preferred terms."
+        },
+        "model_type": {
+          "values": [
+            "Agent-based Models",
+            "Disease Transmission",
+            "Intra-host Modeling"
+          ],
+          "reasoning": "Agent-based model is explicit. Transmission networks and intrahost viral dynamics are explicit. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "[Inferred] COVID-19 is caused by SARS-CoV-2."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Human pandemic context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "Country-specific population modeling across all ages."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "Households, schools, workplaces, long-term care facilities, and communities are explicitly listed."
+        },
+        "geographic_units": {
+          "values": [
+            "multiple countries"
+          ],
+          "reasoning": "More than a dozen countries in Africa, Asia-Pacific, Europe, and North America."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific data source is named in the abstract."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described in the abstract."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "epidemic trends",
+            "resource needs"
+          ],
+          "reasoning": "Projecting epidemic trends and estimating resource needs are explicitly stated."
+        },
+        "study_dates_start": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific study dates are given."
+        },
+        "study_dates_end": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "No specific study dates are given."
+        }
+      }
+    },
+    {
+      "id": "covid_air_travel_global_spread",
+      "title": "How to avoid a local epidemic becoming a global pandemic",
+      "journal": "Proceedings of the National Academy of Sciences, 2023",
+      "abstract": "Here, we combine international air travel passenger data with a standard epidemiological model of the initial 3 mo of the COVID-19 pandemic (January through March 2020; toward the end of which the entire world locked down). Using the information available during this initial phase of the pandemic, our model accurately describes the main features of the actual global development of the pandemic demonstrated by the high degree of coherence between the model and global data. The validated model allows for an exploration of alternative policy efficacies (reducing air travel and/or introducing different degrees of compulsory immigration quarantine upon arrival to a country) in delaying the global spread of SARS-CoV-2 and thus is suggestive of similar efficacy in anticipating the spread of future global disease outbreaks. We show that a lesson from the recent pandemic is that reducing air travel globally is more effective in reducing the global spread than adopting immigration quarantine. Reducing air travel out of a source country has the most important effect regarding the spreading of the disease to the rest of the world. Based upon our results, we propose a digital twin as a further developed tool to inform future pandemic decision-making to inform measures intended to control the spread of disease agents of potential future pandemics. We discuss the design criteria for such a digital twin model as well as the feasibility of obtaining access to the necessary online data on international air travel.",
+      "expected": {
+        "model_determinism": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "The abstract does not explicitly state whether the model is deterministic or stochastic."
+        },
+        "pathogen_type": {
+          "values": [
+            "virus"
+          ],
+          "reasoning": "SARS-CoV-2 is explicitly named."
+        },
+        "geographic_scope": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "Global pandemic spread across countries is the explicit scope."
+        },
+        "historical_vs_hypothetical": {
+          "values": [
+            "both"
+          ],
+          "reasoning": "Models the historical initial 3 months of the pandemic, then explores hypothetical alternative policy scenarios."
+        },
+        "study_goal_category": {
+          "values": [
+            "scenario analysis"
+          ],
+          "reasoning": "Explores alternative policy efficacies for delaying global spread."
+        },
+        "intervention_present": {
+          "values": [
+            "yes"
+          ],
+          "reasoning": "Air travel reduction and immigration quarantine are explicitly evaluated."
+        },
+        "calibration_mentioned": {
+          "values": [
+            "no"
+          ],
+          "reasoning": "Model is described as validated but no calibration method is named."
+        },
+        "code_available": {
+          "values": [
+            "not mentioned"
+          ],
+          "reasoning": "Code availability is not discussed."
+        },
+        "data_used": {
+          "values": [
+            "Human Movement",
+            "Case Count"
+          ],
+          "reasoning": "International air travel passenger data is explicit. COVID-19 pandemic data is implicit for model validation. [Normalized] Human Movement to MIDAS preferred term."
+        },
+        "intervention_types": {
+          "values": [
+            "Control Strategy"
+          ],
+          "reasoning": "Air travel restrictions and immigration quarantine are control strategies. [Normalized] to MIDAS preferred term."
+        },
+        "model_type": {
+          "values": [
+            "Scenario Analysis",
+            "Disease Transmission"
+          ],
+          "reasoning": "Standard epidemiological model with scenario exploration. Disease transmission context. [Normalized] to MIDAS preferred terms."
+        },
+        "pathogen_name": {
+          "values": [
+            "SARS-CoV-2"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "disease_name": {
+          "values": [
+            "COVID-19"
+          ],
+          "reasoning": "Explicitly stated."
+        },
+        "host_species": {
+          "values": [
+            "human"
+          ],
+          "reasoning": "[Inferred] Human pandemic context."
+        },
+        "primary_population": {
+          "values": [
+            "general population"
+          ],
+          "reasoning": "[Inferred] Global population analysis."
+        },
+        "population_setting_type": {
+          "values": [
+            "community"
+          ],
+          "reasoning": "[Inferred] Global community-level analysis."
+        },
+        "geographic_units": {
+          "values": [
+            "global"
+          ],
+          "reasoning": "Global spread across countries is the explicit scope."
+        },
+        "data_source": {
+          "values": [
+            "not specified"
+          ],
+          "reasoning": "Air travel passenger data is described but no specific provider is named."
+        },
+        "calibration_techniques": {
+          "values": [],
+          "reasoning": "No calibration technique is described."
+        },
+        "key_outcome_measures": {
+          "values": [
+            "global spread delay",
+            "cases"
+          ],
+          "reasoning": "Delay in global spread and pandemic development are explicit outcomes."
+        },
+        "study_dates_start": {
+          "values": [
+            "2020-01"
+          ],
+          "reasoning": "Explicitly states January 2020."
+        },
+        "study_dates_end": {
+          "values": [
+            "2020-03"
+          ],
+          "reasoning": "Explicitly states through March 2020."
         }
       }
     }

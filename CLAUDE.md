@@ -70,9 +70,8 @@ python -m midas_llm.scripts.evaluate_gold_standard
 
 - `src/midas_llm/extract_concepts.py` - Main extraction workflow (`main()` function)
 - `src/midas_llm/scripts/` - Standalone utility scripts
-  - `download_ontologies.py` - Downloads biomedical ontologies
   - `evaluate_gold_standard.py` - Evaluates extraction accuracy against gold standard
-  - `send_fulltext_to_llm.py` - Sends full texts to LLM for processing
+- `src/ontology_dl/download_ontologies.py` - Downloads biomedical ontologies
 
 ### Core Modules
 

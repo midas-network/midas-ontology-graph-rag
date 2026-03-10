@@ -152,8 +152,9 @@ midas-llm/
 │       │   ├── parsers/             # Response parsing
 │       │   └── prompt/              # Prompt building
 │       └── scripts/
-│           ├── download_ontologies.py
 │           └── evaluate_gold_standard.py
+│   └── ontology_dl/
+│       └── download_ontologies.py   # Ontology downloader CLI
 ├── resources/
 │   ├── prompts/                     # Prompt templates
 │   ├── ontologies/                  # Ontology assets
