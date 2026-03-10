@@ -1,0 +1,25 @@
+ontology_path: resources/ontologies
+
+prompt_include_format_examples: false
+prompt_include_reminders: true
+prompt_include_few_shot: true
+prompt_include_fields: true
+prompt_include_ontologies: false
+prompt_simple_prompt: false
+
+ollama_model: qwen2:7b-instruct
+ollama_models: []
+ollama_host: http://localhost:11434
+
+nim_models:
+  - nvidia/qwen2:7b-instruct
+nim_host: http://localhost:8000
+
+llm_timeout: 300000
+llm_api_type: ollama
+
+show_config: true
+
+embedding_models:
+  - BAAI/bge-m3
+  - FremyCompany/BioLORD-2023-C

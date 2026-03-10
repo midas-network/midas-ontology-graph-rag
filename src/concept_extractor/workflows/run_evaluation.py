@@ -306,7 +306,8 @@ def main():
             logger.error(
                 "Ontology file not found: %s — run with --no-constrained "
                 "or download with:\n"
-                "  curl -o resources/ontologies/midas_data/midas-data.owl "
+                "  mkdir -p resources/ontologies/midas_data && "
+                "curl -L -o resources/ontologies/midas_data/midas-data.owl "
                 "https://raw.githubusercontent.com/midas-network/midas-data/"
                 "refs/heads/main/midas-data.owl",
                 owl_path,

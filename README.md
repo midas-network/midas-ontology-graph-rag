@@ -4,21 +4,61 @@ Evaluate LLM extraction quality against a gold-standard dataset of abstracts.
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.10-3.12
 - A reachable LLM endpoint (OpenAI-compatible API or Ollama)
 
 ## Install
 
-```bash
-git clone <your-repo-url>
-cd midas-llm
+### macOS (Apple Silicon / non-Intel)
 
-python -m venv .venv
+```bash
+cd <project dir>
+
+brew install python@3.12
+export PATH="/opt/homebrew/opt/python@3.12/bin:$PATH"
+
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -e .
+```
+
+Optional embedding evaluation dependencies:
+
+```bash
+pip install -e ".[embeddings]"
+```
+
+Download the MIDAS ontology file (required for default constrained runs):
+
+```bash
+mkdir -p resources/ontologies/midas_data
+curl -L -o resources/ontologies/midas_data/midas-data.owl \
+  https://raw.githubusercontent.com/midas-network/midas-data/refs/heads/main/midas-data.owl
+```
+
+### macOS (Intel)
+
+```bash
+cd <project dir>
+
+brew install python@3.12
+export PATH="/usr/local/opt/python@3.12/bin:$PATH"
+
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 
 pip install -e .
 pip install -e ".[embeddings]"
+```
+
+Download the MIDAS ontology file (required for default constrained runs):
+
+```bash
+mkdir -p resources/ontologies/midas_data
+curl -L -o resources/ontologies/midas_data/midas-data.owl \
+  https://raw.githubusercontent.com/midas-network/midas-data/refs/heads/main/midas-data.owl
 ```
 
 ## Configure
@@ -44,23 +84,23 @@ ollama_host: http://localhost:11434
 
 The YAML keys map 1:1 to `ExtractionConfig` fields (env override is the uppercase form, for example `llm_api_type` -> `LLM_API_TYPE`).
 
-| Key | What it controls | Used by runtime? |
-|---|---|---|
-| `prompt_include_format_examples` | Includes `format_examples.txt` in prompt assembly. | Yes. |
-| `prompt_include_reminders` | Includes `reminders.txt` in prompt assembly. | Yes. |
-| `prompt_include_few_shot` | Includes `few-shot.txt` in prompt assembly. | Yes. |
-| `prompt_include_fields` | Includes `fields.txt` in prompt assembly. | Yes. |
-| `prompt_include_ontologies` | Includes `ontologies.txt` in prompt assembly. | Yes. |
-| `prompt_simple_prompt` | Uses condensed inline prompt instead of file-based sections. | Yes. |
-| `ollama_model` | Single Ollama model fallback when `ollama_models` is empty. | Yes. |
-| `ollama_models` | Ollama model list for multi-model evaluation runs. | Yes. |
-| `ollama_host` | Ollama server base URL. | Yes. |
-| `nim_models` | OpenAI-compatible/NIM model list when `llm_api_type: openai_compatible`. | Yes. |
-| `nim_host` | OpenAI-compatible/NIM server base URL. | Yes. |
-| `llm_timeout` | HTTP timeout passed to LLM requests. | Yes. |
-| `llm_api_type` | Provider switch: `ollama` or `openai_compatible`. | Yes. |
-| `show_config` | Controls active config logging at run start. | Yes. |
-| `embedding_models` | Default embedding model list for vector similarity evaluation. | Yes. |
+| Key | What it controls |
+|---|---|
+| `prompt_include_format_examples` | Includes `format_examples.txt` in prompt assembly. |
+| `prompt_include_reminders` | Includes `reminders.txt` in prompt assembly. |
+| `prompt_include_few_shot` | Includes `few-shot.txt` in prompt assembly. |
+| `prompt_include_fields` | Includes `fields.txt` in prompt assembly. |
+| `prompt_include_ontologies` | Includes `ontologies.txt` in prompt assembly. |
+| `prompt_simple_prompt` | Uses condensed inline prompt instead of file-based sections. |
+| `ollama_model` | Single Ollama model fallback when `ollama_models` is empty. |
+| `ollama_models` | Ollama model list for multi-model evaluation runs. |
+| `ollama_host` | Ollama server base URL. |
+| `nim_models` | OpenAI-compatible/NIM model list when `llm_api_type: openai_compatible`. |
+| `nim_host` | OpenAI-compatible/NIM server base URL. |
+| `llm_timeout` | HTTP timeout passed to LLM requests. |
+| `llm_api_type` | Provider switch: `ollama` or `openai_compatible`. |
+| `show_config` | Controls active config logging at run start. |
+| `embedding_models` | Default embedding model list for vector similarity evaluation. |
 
 Current distributed defaults in `config.yaml`:
 

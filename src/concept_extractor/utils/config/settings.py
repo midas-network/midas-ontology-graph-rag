@@ -28,13 +28,13 @@ class ExtractionConfig:
     prompt_simple_prompt: bool = field(default_factory=lambda: env_bool("PROMPT_SIMPLE_PROMPT", False))
 
     # LLM settings - Ollama
-    ollama_model: str = field(default_factory=lambda: os.getenv("OLLAMA_MODEL", "mistral:7b"))
+    ollama_model: str = field(default_factory=lambda: os.getenv("OLLAMA_MODEL", "qwen2:7b-instruct"))
     ollama_models: list[str] = field(default_factory=lambda: parse_model_list(os.getenv("OLLAMA_MODELS", "")))
     ollama_host: str = field(default_factory=lambda: os.getenv("OLLAMA_HOST", "http://localhost:11434"))
 
     # LLM settings - NIM / OpenAI-compatible
     nim_models: list[str] = field(default_factory=lambda: parse_model_list(
-        os.getenv("NIM_MODELS", "nvidia/llama-3.1-nemotron-nano-8b-v1")
+        os.getenv("NIM_MODELS", "nvidia/qwen2:7b-instruct")
     ))
     nim_host: str = field(default_factory=lambda: os.getenv("NIM_HOST", "http://localhost:8000"))
 
@@ -52,6 +52,10 @@ class ExtractionConfig:
     def from_yaml(cls, path: Path | None = None) -> ExtractionConfig:
         """Construct config with precedence: env vars > YAML > code defaults."""
         resolved_path = Path(path).expanduser() if path is not None else find_config_file()
+        if resolved_path is None:
+            LOGGER.warning(
+                "No config file found. Using code defaults and environment overrides only."
+            )
         yaml_config = load_yaml_config(resolved_path)
         field_types = get_type_hints(cls)
 
